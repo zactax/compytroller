@@ -1,5 +1,5 @@
 from typing import List
-from compytroller.responses.sales_tax import SalesTaxRateData
+from data.responses.sales_tax import SalesTaxRateData
 
 class SalesTaxRates:
     DATASET_ID = "tmhs-ahbh"

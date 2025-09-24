@@ -1,5 +1,5 @@
 from typing import List
-from compytroller.responses.sales_tax import PermittedLocationData
+from data.responses.sales_tax import PermittedLocationData
 
 class PermittedLocations:
     DATASET_ID = "3kx8-uryv"

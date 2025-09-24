@@ -1,6 +1,8 @@
 # compytroller/client.py
 from socrata import SocrataClient
-from resources import SalesTaxResource
+from data.resources import SalesTaxResource
+from data.resources import FranchiseResource
+from data.resources import MixedBeverageResource
 
 class ComptrollerClient:
     def __init__(self, app_token: str, base_url: str = "https://data.texas.gov/resource"):
@@ -13,7 +15,11 @@ class ComptrollerClient:
     def sales_tax(self) -> SalesTaxResource:
         return SalesTaxResource(self.socrata)
     
+    def franchise(self):
+        return FranchiseResource(self.socrata)
+    
+    def mixed_beverage(self):
+        return MixedBeverageResource(self.socrata)
+
     def get(self, dataset_id: str, params: dict = None):
         return self.socrata.get(dataset_id, params or {})
-
-    # Beverage tax and other resources will be added later

@@ -1,5 +1,5 @@
 from typing import List
-from compytroller.responses.sales_tax import SingleLocalAllocationData
+from data.responses.sales_tax import SingleLocalAllocationData
 
 
 class SingleLocalAllocations:

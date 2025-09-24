@@ -1,5 +1,5 @@
 from typing import List
-from compytroller.responses.sales_tax import DirectPayTaxpayerData
+from data.responses.sales_tax import DirectPayTaxpayerData
 
 class DirectPayTaxpayers:
     DATASET_ID = "deed-e7u6"

@@ -1,6 +1,6 @@
 # compytroller/sales_tax/allocations.py
 from typing import List
-from compytroller.responses.sales_tax import LocalAllocationPaymentDetailsData
+from data.responses.sales_tax import LocalAllocationPaymentDetailsData
 
 
 class LocalAllocationPaymentDetail:

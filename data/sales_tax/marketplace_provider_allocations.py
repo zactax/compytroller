@@ -1,5 +1,5 @@
 from typing import List
-from compytroller.responses.sales_tax import MarketplaceProviderAllocationData
+from data.responses.sales_tax import MarketplaceProviderAllocationData
 
 class MarketplaceProviders:
     DATASET_ID = "hezn-fbgw"

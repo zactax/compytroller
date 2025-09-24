@@ -1,7 +1,7 @@
 from dataclasses import dataclass
-from typing import Optional, Dict, Any
+from typing import Optional, Dict, List, Any
 from dataclasses import dataclass
-from datetime import datetime
+from datetime import datetime, date
 
 @dataclass
 class ComparisonSummaryData:
@@ -99,7 +99,14 @@ class SingleLocalAllocationData:
             prior_year_payment_ytd=f(data.get("prior_year_payment_ytd")),
             ytd_percent_change=f(data.get("ytd_percent_change")),
         )
-        
+    
+@dataclass
+class SingleLocalTaxRateData:
+    taxpayer_number: str
+    name: str
+    begin_date: Optional[datetime.date]
+    end_date: Optional[datetime.date]
+     
 @dataclass
 class LocalAllocationPaymentDetailsData:
     authority_id: str
@@ -144,6 +151,13 @@ class MarketplaceProviderAllocationData:
             allocation_month=i(data.get("allocation_month")),
             amount_allocated=f(data.get("amount_allocated")),
         )
+        
+@dataclass
+class MarketplaceProviderData:
+    taxpayer_number: str
+    name: str
+    begin_date: Optional[datetime.date]
+    end_date: Optional[datetime.date]
 
 @dataclass
 class PermittedLocationData:
@@ -313,3 +327,64 @@ class DirectPayTaxpayerData:
             naics_code=data.get("naics_code"),
             responsibility_begin_date=data.get("responsibility_begin_date"),
         )
+
+@dataclass
+class AllocationHistoryData:
+    authority_id: str
+    authority_name: str
+    allocation_month: date   
+    allocation_date: date         
+    net_payment: Optional[float]
+    total_collections: Optional[float]
+
+    @classmethod
+    def from_row(
+        cls, row: List[str], year_text: str, authority_id: str, authority_name: str
+    ):
+        """
+        Parse a row from AllocHist tables.
+        row: [Month, Amount, ...]
+        """
+        def f(x: str) -> Optional[float]:
+            try:
+                return float(x.replace(",", ""))
+            except Exception:
+                return None
+
+        month_text, amount_text = row[0], row[1]
+
+        # Parse month name + year into a date
+        try:
+            dt = datetime.strptime(f"{month_text} {year_text}", "%B %Y")
+        except ValueError:
+            try:
+                dt = datetime.strptime(f"{month_text} {year_text}", "%b %Y")
+            except ValueError:
+                return None
+
+        return cls(
+            authority_id=authority_id,
+            authority_name=authority_name,
+            allocation_month=dt.date().replace(day=1),
+            allocation_date=dt.date(),
+            net_payment=f(amount_text),
+            total_collections=None,
+        )
+
+@dataclass
+class QuarterlySalesHistoryData:
+    # Jurisdiction context
+    jurisdiction_name: str            # "Texas", "Austin", "Travis", etc.
+    jurisdiction_type: str            # "State", "City", "County", "MSA"
+
+    # Report metadata
+    industry_label: str               # "All Industries", "Retail Trade", etc.
+    summary_type: Optional[str]       # "In-State", "Out-of-State", "Grand Totals" (summary only)
+    report_kind: str                  # "Summary" or "CCMA"
+
+    # Time series values
+    year: int
+    quarter: int
+    gross_sales: Optional[float]
+    taxable_sales: Optional[float]
+    num_outlets: Optional[int]

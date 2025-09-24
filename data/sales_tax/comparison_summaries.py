@@ -1,5 +1,5 @@
 from typing import List
-from compytroller.responses.sales_tax import ComparisonSummaryData
+from data.responses.sales_tax import ComparisonSummaryData
 
 class ComparisonSummary:
     DATASETS = {

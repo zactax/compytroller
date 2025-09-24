@@ -1,5 +1,5 @@
 from typing import List
-from compytroller.responses.sales_tax import ActivePermitData
+from data.responses.sales_tax import ActivePermitData
 
 class ActivePermits:
     DATASET_ID = "jrea-zgmq"
