@@ -1,14 +1,14 @@
-from data.sales_tax.allocations import LocalAllocationPaymentDetail
-from data.sales_tax.comparison_summaries import ComparisonSummary
-from data.sales_tax.marketplace_provider_allocations import MarketplaceProviders
-from data.sales_tax.single_local_allocations import SingleLocalAllocations
-from data.sales_tax.permitted_locations import PermittedLocations
-from data.sales_tax.active_permits import ActivePermits
-from data.sales_tax.rates import SalesTaxRates
-from data.sales_tax.direct_pay import DirectPayTaxpayers
-from data.mixed_beverage.mixed_beverage_gross_receipts import MixedBeverageGrossReceipts
-from data.mixed_beverage.mixed_beverage_history import MixedBeverageHistory
-from data.franchise.active_franchise_tax_permit_holders import ActiveFranchiseTaxPermitHolders
+from src.data.resources.sales_tax.allocation_payment_detail import LocalAllocationPaymentDetail
+from src.data.resources.sales_tax.comparison_summary import ComparisonSummary
+from src.data.resources.sales_tax.marketplace_provider_allocations import MarketplaceProviders
+from src.data.resources.sales_tax.single_local_allocations import SingleLocalAllocations
+from src.data.resources.sales_tax.permitted_locations import PermittedLocations
+from src.data.resources.sales_tax.active_permits import ActivePermits
+from src.data.resources.sales_tax.rates import SalesTaxRates
+from src.data.resources.sales_tax.direct_pay import DirectPayTaxpayers
+from src.data.resources.mixed_beverage.gross_receipts import MixedBeverageGrossReceipts
+from src.data.resources.mixed_beverage.history import MixedBeverageHistory
+from src.data.resources.franchise.active_permit_holders import ActiveFranchiseTaxPermitHolders
 
 class SalesTaxResource:
     def __init__(self, socrata_client):

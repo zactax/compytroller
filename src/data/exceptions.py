@@ -3,7 +3,6 @@
 class TexasComptrollerError(Exception):
     """Base exception for the Texas Comptroller client."""
 
-
 class HttpError(TexasComptrollerError):
     """Raised when an HTTP request fails."""
 
@@ -18,7 +17,6 @@ class HttpError(TexasComptrollerError):
         status_code = getattr(exc.response, "status_code", None)
         url = str(getattr(exc.request, "url", None))
         return cls(str(exc), status_code=status_code, url=url)
-
 
 class InvalidRequest(TexasComptrollerError):
     """Raised when a request is incomplete or invalid."""

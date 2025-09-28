@@ -1,7 +1,6 @@
 # socrata.py
 import httpx
 
-
 class SocrataClient:
     """
     Low-level client for Socrata Open Data API (data.texas.gov).

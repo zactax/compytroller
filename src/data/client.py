@@ -1,5 +1,5 @@
 # compytroller/client.py
-from socrata import SocrataClient
+from src.data.socrata import SocrataClient
 from data.resources import SalesTaxResource
 from data.resources import FranchiseResource
 from data.resources import MixedBeverageResource
@@ -15,10 +15,10 @@ class ComptrollerClient:
     def sales_tax(self) -> SalesTaxResource:
         return SalesTaxResource(self.socrata)
     
-    def franchise(self):
+    def franchise_tax(self):
         return FranchiseResource(self.socrata)
-    
-    def mixed_beverage(self):
+
+    def mixed_beverage_tax(self):
         return MixedBeverageResource(self.socrata)
 
     def get(self, dataset_id: str, params: dict = None):

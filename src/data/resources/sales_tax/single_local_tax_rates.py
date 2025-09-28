@@ -37,10 +37,3 @@ class SingleLocalTaxRates:
         if not value or pd.isna(value):
             return None
         return datetime.strptime(value, "%Y-%m-%d").date()
-
-
-rates = SingleLocalTaxRates().get()
-print(f"Fetched {len(rates)} records")
-
-for r in rates[:5]:
-    print(r)

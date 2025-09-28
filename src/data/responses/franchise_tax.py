@@ -1,7 +1,7 @@
 from dataclasses import dataclass
 from typing import Optional, Dict, Any
-from dataclasses import dataclass
-from datetime import datetime, date
+from datetime import date
+from data.utils import parse_date
 
 @dataclass
 class FranchiseTaxPermitHolderData:
@@ -24,16 +24,6 @@ class FranchiseTaxPermitHolderData:
 
     @classmethod
     def from_dict(cls, data: Dict[str, Any]):
-        def d(x):
-            if not x:
-                return None
-            for fmt in ("%Y-%m-%d", "%Y-%m-%dT%H:%M:%S.%f"):
-                try:
-                    return datetime.strptime(x, fmt).date()
-                except (ValueError, TypeError):
-                    continue
-            return None
-
         return cls(
             taxpayer_number=data.get("taxpayer_number"),
             taxpayer_name=data.get("taxpayer_name"),
@@ -44,10 +34,10 @@ class FranchiseTaxPermitHolderData:
             taxpayer_county_code=data.get("taxpayer_county_code"),
             taxpayer_organizational_type=data.get("taxpayer_organizational_type"),
             record_type_code=data.get("record_type_code"),
-            responsibility_beginning_date=d(data.get("responsibility_beginning_date")),
+            responsibility_beginning_date=parse_date(data.get("responsibility_beginning_date")),
             secretary_of_state_file_number=data.get("secretary_of_state_sos_or_coa_file_number"),
-            sos_charter_date=d(data.get("sos_charter_date")),
-            sos_status_date=d(data.get("sos_status_date")),
+            sos_charter_date=parse_date(data.get("sos_charter_date")),
+            sos_status_date=parse_date(data.get("sos_status_date")),
             sos_status_code=data.get("sos_status_code"),
             right_to_transact_business_code=data.get("right_to_transact_business_code"),
         )

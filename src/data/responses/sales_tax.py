@@ -1,13 +1,13 @@
 from dataclasses import dataclass
 from typing import Optional, Dict, List, Any
-from dataclasses import dataclass
 from datetime import datetime, date
+from data.utils import parse_date, parse_float, parse_int
 
 @dataclass
 class ComparisonSummaryData:
-    jurisdiction: Optional[str]          # city / county / name
-    jurisdiction_type: Optional[str]     # only for qsh8-tby8
-    county: Optional[str]                # only for 53pa-m7sm
+    jurisdiction: Optional[str]
+    jurisdiction_type: Optional[str]
+    county: Optional[str]
     report_year: Optional[int]
     report_month: Optional[int]
     net_payment_this_period: Optional[float]
@@ -18,28 +18,9 @@ class ComparisonSummaryData:
 
     @classmethod
     def from_dict(cls, data: Dict[str, Any]):
-        def parse_float(val):
-            try:
-                return float(val)
-            except Exception:
-                return None
-
-        def parse_int(val):
-            try:
-                return int(val)
-            except Exception:
-                return None
-
-        # figure out the jurisdiction field
-        jurisdiction = (
-            data.get("city") or
-            data.get("name") or
-            None
-        )
+        jurisdiction = data.get("city") or data.get("name")
         county = data.get("county")
         jtype = data.get("type")
-
-        # percent change could be period, year, or ytd depending on dataset
         pct = (
             data.get("period_percent_change")
             or data.get("year_percent_change")
@@ -47,7 +28,6 @@ class ComparisonSummaryData:
             or data.get("percent_change_prior_year")
             or data.get("percent_change_to_date")
         )
-
         return cls(
             jurisdiction=jurisdiction,
             jurisdiction_type=jtype,
@@ -76,43 +56,32 @@ class SingleLocalAllocationData:
 
     @classmethod
     def from_dict(cls, data: Dict[str, Any]):
-        def f(x):
-            try:
-                return float(x)
-            except Exception:
-                return None
-        def i(x):
-            try:
-                return int(x)
-            except Exception:
-                return None
-
         return cls(
             authority_type=data.get("authority_type"),
             tax_authority=data.get("tax_authority"),
-            report_year=i(data.get("report_year")),
-            report_month=i(data.get("report_month")),
-            current_net_payment=f(data.get("current_net_payment")),
-            prior_year_net_payment=f(data.get("prior_year_net_payment")),
-            yoy_percent_change=f(data.get("yoy_percent_change")),
-            payment_ytd=f(data.get("payment_ytd")),
-            prior_year_payment_ytd=f(data.get("prior_year_payment_ytd")),
-            ytd_percent_change=f(data.get("ytd_percent_change")),
+            report_year=parse_int(data.get("report_year")),
+            report_month=parse_int(data.get("report_month")),
+            current_net_payment=parse_float(data.get("current_net_payment")),
+            prior_year_net_payment=parse_float(data.get("prior_year_net_payment")),
+            yoy_percent_change=parse_float(data.get("yoy_percent_change")),
+            payment_ytd=parse_float(data.get("payment_ytd")),
+            prior_year_payment_ytd=parse_float(data.get("prior_year_payment_ytd")),
+            ytd_percent_change=parse_float(data.get("ytd_percent_change")),
         )
-    
+
 @dataclass
 class SingleLocalTaxRateData:
     taxpayer_number: str
     name: str
-    begin_date: Optional[datetime.date]
-    end_date: Optional[datetime.date]
-     
+    begin_date: Optional[date]
+    end_date: Optional[date]
+
 @dataclass
 class LocalAllocationPaymentDetailsData:
     authority_id: str
     authority_name: str
-    allocation_month: Optional[datetime] = None
-    allocation_date: Optional[datetime] = None
+    allocation_month: Optional[date] = None
+    allocation_date: Optional[date] = None
     total_collections: Optional[float] = None
     prior_collections: Optional[float] = None
     current_collections: Optional[float] = None
@@ -136,28 +105,21 @@ class MarketplaceProviderAllocationData:
 
     @classmethod
     def from_dict(cls, data: Dict[str, Any]):
-        def f(x):
-            try: return float(x)
-            except: return None
-        def i(x):
-            try: return int(x)
-            except: return None
-
         return cls(
             authority_type=data.get("authority_type"),
             authority_id=data.get("authority_id"),
             authority_name=data.get("authority_name"),
-            allocation_year=i(data.get("allocation_year")),
-            allocation_month=i(data.get("allocation_month")),
-            amount_allocated=f(data.get("amount_allocated")),
+            allocation_year=parse_int(data.get("allocation_year")),
+            allocation_month=parse_int(data.get("allocation_month")),
+            amount_allocated=parse_float(data.get("amount_allocated")),
         )
-        
+
 @dataclass
 class MarketplaceProviderData:
     taxpayer_number: str
     name: str
-    begin_date: Optional[datetime.date]
-    end_date: Optional[datetime.date]
+    begin_date: Optional[date]
+    end_date: Optional[date]
 
 @dataclass
 class PermittedLocationData:
@@ -266,7 +228,7 @@ class ActivePermitData:
             outlet_permit_issue_date=data.get("outlet_permit_issue_date"),
             outlet_first_sales_date=data.get("outlet_first_sales_date"),
         )
-        
+
 @dataclass
 class SalesTaxRateData:
     type: str
@@ -281,22 +243,15 @@ class SalesTaxRateData:
 
     @classmethod
     def from_dict(cls, data: Dict[str, Any]):
-        def f(x):
-            try: return float(x)
-            except: return None
-        def i(x):
-            try: return int(x)
-            except: return None
-
         return cls(
             type=data.get("type"),
             city_name=data.get("city_name"),
             county_name=data.get("county_name"),
-            old_rate=f(data.get("old_rate")),
-            new_rate=f(data.get("new_rate")),
+            old_rate=parse_float(data.get("old_rate")),
+            new_rate=parse_float(data.get("new_rate")),
             effective_date=data.get("effective_date"),
-            report_month=i(data.get("report_month")),
-            report_year=i(data.get("report_year")),
+            report_month=parse_int(data.get("report_month")),
+            report_year=parse_int(data.get("report_year")),
             report_period_type=data.get("report_period_type"),
         )
 
@@ -332,19 +287,13 @@ class DirectPayTaxpayerData:
 class AllocationHistoryData:
     authority_id: str
     authority_name: str
-    allocation_month: date   
-    allocation_date: date         
+    allocation_month: date
+    allocation_date: date
     net_payment: Optional[float]
     total_collections: Optional[float]
 
     @classmethod
-    def from_row(
-        cls, row: List[str], year_text: str, authority_id: str, authority_name: str
-    ):
-        """
-        Parse a row from AllocHist tables.
-        row: [Month, Amount, ...]
-        """
+    def from_row(cls, row: List[str], year_text: str, authority_id: str, authority_name: str):
         def f(x: str) -> Optional[float]:
             try:
                 return float(x.replace(",", ""))
@@ -352,8 +301,6 @@ class AllocationHistoryData:
                 return None
 
         month_text, amount_text = row[0], row[1]
-
-        # Parse month name + year into a date
         try:
             dt = datetime.strptime(f"{month_text} {year_text}", "%B %Y")
         except ValueError:
@@ -373,16 +320,11 @@ class AllocationHistoryData:
 
 @dataclass
 class QuarterlySalesHistoryData:
-    # Jurisdiction context
-    jurisdiction_name: str            # "Texas", "Austin", "Travis", etc.
-    jurisdiction_type: str            # "State", "City", "County", "MSA"
-
-    # Report metadata
-    industry_label: str               # "All Industries", "Retail Trade", etc.
-    summary_type: Optional[str]       # "In-State", "Out-of-State", "Grand Totals" (summary only)
-    report_kind: str                  # "Summary" or "CCMA"
-
-    # Time series values
+    jurisdiction_name: str
+    jurisdiction_type: str
+    industry_label: str
+    summary_type: Optional[str]
+    report_kind: str
     year: int
     quarter: int
     gross_sales: Optional[float]

@@ -5,7 +5,7 @@ from typing import List
 from data.responses.sales_tax import AllocationHistoryData
 
 
-class AllocationHistory:
+class SalesTaxAllocationHistory:
     BASE_URL = "https://mycpa.cpa.state.tx.us/allocation/"
 
     def __init__(self):
