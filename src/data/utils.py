@@ -1,6 +1,8 @@
 # src/compytroller/utils.py
 from datetime import datetime, date
 from typing import Optional
+import math
+import pandas as pd
 
 def parse_date(x: Optional[str]) -> Optional[date]:
     """Parse various date string formats into a datetime.date.
@@ -10,7 +12,9 @@ def parse_date(x: Optional[str]) -> Optional[date]:
     - YYYY-MM-DDTHH:MM:SS.sss
     Returns None if parsing fails or input is falsy.
     """
-    if not x:
+    if pd.isna(x):
+        return None
+    elif not x:
         return None
 
     for fmt in ("%Y-%m-%d", "%Y-%m-%dT%H:%M:%S.%f"):
@@ -22,17 +26,23 @@ def parse_date(x: Optional[str]) -> Optional[date]:
     return None
 
 
-def parse_float(x: Optional[str]) -> Optional[float]:
-    """Convert a string to float, return None if invalid."""
+def parse_float(val):
+    """Convert a string to float, return None if invalid, NaN, or Inf."""
     try:
-        return float(x)
-    except (ValueError, TypeError):
+        f = float(str(val).replace(",", "")) if val not in (None, "") else None
+        if f is not None and (math.isnan(f) or math.isinf(f)):
+            return None
+        return f
+    except Exception:
         return None
 
 
 def parse_int(x: Optional[str]) -> Optional[int]:
-    """Convert a string to int, return None if invalid."""
+    """Convert a string to int, return None if invalid, NaN, or Inf."""
     try:
-        return int(x)
+        f = float(str(x).replace(",", "")) if x not in (None, "") else None
+        if f is None or math.isnan(f) or math.isinf(f):
+            return None
+        return int(f)
     except (ValueError, TypeError):
         return None

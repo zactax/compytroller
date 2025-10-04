@@ -1,5 +1,8 @@
+import httpx
 from typing import List
 from data.responses.sales_tax import ActivePermitData
+from data.exceptions import HttpError, InvalidRequest
+
 
 class ActivePermits:
     DATASET_ID = "jrea-zgmq"
@@ -34,10 +37,6 @@ class ActivePermits:
         return self
 
     def between_issue_dates(self, start: str, end: str):
-        """
-        Filter outlets whose permit issue date is between two dates.
-        Dates should be in 'YYYY-MM-DD' format.
-        """
         self._where_clauses.append(
             f"outlet_permit_issue_date BETWEEN '{start}' AND '{end}'"
         )
@@ -54,5 +53,15 @@ class ActivePermits:
     def get(self) -> List[ActivePermitData]:
         if self._where_clauses:
             self._params["$where"] = " AND ".join(self._where_clauses)
-        records = self.client.get(self.DATASET_ID, self._params)
+
+        try:
+            records = self.client.get(self.DATASET_ID, self._params)
+        except httpx.HTTPStatusError as exc:
+            raise HttpError.from_httpx_exception(exc)
+        except httpx.RequestError as exc:
+            raise HttpError(str(exc))
+
+        if not records:
+            raise InvalidRequest("No records returned from Active Permits dataset")
+
         return [ActivePermitData.from_dict(r) for r in records]

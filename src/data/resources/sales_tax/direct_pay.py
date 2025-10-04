@@ -1,4 +1,8 @@
-from typing import List
+import httpx
+from typing import List, Optional, Dict, Any
+from dataclasses import dataclass
+from datetime import datetime
+from data.exceptions import HttpError, InvalidRequest
 from data.responses.sales_tax import DirectPayTaxpayerData
 
 class DirectPayTaxpayers:
@@ -28,6 +32,15 @@ class DirectPayTaxpayers:
         self._params["$limit"] = n
         return self
 
-    def get(self) -> List[DirectPayTaxpayerData]:
-        records = self.client.get(self.DATASET_ID, self._params)
+    def get(self) -> List["DirectPayTaxpayerData"]:
+        try:
+            records = self.client.get(self.DATASET_ID, self._params)
+        except httpx.HTTPStatusError as exc:
+            raise HttpError.from_httpx_exception(exc)
+        except httpx.RequestError as exc:
+            raise HttpError(str(exc))
+
+        if not records:
+            raise InvalidRequest("No records returned from Direct Pay dataset")
+
         return [DirectPayTaxpayerData.from_dict(r) for r in records]

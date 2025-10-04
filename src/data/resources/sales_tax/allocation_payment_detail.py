@@ -1,6 +1,7 @@
-# compytroller/sales_tax/allocations.py
+import httpx
 from typing import List
 from data.responses.sales_tax import LocalAllocationPaymentDetailsData
+from data.exceptions import HttpError, InvalidRequest
 
 
 class LocalAllocationPaymentDetail:
@@ -27,5 +28,14 @@ class LocalAllocationPaymentDetail:
 
     def get(self) -> List[LocalAllocationPaymentDetailsData]:
         """Fetch rows and map into DTOs."""
-        records = self.client.get(self.DATASET_ID, self._params)
+        try:
+            records = self.client.get(self.DATASET_ID, self._params)
+        except httpx.HTTPStatusError as exc:
+            raise HttpError.from_httpx_exception(exc)
+        except httpx.RequestError as exc:
+            raise HttpError(str(exc))
+
+        if not records:
+            raise InvalidRequest("No records returned from Local Allocation Payment Detail dataset")
+
         return [LocalAllocationPaymentDetailsData.from_dict(r) for r in records]

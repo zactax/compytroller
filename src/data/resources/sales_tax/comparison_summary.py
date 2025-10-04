@@ -1,5 +1,8 @@
+import httpx
 from typing import List
 from data.responses.sales_tax import ComparisonSummaryData
+from data.exceptions import HttpError, InvalidRequest
+
 
 class ComparisonSummary:
     DATASETS = {
@@ -7,7 +10,6 @@ class ComparisonSummary:
         "cities": {"id": "vfba-b57j", "key": "city"},
         "county_mta_spd": {"id": "qsh8-tby8", "key": "name"},
     }
-
 
     def __init__(self, socrata_client, summary_type: str):
         config = self.DATASETS.get(summary_type)
@@ -43,5 +45,14 @@ class ComparisonSummary:
         return self
 
     def get(self) -> List[ComparisonSummaryData]:
-        records = self.client.get(self.dataset_id, self._params)
+        try:
+            records = self.client.get(self.dataset_id, self._params)
+        except httpx.HTTPStatusError as exc:
+            raise HttpError.from_httpx_exception(exc)
+        except httpx.RequestError as exc:
+            raise HttpError(str(exc))
+
+        if not records:
+            raise InvalidRequest("No records returned from Comparison Summary dataset")
+
         return [ComparisonSummaryData.from_dict(r) for r in records]

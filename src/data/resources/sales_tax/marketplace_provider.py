@@ -1,10 +1,9 @@
 import httpx
 import pandas as pd
 from io import StringIO
-from dataclasses import dataclass
-from datetime import datetime
-from typing import Optional, List
+from typing import List
 from data.responses.sales_tax import MarketplaceProviderData
+from data.exceptions import HttpError, InvalidRequest
 
 
 class MarketplaceProvider:
@@ -14,26 +13,16 @@ class MarketplaceProvider:
         self.client = httpx.Client(follow_redirects=True)
 
     def get(self) -> List[MarketplaceProviderData]:
-        resp = self.client.get(self.CSV_URL)
-        resp.raise_for_status()
+        try:
+            resp = self.client.get(self.CSV_URL)
+            resp.raise_for_status()
+        except httpx.HTTPStatusError as exc:
+            raise HttpError.from_httpx_exception(exc)
+        except httpx.RequestError as exc:
+            raise HttpError(str(exc))
 
-        # Use StringIO to wrap CSV text for pandas
         df = pd.read_csv(StringIO(resp.text))
+        if df.empty:
+            raise InvalidRequest("No records returned from Marketplace Providers CSV")
 
-        records: List[MarketplaceProviderData] = []
-        for _, row in df.iterrows():
-            records.append(
-                MarketplaceProviderData(
-                    taxpayer_number=str(row["Taxpayer Number"]),
-                    name=row["Taxpayer Name"].strip(),
-                    begin_date=self._parse_date(row["Begin Date"]),
-                    end_date=self._parse_date(row.get("End Date", "")),
-                )
-            )
-        return records
-
-    @staticmethod
-    def _parse_date(value: str) -> Optional[datetime.date]:
-        if not value or pd.isna(value):
-            return None
-        return datetime.strptime(value, "%Y-%m-%d").date()
+        return [MarketplaceProviderData.from_dict(row) for _, row in df.iterrows()]

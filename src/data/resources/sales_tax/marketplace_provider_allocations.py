@@ -1,7 +1,10 @@
 from typing import List
 from data.responses.sales_tax import MarketplaceProviderAllocationData
+import httpx
+from data.exceptions import HttpError, InvalidRequest
 
-class MarketplaceProviders:
+
+class MarketplaceProviderAllocations:
     DATASET_ID = "hezn-fbgw"
 
     def __init__(self, socrata_client):
@@ -15,7 +18,7 @@ class MarketplaceProviders:
 
     def for_type(self, authority_type: str):
         """Filter by authority type: CITY, COUNTY, etc."""
-        self._params["authority_type"] = authority_type
+        self._params["authority_type"] = authority_type.upper()
         return self
 
     def for_year(self, year: int):
@@ -31,6 +34,15 @@ class MarketplaceProviders:
         self._params["$limit"] = n
         return self
 
-    def get(self) -> List[MarketplaceProviderAllocationData]:
-        records = self.client.get(self.DATASET_ID, self._params)
+    def get(self) -> List["MarketplaceProviderAllocationData"]:
+        try:
+            records = self.client.get(self.DATASET_ID, self._params)
+        except httpx.HTTPStatusError as exc:
+            raise HttpError.from_httpx_exception(exc)
+        except httpx.RequestError as exc:
+            raise HttpError(str(exc))
+
+        if not records:
+            raise InvalidRequest("No records returned from Marketplace Provider Allocations dataset")
+
         return [MarketplaceProviderAllocationData.from_dict(r) for r in records]

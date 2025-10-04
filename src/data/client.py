@@ -1,5 +1,5 @@
 # compytroller/client.py
-from src.data.socrata import SocrataClient
+from data.socrata import SocrataClient
 from data.resources import SalesTaxResource
 from data.resources import FranchiseResource
 from data.resources import MixedBeverageResource

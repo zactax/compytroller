@@ -3,6 +3,8 @@ from selectolax.parser import HTMLParser
 from datetime import datetime
 from typing import List
 from data.responses.mixed_beverage_tax import MixedBeverageHistoryData
+from data.exceptions import HttpError, InvalidRequest
+
 
 class MixedBeverageHistory:
     BASE_URL = "https://mycpa.cpa.state.tx.us/allocation/"
@@ -14,29 +16,17 @@ class MixedBeverageHistory:
 
     def for_city(self, name: str):
         self.endpoint = "CtyCntyAllocMixBevResults"
-        self.payload = {
-            "ccmOption": "City",
-            "cityName": name,
-            "msaOption": "SPD",
-        }
+        self.payload = {"ccmOption": "City", "cityName": name, "msaOption": "SPD"}
         return self
 
     def for_county(self, name: str):
         self.endpoint = "CtyCntyAllocMixBevResults"
-        self.payload = {
-            "ccmOption": "County",
-            "countyName": name,
-            "msaOption": "SPD",
-        }
+        self.payload = {"ccmOption": "County", "countyName": name, "msaOption": "SPD"}
         return self
 
     def for_special_district(self, name: str):
         self.endpoint = "SPDAllocResults"
-        self.payload = {
-            "ccmOption": "MSA",
-            "msaOption": "SPD",
-            "msaOptions": name,
-        }
+        self.payload = {"ccmOption": "MSA", "msaOption": "SPD", "msaOptions": name}
         return self
 
     def with_summary_type(self, summary_type: str):
@@ -44,24 +34,35 @@ class MixedBeverageHistory:
         return self
 
     def get(self) -> List[MixedBeverageHistoryData]:
+        if not self.endpoint:
+            raise InvalidRequest("Must call for_city, for_county, or for_special_district first.")
+
         self.payload["submitButtonValue"] = "Get report"
 
-        resp = self.client.post(
-            f"{self.BASE_URL}{self.endpoint}",
-            data=self.payload,
-            headers={
-                "Content-Type": "application/x-www-form-urlencoded",
-                "Referer": f"{self.BASE_URL}{self.endpoint}",
-                "User-Agent": "Mozilla/5.0",
-            },
-        )
-        resp.raise_for_status()
+        try:
+            resp = self.client.post(
+                f"{self.BASE_URL}{self.endpoint}",
+                data=self.payload,
+                headers={
+                    "Content-Type": "application/x-www-form-urlencoded",
+                    "Referer": f"{self.BASE_URL}{self.endpoint}",
+                    "User-Agent": "Mozilla/5.0",
+                },
+            )
+            resp.raise_for_status()
+        except httpx.HTTPStatusError as exc:
+            raise HttpError.from_httpx_exception(exc)
+        except httpx.RequestError as exc:
+            raise HttpError(str(exc))
 
         if "Oops! Something went wrong!" in resp.text:
-            raise RuntimeError("Server returned error page. Likely bad params.")
+            raise InvalidRequest("Server returned error page. Likely bad params.")
 
         parser = HTMLParser(resp.text)
         tables = parser.css("table.resultsTable")
+
+        if not tables:
+            raise InvalidRequest("No results tables found in response.")
 
         records: List[MixedBeverageHistoryData] = []
         for table in tables:
@@ -100,3 +101,5 @@ class MixedBeverageHistory:
                     )
                 )
         return records
+    
+    

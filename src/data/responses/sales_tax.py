@@ -2,6 +2,7 @@ from dataclasses import dataclass
 from typing import Optional, Dict, List, Any
 from datetime import datetime, date
 from data.utils import parse_date, parse_float, parse_int
+import pandas as pd
 
 @dataclass
 class ComparisonSummaryData:
@@ -76,6 +77,23 @@ class SingleLocalTaxRateData:
     begin_date: Optional[date]
     end_date: Optional[date]
 
+    @classmethod
+    def from_dict(cls, data: Dict[str, Any]) -> "SingleLocalTaxRateData":
+        def parse_date(val: str) -> Optional[date]:
+            if not val or pd.isna(val):
+                return None
+            try:
+                return datetime.strptime(val, "%Y-%m-%d").date()
+            except Exception:
+                return None
+
+        return cls(
+            taxpayer_number=data.get("taxpayer_number"),
+            name=data.get("name"),
+            begin_date=parse_date(data.get("begin_date")),
+            end_date=parse_date(data.get("end_date")),
+        )
+
 @dataclass
 class LocalAllocationPaymentDetailsData:
     authority_id: str
@@ -93,6 +111,26 @@ class LocalAllocationPaymentDetailsData:
     current_retainage: Optional[float] = None
     prior_retainage: Optional[float] = None
     net_payment: Optional[float] = None
+    
+    @classmethod
+    def from_dict(cls, data: Dict[str, Any]):
+        return cls(
+            authority_id=data.get("authority_id"),
+            authority_name=data.get("authority_name"),
+            allocation_month=parse_date(data.get("allocation_month")),
+            allocation_date=parse_date(data.get("allocation_date")),
+            total_collections=parse_float(data.get("total_collections")),
+            prior_collections=parse_float(data.get("prior_collections")),
+            current_collections=parse_float(data.get("current_collections")),
+            future_collections=parse_float(data.get("future_collections")),
+            audit_collections=parse_float(data.get("audit_collections")),
+            unidentified_collections=parse_float(data.get("unidentified_collections")),
+            single_local_tax_collections=parse_float(data.get("single_local_tax_collections")),
+            service_fee=parse_float(data.get("service_fee")),
+            current_retainage=parse_float(data.get("current_retainage")),
+            prior_retainage=parse_float(data.get("prior_retainage")),
+            net_payment=parse_float(data.get("net_payment")),
+        )
 
 @dataclass
 class MarketplaceProviderAllocationData:
@@ -106,9 +144,9 @@ class MarketplaceProviderAllocationData:
     @classmethod
     def from_dict(cls, data: Dict[str, Any]):
         return cls(
-            authority_type=data.get("authority_type"),
-            authority_id=data.get("authority_id"),
-            authority_name=data.get("authority_name"),
+            authority_type=str(data.get("authority_type", "")),
+            authority_id=str(data.get("authority_id", "")),
+            authority_name=str(data.get("authority_name", "")),
             allocation_year=parse_int(data.get("allocation_year")),
             allocation_month=parse_int(data.get("allocation_month")),
             amount_allocated=parse_float(data.get("amount_allocated")),
@@ -120,6 +158,23 @@ class MarketplaceProviderData:
     name: str
     begin_date: Optional[date]
     end_date: Optional[date]
+
+    @classmethod
+    def from_dict(cls, data: Dict[str, Any]):
+        def parse_date(val):
+            if not val or pd.isna(val):
+                return None
+            try:
+                return datetime.strptime(str(val), "%Y-%m-%d").date()
+            except ValueError:
+                return None
+
+        return cls(
+            taxpayer_number=str(data.get("Taxpayer Number")),
+            name=str(data.get("Taxpayer Name")).strip(),
+            begin_date=parse_date(data.get("Begin Date")),
+            end_date=parse_date(data.get("End Date")),
+        )
 
 @dataclass
 class PermittedLocationData:
@@ -148,11 +203,19 @@ class PermittedLocationData:
     special_purp_dist3_taid: Optional[str]
     special_purp_dist4_taid: Optional[str]
     unique_taid: Optional[str]
-    first_sale_date: Optional[str]
-    out_of_business_date: Optional[str]
+    first_sale_date: Optional[date]
+    out_of_business_date: Optional[date]
 
     @classmethod
     def from_dict(cls, data: Dict[str, Any]):
+        def parse_date(val):
+            if not val:
+                return None
+            try:
+                return datetime.strptime(val, "%Y-%m-%dT%H:%M:%S.%f").date()
+            except ValueError:
+                return None
+
         return cls(
             tp_number=data.get("tp_number"),
             tp_name=data.get("tp_name"),
@@ -179,8 +242,8 @@ class PermittedLocationData:
             special_purp_dist3_taid=data.get("special_purp_dist3_taid"),
             special_purp_dist4_taid=data.get("special_purp_dist4_taid"),
             unique_taid=data.get("unique_taid"),
-            first_sale_date=data.get("first_sale_date"),
-            out_of_business_date=data.get("out_of_business_date"),
+            first_sale_date=parse_date(data.get("first_sale_date")),
+            out_of_business_date=parse_date(data.get("out_of_business_date")),
         )
 
 @dataclass
@@ -257,30 +320,38 @@ class SalesTaxRateData:
 
 @dataclass
 class DirectPayTaxpayerData:
-    id: str
+    tp_id: str
     name: str
     address: str
     city: str
     state: str
-    zip: str
+    zip_code: str
     county: str
     business_type: Optional[str]
     naics_code: Optional[str]
-    responsibility_begin_date: Optional[str]
+    responsibility_begin_date: Optional[datetime]
 
     @classmethod
     def from_dict(cls, data: Dict[str, Any]):
+        def parse_date(value):
+            if not value:
+                return None
+            try:
+                return datetime.strptime(value, "%Y-%m-%dT%H:%M:%S.%f").date()
+            except ValueError:
+                return None
+
         return cls(
-            id=data.get("id"),
+            tp_id=data.get("id"),
             name=data.get("name"),
             address=data.get("address"),
             city=data.get("city"),
             state=data.get("state"),
-            zip=data.get("zip"),
+            zip_code=data.get("zip"),
             county=data.get("county"),
             business_type=data.get("business_type"),
             naics_code=data.get("naics_code"),
-            responsibility_begin_date=data.get("responsibility_begin_date"),
+            responsibility_begin_date=parse_date(data.get("responsibility_begin_date")),
         )
 
 @dataclass
@@ -317,12 +388,11 @@ class AllocationHistoryData:
             net_payment=f(amount_text),
             total_collections=None,
         )
-
 @dataclass
 class QuarterlySalesHistoryData:
     jurisdiction_name: str
     jurisdiction_type: str
-    industry_label: str
+    industry_label: Optional[str]
     summary_type: Optional[str]
     report_kind: str
     year: int
@@ -330,3 +400,19 @@ class QuarterlySalesHistoryData:
     gross_sales: Optional[float]
     taxable_sales: Optional[float]
     num_outlets: Optional[int]
+
+    @classmethod
+    def from_dict(cls, data: Dict[str, Any]) -> "QuarterlySalesHistoryData":
+
+        return cls(
+            jurisdiction_name=data.get("jurisdiction_name", "Texas"),
+            jurisdiction_type=data.get("jurisdiction_type", "State"),
+            industry_label=data.get("industry_label"),
+            summary_type=data.get("summary_type"),
+            report_kind=data.get("report_kind", "Summary"),
+            year=parse_int(data.get("year")) or 0,
+            quarter=parse_int(data.get("quarter")) or 0,
+            gross_sales=parse_float(data.get("gross_sales")),
+            taxable_sales=parse_float(data.get("taxable_sales")),
+            num_outlets=parse_int(data.get("num_outlets")),
+        )

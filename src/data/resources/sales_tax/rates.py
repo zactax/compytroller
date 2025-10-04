@@ -1,5 +1,8 @@
 from typing import List
 from data.responses.sales_tax import SalesTaxRateData
+import httpx
+from data.exceptions import HttpError, InvalidRequest
+
 
 class SalesTaxRates:
     DATASET_ID = "tmhs-ahbh"
@@ -32,6 +35,15 @@ class SalesTaxRates:
         self._params["$limit"] = n
         return self
 
-    def get(self) -> List[SalesTaxRateData]:
-        records = self.client.get(self.DATASET_ID, self._params)
+    def get(self) -> List["SalesTaxRateData"]:
+        try:
+            records = self.client.get(self.DATASET_ID, self._params)
+        except httpx.HTTPStatusError as exc:
+            raise HttpError.from_httpx_exception(exc)
+        except httpx.RequestError as exc:
+            raise HttpError(str(exc))
+
+        if not records:
+            raise InvalidRequest("No records returned from Sales Tax Rates dataset")
+
         return [SalesTaxRateData.from_dict(r) for r in records]

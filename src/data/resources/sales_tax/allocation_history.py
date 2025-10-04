@@ -3,6 +3,7 @@ from selectolax.parser import HTMLParser
 from datetime import datetime
 from typing import List
 from data.responses.sales_tax import AllocationHistoryData
+from data.exceptions import HttpError, InvalidRequest
 
 
 class SalesTaxAllocationHistory:
@@ -34,12 +35,24 @@ class SalesTaxAllocationHistory:
         return self
 
     def get(self) -> List[AllocationHistoryData]:
+        if not self.endpoint:
+            raise InvalidRequest("Must call for_city / for_county / for_transit_authority / for_special_district first.")
+
         url = f"{self.BASE_URL}{self.endpoint}"
-        resp = self.client.post(url, data=self.params)
-        resp.raise_for_status()
+
+        try:
+            resp = self.client.post(url, data=self.params)
+            resp.raise_for_status()
+        except httpx.HTTPStatusError as exc:
+            raise HttpError.from_httpx_exception(exc)
+        except httpx.RequestError as exc:
+            raise HttpError(str(exc))
 
         parser = HTMLParser(resp.text)
         tables = parser.css("table.resultsTable")
+        if not tables:
+            raise InvalidRequest("No results tables found in response.")
+
         now = datetime.today()
         results: List[AllocationHistoryData] = []
 
@@ -69,5 +82,4 @@ class SalesTaxAllocationHistory:
                 if record and record.allocation_month <= now.date():
                     results.append(record)
 
-        # sort descending by month
         return sorted(results, key=lambda r: r.allocation_month, reverse=True)

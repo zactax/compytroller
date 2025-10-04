@@ -1,5 +1,7 @@
 from typing import List
 from data.responses.sales_tax import PermittedLocationData
+import httpx
+from data.exceptions import HttpError, InvalidRequest
 
 class PermittedLocations:
     DATASET_ID = "3kx8-uryv"
@@ -50,6 +52,15 @@ class PermittedLocations:
         self._params["$limit"] = n
         return self
 
-    def get(self) -> List[PermittedLocationData]:
-        records = self.client.get(self.DATASET_ID, self._params)
+    def get(self) -> List["PermittedLocationData"]:
+        try:
+            records = self.client.get(self.DATASET_ID, self._params)
+        except httpx.HTTPStatusError as exc:
+            raise HttpError.from_httpx_exception(exc)
+        except httpx.RequestError as exc:
+            raise HttpError(str(exc))
+
+        if not records:
+            raise InvalidRequest("No records returned from Permitted Locations dataset")
+
         return [PermittedLocationData.from_dict(r) for r in records]

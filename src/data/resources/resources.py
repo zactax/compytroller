@@ -1,14 +1,14 @@
-from src.data.resources.sales_tax.allocation_payment_detail import LocalAllocationPaymentDetail
-from src.data.resources.sales_tax.comparison_summary import ComparisonSummary
-from src.data.resources.sales_tax.marketplace_provider_allocations import MarketplaceProviders
-from src.data.resources.sales_tax.single_local_allocations import SingleLocalAllocations
-from src.data.resources.sales_tax.permitted_locations import PermittedLocations
-from src.data.resources.sales_tax.active_permits import ActivePermits
-from src.data.resources.sales_tax.rates import SalesTaxRates
-from src.data.resources.sales_tax.direct_pay import DirectPayTaxpayers
-from src.data.resources.mixed_beverage.gross_receipts import MixedBeverageGrossReceipts
-from src.data.resources.mixed_beverage.history import MixedBeverageHistory
-from src.data.resources.franchise.active_permit_holders import ActiveFranchiseTaxPermitHolders
+from data.resources.sales_tax.allocation_payment_detail import LocalAllocationPaymentDetail
+from data.resources.sales_tax.comparison_summary import ComparisonSummary
+from data.resources.sales_tax.marketplace_provider_allocations import MarketplaceProviderAllocations
+from data.resources.sales_tax.single_local_allocations import SingleLocalAllocations
+from data.resources.sales_tax.permitted_locations import PermittedLocations
+from data.resources.sales_tax.active_permits import ActivePermits
+from data.resources.sales_tax.rates import SalesTaxRates
+from data.resources.sales_tax.direct_pay import DirectPayTaxpayers
+from data.resources.mixed_beverage.gross_receipts import MixedBeverageGrossReceipts
+from data.resources.mixed_beverage.history import MixedBeverageHistory
+from data.resources.franchise.active_permit_holders import ActiveFranchiseTaxPermitHolders
 
 class SalesTaxResource:
     def __init__(self, socrata_client):
@@ -24,7 +24,7 @@ class SalesTaxResource:
         return SingleLocalAllocations(self.client)
     
     def marketplace_providers(self):
-        return MarketplaceProviders(self.client)
+        return MarketplaceProviderAllocations(self.client)
     
     def permitted_locations(self):
         return PermittedLocations(self.client)
@@ -43,7 +43,7 @@ class MixedBeverageResource:
         self.client = socrata_client
 
     def history(self):
-        return MixedBeverageHistory(self.client)
+        return MixedBeverageHistory()
 
     def gross_receipts(self):
         return MixedBeverageGrossReceipts(self.client)
