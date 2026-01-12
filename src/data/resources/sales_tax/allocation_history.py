@@ -2,8 +2,8 @@ import httpx
 from selectolax.parser import HTMLParser
 from datetime import datetime
 from typing import List
-from data.responses.sales_tax import AllocationHistoryData
-from data.exceptions import HttpError, InvalidRequest
+from src.data.responses.sales_tax import AllocationHistoryData
+from src.data.exceptions import HttpError, InvalidRequest
 
 
 class SalesTaxAllocationHistory:
@@ -32,6 +32,15 @@ class SalesTaxAllocationHistory:
     def for_special_district(self, name: str):
         self.endpoint = "SPDAllocResults"
         self.params = {"spdOption": "SPD", "spdOptions": name}
+        return self
+    
+    def statewide(self, statewide_type: str):
+        self.endpoint = "StateAllocResults"
+        self.params = {"stateOptions": statewide_type}
+        return self
+    
+    def reset(self):
+        self._params = {}
         return self
 
     def get(self) -> List[AllocationHistoryData]:

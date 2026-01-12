@@ -1,7 +1,8 @@
 from dataclasses import dataclass
 from typing import Optional, Dict, Any
 from datetime import date
-from data.utils import parse_date
+from src.data.utils import parse_date
+
 
 @dataclass
 class FranchiseTaxPermitHolderData:
@@ -21,7 +22,10 @@ class FranchiseTaxPermitHolderData:
     sos_status_date: Optional[date]
     sos_status_code: Optional[str]
     right_to_transact_business_code: Optional[str]
-
+    current_exempt_reason_code: Optional[str]
+    exempt_begin_date: Optional[date]
+    naics_code: Optional[str]
+    
     @classmethod
     def from_dict(cls, data: Dict[str, Any]):
         return cls(
@@ -40,4 +44,7 @@ class FranchiseTaxPermitHolderData:
             sos_status_date=parse_date(data.get("sos_status_date")),
             sos_status_code=data.get("sos_status_code"),
             right_to_transact_business_code=data.get("right_to_transact_business_code"),
+            current_exempt_reason_code = data.get("current_exempt_reason_code"),
+            exempt_begin_date = parse_date(data.get("exempt_begin_date")),
+            naics_code = data.get("_621111")
         )

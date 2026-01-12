@@ -2,8 +2,8 @@ import httpx
 from selectolax.parser import HTMLParser
 from datetime import datetime
 from typing import List
-from data.responses.mixed_beverage_tax import MixedBeverageHistoryData
-from data.exceptions import HttpError, InvalidRequest
+from src.data.responses.mixed_beverage_tax import MixedBeverageHistoryData
+from src.data.exceptions import HttpError, InvalidRequest
 
 
 class MixedBeverageHistory:
@@ -12,7 +12,7 @@ class MixedBeverageHistory:
     def __init__(self):
         self.client = httpx.Client(follow_redirects=True)
         self.endpoint = None
-        self.payload = {}
+        self.payload = {"summaryType": "Total Taxes"}
 
     def for_city(self, name: str):
         self.endpoint = "CtyCntyAllocMixBevResults"
@@ -25,12 +25,28 @@ class MixedBeverageHistory:
         return self
 
     def for_special_district(self, name: str):
-        self.endpoint = "SPDAllocResults"
+        self.endpoint = "CtyCntyAllocMixBevResults"
         self.payload = {"ccmOption": "MSA", "msaOption": "SPD", "msaOptions": name}
         return self
 
     def with_summary_type(self, summary_type: str):
+        if self.endpoint is None:
+            raise InvalidRequest("Must call for_city, for_county, or for_special_district first.")
         self.payload["summaryType"] = summary_type
+        return self
+    
+    def statewide_summary(self, summary_scope: str, summary_type: str):
+        """
+        summary_scope: 'State Revenue', 'All Counties', 'All Cities', 'All SPDs'
+        summary_type: 'Total Taxes', 'Gross Receipts', 'Sales Tax'
+        """
+        self.endpoint = "StatewideAllocMixBevResults"
+        self.payload = {'stateOption': summary_scope, 'summaryType': summary_type}
+        return self
+    
+    def reset(self):
+        self.endpoint = None
+        self.payload = {"summaryType": "Total Taxes"}
         return self
 
     def get(self) -> List[MixedBeverageHistoryData]:
@@ -38,7 +54,7 @@ class MixedBeverageHistory:
             raise InvalidRequest("Must call for_city, for_county, or for_special_district first.")
 
         self.payload["submitButtonValue"] = "Get report"
-
+        # Debug print to show payload being sent
         try:
             resp = self.client.post(
                 f"{self.BASE_URL}{self.endpoint}",

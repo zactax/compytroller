@@ -1,45 +1,71 @@
 from dataclasses import dataclass
 from typing import Optional, Dict, List, Any
 from datetime import datetime, date
-from data.utils import parse_date, parse_float, parse_int
+from src.data.utils import parse_date, parse_float, parse_int
 import pandas as pd
 
 @dataclass
 class ComparisonSummaryData:
-    jurisdiction: Optional[str]
-    jurisdiction_type: Optional[str]
     county: Optional[str]
-    report_year: Optional[int]
-    report_month: Optional[int]
+    city: Optional[str]
+    current_rate: Optional[float]
     net_payment_this_period: Optional[float]
     comparable_payment_prior_year: Optional[float]
+    period_percent_change: Optional[float]
     payments_to_date: Optional[float]
     previous_payments_to_date: Optional[float]
-    percent_change: Optional[float]
+    year_percent_change: Optional[float]
+    report_month: Optional[int]
+    report_year: Optional[int]
+    report_period_type: Optional[str]
 
     @classmethod
     def from_dict(cls, data: Dict[str, Any]):
-        jurisdiction = data.get("city") or data.get("name")
-        county = data.get("county")
-        jtype = data.get("type")
-        pct = (
-            data.get("period_percent_change")
-            or data.get("year_percent_change")
-            or data.get("ytd_percent_change")
-            or data.get("percent_change_prior_year")
-            or data.get("percent_change_to_date")
-        )
         return cls(
-            jurisdiction=jurisdiction,
-            jurisdiction_type=jtype,
-            county=county,
+            county = data.get("county"),
+            city = data.get("city"),
+            current_rate = data.get("current_rate"),
+            net_payment_this_period = parse_float(data.get("net_payment_this_period")),
+            comparable_payment_prior_year = parse_float(data.get("comparable_payment_prior_year")),
+            period_percent_change = parse_float(data.get("period_percent_change")),
+            payments_to_date = parse_float(data.get("payments_to_date")),
+            previous_payments_to_date = parse_float(data.get("previous_payments_to_date")),
+            year_percent_change = parse_float(data.get("year_percent_change")),
+            report_month = parse_int(data.get("report_month")),
+            report_year = parse_int(data.get("report_year")),
+            report_period_type = data.get("report_period_type")
+        )
+        
+@dataclass
+class CountySPDMTAAllocationData:
+    name: Optional[str]
+    jurisdiction_type: Optional[str]
+    current_rate: Optional[float]
+    net_payment_this_period: Optional[float]
+    percent_change_prior_year: Optional[float]
+    report_year: Optional[int]
+    report_month: Optional[int]
+    report_period_type: Optional[str]
+    comparable_payment_prior_year: Optional[float]
+    payments_to_date: Optional[float]
+    previous_payments_to_date: Optional[float]
+    percent_change_to_date: Optional[float]
+
+    @classmethod
+    def from_dict(cls, data: Dict[str, Any]):
+        return cls(
+            name=data.get("name"),
+            jurisdiction_type=data.get("type"),
+            current_rate=data.get("current_rate"),
+            net_payment_this_period=parse_float(data.get("net_payment_this_period")),
+            percent_change_prior_year = parse_float(data.get("percent_change_prior_year")),
             report_year=parse_int(data.get("report_year")),
             report_month=parse_int(data.get("report_month")),
-            net_payment_this_period=parse_float(data.get("net_payment_this_period")),
+            report_period_type = data.get("report_period_type"),
             comparable_payment_prior_year=parse_float(data.get("comparable_payment_prior_year")),
             payments_to_date=parse_float(data.get("payments_to_date")),
             previous_payments_to_date=parse_float(data.get("previous_payments_to_date")),
-            percent_change=parse_float(pct),
+            percent_change_to_date=parse_float(data.get("percent_change_to_date")),
         )
 
 @dataclass
@@ -119,13 +145,13 @@ class LocalAllocationPaymentDetailsData:
             authority_name=data.get("authority_name"),
             allocation_month=parse_date(data.get("allocation_month")),
             allocation_date=parse_date(data.get("allocation_date")),
-            total_collections=parse_float(data.get("total_collections")),
-            prior_collections=parse_float(data.get("prior_collections")),
-            current_collections=parse_float(data.get("current_collections")),
-            future_collections=parse_float(data.get("future_collections")),
-            audit_collections=parse_float(data.get("audit_collections")),
-            unidentified_collections=parse_float(data.get("unidentified_collections")),
-            single_local_tax_collections=parse_float(data.get("single_local_tax_collections")),
+            total_collections=parse_float(data.get("total_coll")),
+            prior_collections=parse_float(data.get("prior_coll")),
+            current_collections=parse_float(data.get("current_coll")),
+            future_collections=parse_float(data.get("future_coll")),
+            audit_collections=parse_float(data.get("audit_coll")),
+            unidentified_collections=parse_float(data.get("unidentified_coll")),
+            single_local_tax_collections=parse_float(data.get("single_local_tax_coll")),
             service_fee=parse_float(data.get("service_fee")),
             current_retainage=parse_float(data.get("current_retainage")),
             prior_retainage=parse_float(data.get("prior_retainage")),

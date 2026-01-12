@@ -1,7 +1,7 @@
 from typing import List
-from data.responses.sales_tax import SalesTaxRateData
+from src.data.responses.sales_tax import SalesTaxRateData
 import httpx
-from data.exceptions import HttpError, InvalidRequest
+from src.data.exceptions import HttpError, InvalidRequest
 
 
 class SalesTaxRates:
@@ -20,6 +20,9 @@ class SalesTaxRates:
         return self
 
     def for_type(self, jurisdiction_type: str):
+        """
+        SPD List, City List
+        """
         self._params["type"] = jurisdiction_type
         return self
 
@@ -33,6 +36,10 @@ class SalesTaxRates:
 
     def limit(self, n: int):
         self._params["$limit"] = n
+        return self
+    
+    def reset(self):
+        self._params = {}
         return self
 
     def get(self) -> List["SalesTaxRateData"]:

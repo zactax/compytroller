@@ -1,10 +1,10 @@
 from numpy import record
-from data.responses.sales_tax import QuarterlySalesHistoryData
+from src.data.responses.sales_tax import QuarterlySalesHistoryData
 import httpx
 from selectolax.parser import HTMLParser
 from typing import List, Optional, Dict, Any
 from dataclasses import dataclass
-from data.exceptions import HttpError, InvalidRequest
+from src.data.exceptions import HttpError, InvalidRequest
 
 class QuarterlySalesHistory:
     BASE_URL = "https://mycpa.cpa.state.tx.us/allocation/"
@@ -81,6 +81,8 @@ class QuarterlySalesHistory:
         self.payload.clear()
         self.summary = False
         self.payload["ccmOption"] = ccm_option
+        if ccm_option not in ["City", "County", "MSA"]:
+            raise InvalidRequest(f"Invalid ccm_option: {ccm_option}. Must be 'City', 'County', or 'MSA'.")
         if ccm_option == "County":
             self.payload["countyName"] = jurisdiction_name
         elif ccm_option == "MSA":
@@ -99,6 +101,13 @@ class QuarterlySalesHistory:
         self.label = label
         key = "selectorOptionsSummary" if self.summary else "selectorOptionsReportBy"
         self.payload[key] = self.SELECTOR_MAP.get(label, label)
+        return self
+    
+    def reset(self):
+        self.payload = {}        
+        self.summary = True
+        self.label = None
+        self.endpoint = None
         return self
 
     def get(self) -> List["QuarterlySalesHistoryData"]:

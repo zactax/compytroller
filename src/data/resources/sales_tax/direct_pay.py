@@ -2,8 +2,8 @@ import httpx
 from typing import List, Optional, Dict, Any
 from dataclasses import dataclass
 from datetime import datetime
-from data.exceptions import HttpError, InvalidRequest
-from data.responses.sales_tax import DirectPayTaxpayerData
+from src.data.exceptions import HttpError, InvalidRequest
+from src.data.responses.sales_tax import DirectPayTaxpayerData
 
 class DirectPayTaxpayers:
     DATASET_ID = "deed-e7u6"
@@ -30,6 +30,10 @@ class DirectPayTaxpayers:
 
     def limit(self, n: int):
         self._params["$limit"] = n
+        return self
+    
+    def reset(self):
+        self._params = {}
         return self
 
     def get(self) -> List["DirectPayTaxpayerData"]:

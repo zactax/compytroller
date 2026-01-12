@@ -1,8 +1,8 @@
 # compytroller/client.py
-from data.socrata import SocrataClient
-from data.resources import SalesTaxResource
-from data.resources import FranchiseResource
-from data.resources import MixedBeverageResource
+from src.data.socrata import SocrataClient
+from src.data.resources import SalesTaxResource
+from src.data.resources import FranchiseResource
+from src.data.resources import MixedBeverageResource
 
 class ComptrollerClient:
     def __init__(self, app_token: str, base_url: str = "https://data.texas.gov/resource"):

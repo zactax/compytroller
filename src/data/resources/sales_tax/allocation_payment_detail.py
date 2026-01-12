@@ -1,7 +1,7 @@
 import httpx
 from typing import List
-from data.responses.sales_tax import LocalAllocationPaymentDetailsData
-from data.exceptions import HttpError, InvalidRequest
+from src.data.responses.sales_tax import LocalAllocationPaymentDetailsData
+from src.data.exceptions import HttpError, InvalidRequest
 
 
 class LocalAllocationPaymentDetail:
@@ -10,10 +10,20 @@ class LocalAllocationPaymentDetail:
     def __init__(self, socrata_client):
         self.client = socrata_client
         self._params = {}
-
-    def where(self, key: str, value):
-        """Filter by field = value."""
-        self._params[key] = value
+        
+    def for_city(self, city: str):
+        """Filter by city."""
+        self._params["authority_name"] = f"'{city.upper()}'"
+        return self
+    
+    def with_authority_id(self, authority_id: str):
+        """Filter by authority ID."""
+        self._params["authority_id"] = f"'{authority_id}'"
+        return self
+        
+    def for_month(self, month: str):
+        """Filter by month (floating timestamp)"""
+        self._params["allocation_month"] = f"'{month}'"
         return self
 
     def sort_by(self, field: str, desc: bool = False):
@@ -24,6 +34,10 @@ class LocalAllocationPaymentDetail:
     def limit(self, n: int):
         """Limit the number of results."""
         self._params["$limit"] = n
+        return self
+    
+    def reset(self):
+        self._params = {}
         return self
 
     def get(self) -> List[LocalAllocationPaymentDetailsData]:
