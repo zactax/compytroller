@@ -1,9 +1,9 @@
-from data.responses.sales_tax import PermittedLocationData
+from src.data.responses.sales_tax import PermittedLocationData
 import pytest
 import httpx
 from datetime import date
-from data.resources.sales_tax.permitted_locations import PermittedLocations
-from data.exceptions import HttpError, InvalidRequest
+from src.data.resources.sales_tax.permitted_locations import PermittedLocations
+from src.data.exceptions import HttpError, InvalidRequest
 
 
 def test_permitted_locations_parsing(dummy_client):
@@ -40,8 +40,7 @@ def test_permitted_locations_parsing(dummy_client):
     results = (
         PermittedLocations(client)
         .in_city("austin")
-        .in_county("travis")
-        .with_naics_code("445120")
+        .with_naics("445120")
         .with_tp_number("123456789")
         .with_city_taid("123")
         .with_county_taid("CNTY1")
@@ -108,4 +107,23 @@ def test_permitted_locationdata_from_dict_handles_bad_dates():
     dto = PermittedLocationData.from_dict(data)
     assert dto.first_sale_date is None
     assert dto.out_of_business_date is None
+
+
+def test_permitted_locations_limit(dummy_client):
+    sample = [{"tp_name": "TEST"}]
+    client = dummy_client(sample)
+    resource = PermittedLocations(client)
+    resource.limit(100)
+    assert resource._params["$limit"] == 100
+
+
+def test_permitted_locations_reset(dummy_client):
+    sample = [{"tp_name": "TEST"}]
+    client = dummy_client(sample)
+    resource = PermittedLocations(client)
+    resource.in_city("Austin").with_naics("445120").limit(100)
+    assert len(resource._params) > 0
+
+    resource.reset()
+    assert resource._params == {}
 

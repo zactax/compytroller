@@ -1,9 +1,9 @@
 import pytest
 import httpx
 from datetime import date
-from data.resources.sales_tax.allocation_payment_detail import LocalAllocationPaymentDetail
-from data.responses.sales_tax import LocalAllocationPaymentDetailsData
-from data.exceptions import HttpError, InvalidRequest
+from src.data.resources.sales_tax.allocation_payment_detail import LocalAllocationPaymentDetail
+from src.data.responses.sales_tax import LocalAllocationPaymentDetailsData
+from src.data.exceptions import HttpError, InvalidRequest
 
 
 def test_allocation_payment_detail_parsing(dummy_client):
@@ -12,13 +12,13 @@ def test_allocation_payment_detail_parsing(dummy_client):
         "authority_name": "ARCHER CITY",
         "allocation_month": "2024-07-01T00:00:00.000",
         "allocation_date": "2024-07-09T00:00:00.000",
-        "total_collections": "1000",
-        "prior_collections": None,
-        "current_collections": "2000.5",
-        "future_collections": "",
-        "audit_collections": "123.45",
-        "unidentified_collections": None,
-        "single_local_tax_collections": "50",
+        "total_coll": "1000",
+        "prior_coll": None,
+        "current_coll": "2000.5",
+        "future_coll": "",
+        "audit_coll": "123.45",
+        "unidentified_coll": None,
+        "single_local_tax_coll": "50",
         "service_fee": "454.97",
         "current_retainage": "445.87",
         "prior_retainage": "593.14",
@@ -27,7 +27,7 @@ def test_allocation_payment_detail_parsing(dummy_client):
     client = dummy_client(sample)
     details = (
         LocalAllocationPaymentDetail(client)
-        .where("authority_name", "ARCHER CITY")
+        .with_authority_id("2005023")
         .sort_by("allocation_date", desc=True)
         .limit(5)
         .get()
@@ -87,3 +87,41 @@ def test_allocation_payment_detail_empty(dummy_client):
     client = dummy_client([])
     with pytest.raises(InvalidRequest):
         LocalAllocationPaymentDetail(client).get()
+
+
+def test_allocation_payment_detail_sort_by(dummy_client):
+    sample = [{"authority_id": "123", "authority_name": "TEST"}]
+    client = dummy_client(sample)
+    resource = LocalAllocationPaymentDetail(client)
+    resource.sort_by("allocation_date", desc=True)
+    assert resource._params["$order"] == "allocation_date DESC"
+
+    resource.sort_by("allocation_date", desc=False)
+    assert resource._params["$order"] == "allocation_date"
+
+
+def test_allocation_payment_detail_reset(dummy_client):
+    sample = [{"authority_id": "123"}]
+    client = dummy_client(sample)
+    resource = LocalAllocationPaymentDetail(client)
+    resource.with_authority_id("123").sort_by("allocation_date")
+    assert len(resource._params) > 0
+
+    resource.reset()
+    assert resource._params == {}
+
+
+def test_allocation_payment_detail_for_city(dummy_client):
+    sample = [{"authority_name": "AUSTIN"}]
+    client = dummy_client(sample)
+    resource = LocalAllocationPaymentDetail(client)
+    resource.for_city("Austin")
+    assert resource._params["authority_name"] == "'AUSTIN'"
+
+
+def test_allocation_payment_detail_for_month(dummy_client):
+    sample = [{"allocation_month": "2024-01-01T00:00:00"}]
+    client = dummy_client(sample)
+    resource = LocalAllocationPaymentDetail(client)
+    resource.for_month("2024-01-01T00:00:00")
+    assert resource._params["allocation_month"] == "'2024-01-01T00:00:00'"

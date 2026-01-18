@@ -1,8 +1,8 @@
-from data.responses.sales_tax import QuarterlySalesHistoryData
+from src.data.responses.sales_tax import QuarterlySalesHistoryData
 import pytest
 import httpx
-from data.resources.sales_tax.quarterly_sales_history import QuarterlySalesHistory
-from data.exceptions import HttpError, InvalidRequest
+from src.data.resources.sales_tax.quarterly_sales_history import QuarterlySalesHistory
+from src.data.exceptions import HttpError, InvalidRequest
 
 
 HTML_SAMPLE = """
@@ -59,6 +59,26 @@ def test_quarterly_sales_history_summary_parsing(monkeypatch):
     assert r1.report_kind == "Summary"
     assert r1.summary_type == "In-State"
     assert r1.industry_label == "Retail Trade"
+    
+def test_quarterly_sales_history_reset(monkeypatch):
+    class FakeResp:
+        text = HTML_SAMPLE
+        def raise_for_status(self): return None
+    class FakeClient:
+        def post(self, url, data, headers=None): return FakeResp()
+
+    qsh = QuarterlySalesHistory()
+    qsh.client = FakeClient()
+    qsh = qsh.report_by_ccma("City", "Austin").with_industry("Retail Trade")
+    
+    assert qsh.payload != {}
+    assert qsh.endpoint is not None
+    assert qsh.summary is False
+    
+    qsh.reset()
+    assert qsh.payload == {}
+    assert qsh.endpoint is None
+    assert qsh.summary is True
 
 
 def test_quarterly_sales_history_ccma_city(monkeypatch):

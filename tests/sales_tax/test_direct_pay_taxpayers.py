@@ -1,8 +1,8 @@
 import pytest
 import httpx
 from datetime import date
-from data.resources.sales_tax.direct_pay import DirectPayTaxpayers, DirectPayTaxpayerData
-from data.exceptions import HttpError, InvalidRequest
+from src.data.resources.sales_tax.direct_pay import DirectPayTaxpayers, DirectPayTaxpayerData
+from src.data.exceptions import HttpError, InvalidRequest
 
 
 def test_direct_pay_parsing(dummy_client):
@@ -61,3 +61,14 @@ def test_direct_pay_empty(dummy_client):
     client = dummy_client([])
     with pytest.raises(InvalidRequest):
         DirectPayTaxpayers(client).get()
+
+
+def test_direct_pay_reset(dummy_client):
+    sample = [{"name": "TEST"}]
+    client = dummy_client(sample)
+    resource = DirectPayTaxpayers(client)
+    resource.with_naics("445120").in_city("Austin").sort_by("name")
+    assert len(resource._params) > 0
+
+    resource.reset()
+    assert resource._params == {}

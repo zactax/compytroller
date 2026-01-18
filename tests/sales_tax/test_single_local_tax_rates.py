@@ -1,8 +1,8 @@
-from data.responses.sales_tax import SingleLocalTaxRateData
+from src.data.responses.sales_tax import SingleLocalTaxRateData
 import pytest
 import httpx
-from data.resources.sales_tax.single_local_tax_rates import SingleLocalTaxRates
-from data.exceptions import HttpError, InvalidRequest
+from src.data.resources.sales_tax.single_local_tax_rates import SingleLocalTaxRates
+from src.data.exceptions import HttpError, InvalidRequest
 
 
 CSV_SAMPLE = """Taxpayer Number,Taxpayer Name,Begin Date,End Date
@@ -21,7 +21,7 @@ def test_single_local_tax_rates_parsing(monkeypatch):
 
     sltr = SingleLocalTaxRates()
     sltr.client = FakeClient()
-    records = sltr.get()
+    records = sltr.get_all()
 
     assert len(records) == 2
     r1 = records[0]
@@ -46,7 +46,7 @@ def test_single_local_tax_rates_http_status_error():
     sltr = SingleLocalTaxRates()
     sltr.client = FailingClient()
     with pytest.raises(HttpError):
-        sltr.get()
+        sltr.get_all()
 
 
 def test_single_local_tax_rates_request_error():
@@ -57,7 +57,7 @@ def test_single_local_tax_rates_request_error():
     sltr = SingleLocalTaxRates()
     sltr.client = FailingClient()
     with pytest.raises(HttpError):
-        sltr.get()
+        sltr.get_all()
 
 
 def test_single_local_tax_rates_empty_csv(monkeypatch):
@@ -71,7 +71,7 @@ def test_single_local_tax_rates_empty_csv(monkeypatch):
     sltr = SingleLocalTaxRates()
     sltr.client = FakeClient()
     with pytest.raises(InvalidRequest):
-        sltr.get()
+        sltr.get_all()
 
 
 def test_single_local_tax_rate_data_from_dict_handles_bad_values():
@@ -85,3 +85,43 @@ def test_single_local_tax_rate_data_from_dict_handles_bad_values():
     assert dto.begin_date is None
     assert dto.end_date is None
     assert dto.name == "BAD INC"
+
+
+def test_single_local_tax_rates_get_after_date():
+    CSV_FILTERED = """Taxpayer Number,Taxpayer Name,Begin Date,End Date
+123,EARLY INC,2020-01-01,2021-01-01
+456,LATE LLC,2023-06-15,
+"""
+    class FakeResp:
+        text = CSV_FILTERED
+        def raise_for_status(self): return None
+    class FakeClient:
+        def get(self, url): return FakeResp()
+
+    sltr = SingleLocalTaxRates()
+    sltr.client = FakeClient()
+    records = sltr.get_after_date("2022-01-01")
+
+    # Only LATE LLC should be returned (begin_date > 2022-01-01)
+    assert len(records) == 1
+    assert records[0].taxpayer_number == "456"
+
+
+def test_single_local_tax_rates_get_before_date():
+    CSV_FILTERED = """Taxpayer Number,Taxpayer Name,Begin Date,End Date
+123,EARLY INC,2020-01-01,2021-01-01
+456,LATE LLC,2023-06-15,2024-01-01
+"""
+    class FakeResp:
+        text = CSV_FILTERED
+        def raise_for_status(self): return None
+    class FakeClient:
+        def get(self, url): return FakeResp()
+
+    sltr = SingleLocalTaxRates()
+    sltr.client = FakeClient()
+    records = sltr.get_before_date("2022-01-01")
+
+    # Only EARLY INC should be returned (end_date < 2022-01-01)
+    assert len(records) == 1
+    assert records[0].taxpayer_number == "123"

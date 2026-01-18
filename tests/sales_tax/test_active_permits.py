@@ -1,8 +1,8 @@
 import pytest
 import httpx
-from data.resources.sales_tax.active_permits import ActivePermits
-from data.responses.sales_tax import ActivePermitData
-from data.exceptions import HttpError, InvalidRequest
+from src.data.resources.sales_tax.active_permits import ActivePermits
+from src.data.responses.sales_tax import ActivePermitData
+from src.data.exceptions import HttpError, InvalidRequest
 
 
 def test_active_permits_parsing(dummy_client):
@@ -65,3 +65,16 @@ def test_active_permits_empty(dummy_client):
     client = dummy_client([])
     with pytest.raises(InvalidRequest):
         ActivePermits(client).get()
+
+
+def test_active_permits_reset(dummy_client):
+    sample = [{"taxpayer_number": "123"}]
+    client = dummy_client(sample)
+    resource = ActivePermits(client)
+    resource.for_taxpayer("123").in_city("Austin").issued_after("2020-01-01").sort_by("outlet_city")
+    assert len(resource._params) > 0
+    assert len(resource._where_clauses) > 0
+
+    resource.reset()
+    assert resource._params == {}
+    assert resource._where_clauses == []

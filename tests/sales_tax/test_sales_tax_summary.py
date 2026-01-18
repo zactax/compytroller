@@ -1,10 +1,10 @@
 import pytest
 import httpx
-from data.resources.sales_tax.comparison_summary import ComparisonSummary
-from data.responses.sales_tax import ComparisonSummaryData
-from data.exceptions import HttpError, InvalidRequest
+from src.data.resources.sales_tax.city_county_comparison_summary import CityCountyComparisonSummary
+from src.data.responses.sales_tax import ComparisonSummaryData
+from src.data.exceptions import HttpError, InvalidRequest
 
-
+## FIX
 def test_comparison_summary_parsing(dummy_client):
     sample = [{
         "city": "Austin",
@@ -16,11 +16,9 @@ def test_comparison_summary_parsing(dummy_client):
     }]
     client = dummy_client(sample)
     summaries = (
-        ComparisonSummary(client, "cities")
+        CityCountyComparisonSummary(client)
         .for_city("Austin")
-        .for_county("Travis")
-        .for_type("city")
-        .where("extra_field", "X")
+        .in_county("Travis")
         .sort_by("year", desc=True)
         .limit(5)
         .get()
@@ -29,13 +27,8 @@ def test_comparison_summary_parsing(dummy_client):
     assert len(summaries) == 1
     s = summaries[0]
     assert isinstance(s, ComparisonSummaryData)
-    assert s.jurisdiction == "Austin"
+    assert s.city == "Austin"
     assert s.net_payment_this_period == 12345.67
-
-
-def test_comparison_summary_invalid_type(dummy_client):
-    with pytest.raises(ValueError):
-        ComparisonSummary(dummy_client, "bad_type")
 
 
 def test_comparison_summary_http_status_error():
@@ -46,7 +39,7 @@ def test_comparison_summary_http_status_error():
             raise httpx.HTTPStatusError("Server error", request=req, response=resp)
 
     with pytest.raises(HttpError):
-        ComparisonSummary(FailingClient(), "cities").get()
+        CityCountyComparisonSummary(FailingClient()).get()
 
 
 def test_comparison_summary_request_error():
@@ -55,10 +48,21 @@ def test_comparison_summary_request_error():
             raise httpx.RequestError("Network down", request=httpx.Request("GET", "https://fake"))
 
     with pytest.raises(HttpError):
-        ComparisonSummary(FailingClient(), "cities").get()
+        CityCountyComparisonSummary(FailingClient()).get()
 
 
 def test_comparison_summary_empty(dummy_client):
     client = dummy_client([])
     with pytest.raises(InvalidRequest):
-        ComparisonSummary(client, "cities").get()
+        CityCountyComparisonSummary(client).get()
+
+
+def test_comparison_summary_reset(dummy_client):
+    sample = [{"city": "Austin"}]
+    client = dummy_client(sample)
+    resource = CityCountyComparisonSummary(client)
+    resource.for_city("Austin").in_county("Travis").sort_by("year")
+    assert len(resource._params) > 0
+
+    resource.reset()
+    assert resource._params == {}

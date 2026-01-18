@@ -1,7 +1,8 @@
 # src/compytroller/utils.py
-from datetime import datetime, date
-from typing import Optional
 import math
+from datetime import date, datetime
+from typing import Optional
+
 import pandas as pd
 
 def parse_date(x: Optional[str]) -> Optional[date]:

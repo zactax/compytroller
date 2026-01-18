@@ -1,51 +1,127 @@
-import httpx
-from selectolax.parser import HTMLParser
 from datetime import datetime
 from typing import List
-from src.data.responses.sales_tax import AllocationHistoryData
+
+import httpx
+from selectolax.parser import HTMLParser
+
 from src.data.exceptions import HttpError, InvalidRequest
+from src.data.responses.sales_tax import AllocationHistoryData
 
 
 class SalesTaxAllocationHistory:
+    """Query historical sales tax allocation data via web scraping.
+
+    This class scrapes allocation history from the Texas Comptroller's allocation
+    portal (mycpa.cpa.state.tx.us). It retrieves monthly allocation amounts for cities,
+    counties, transit authorities, special districts, and statewide categories by parsing
+    HTML tables from form-based POST requests.
+
+    Attributes:
+        BASE_URL: Base URL for the Comptroller's allocation portal.
+
+    Example:
+        >>> resource = SalesTaxAllocationHistory()
+        >>> results = resource.for_city("Austin").get()
+        >>> for record in results:
+        ...     print(record.allocation_month, record.net_payment)
+    """
     BASE_URL = "https://mycpa.cpa.state.tx.us/allocation/"
 
     def __init__(self):
+        """Initialize the SalesTaxAllocationHistory resource with an HTTP client."""
         self.client = httpx.Client(follow_redirects=True)
         self.endpoint = None
         self.params = {}
 
     def for_city(self, name: str):
+        """Filter allocation history for a specific city.
+
+        Args:
+            name: The city name to query.
+
+        Returns:
+            Self for method chaining.
+        """
         self.endpoint = "CtyCntyAllocResults"
         self.params = {"cityCountyName": name, "cityCountyOption": "City"}
         return self
 
-    def for_county(self, name: str):
+    def in_county(self, name: str):
+        """Filter allocation history for a specific county.
+
+        Args:
+            name: The county name to query.
+
+        Returns:
+            Self for method chaining.
+        """
         self.endpoint = "CtyCntyAllocResults"
         self.params = {"cityCountyName": name, "cityCountyOption": "County"}
         return self
 
     def for_transit_authority(self, name: str):
+        """Filter allocation history for a mass transit authority.
+
+        Args:
+            name: The transit authority name to query (e.g., "DART", "Metro").
+
+        Returns:
+            Self for method chaining.
+        """
         self.endpoint = "MCCAllocResults"
         self.params = {"mccOption": "MCC", "mccOptions": name}
         return self
 
     def for_special_district(self, name: str):
+        """Filter allocation history for a special purpose district.
+
+        Args:
+            name: The special district name to query.
+
+        Returns:
+            Self for method chaining.
+        """
         self.endpoint = "SPDAllocResults"
         self.params = {"spdOption": "SPD", "spdOptions": name}
         return self
-    
+
     def statewide(self, statewide_type: str):
+        """Query statewide allocation data by category.
+
+        Args:
+            statewide_type: The statewide category to query.
+
+        Returns:
+            Self for method chaining.
+        """
         self.endpoint = "StateAllocResults"
         self.params = {"stateOptions": statewide_type}
         return self
-    
+
     def reset(self):
+        """Reset all filters and parameters to their default state.
+
+        Returns:
+            Self for method chaining.
+        """
         self._params = {}
         return self
 
     def get(self) -> List[AllocationHistoryData]:
+        """Execute the query and return allocation history records.
+
+        Scrapes and parses allocation data from HTML tables returned by the portal.
+        Only returns records with allocation dates on or before today.
+
+        Returns:
+            List of AllocationHistoryData objects sorted by allocation month (descending).
+
+        Raises:
+            HttpError: If the HTTP request fails.
+            InvalidRequest: If no filter method was called or no tables found in response.
+        """
         if not self.endpoint:
-            raise InvalidRequest("Must call for_city / for_county / for_transit_authority / for_special_district first.")
+            raise InvalidRequest("Must call for_city / in_county / for_transit_authority / for_special_district first.")
 
         url = f"{self.BASE_URL}{self.endpoint}"
 

@@ -1,8 +1,8 @@
 import pytest
 import httpx
-from data.resources.mixed_beverage.history import MixedBeverageHistory
-from data.responses.mixed_beverage_tax import MixedBeverageHistoryData
-from data.exceptions import HttpError, InvalidRequest
+from src.data.resources.mixed_beverage.history import MixedBeverageHistory
+from src.data.responses.mixed_beverage_tax import MixedBeverageHistoryData
+from src.data.exceptions import HttpError, InvalidRequest
 
 
 HTML_FIXTURE = """
@@ -85,7 +85,7 @@ def test_history_no_endpoint():
         h.get()
 
 def test_history_for_county_sets_payload():
-    h = MixedBeverageHistory().for_county("Travis")
+    h = MixedBeverageHistory().in_county("Travis")
     assert h.endpoint == "CtyCntyAllocMixBevResults"
     assert h.payload["ccmOption"] == "County"
     assert h.payload["countyName"] == "Travis"
@@ -93,7 +93,7 @@ def test_history_for_county_sets_payload():
 
 def test_history_for_special_district_sets_payload():
     h = MixedBeverageHistory().for_special_district("SPD-123")
-    assert h.endpoint == "SPDAllocResults"
+    assert h.endpoint == "CtyCntyAllocMixBevResults"
     assert h.payload["ccmOption"] == "MSA"
     assert h.payload["msaOptions"] == "SPD-123"
 
@@ -152,3 +152,36 @@ def test_history_invalid_float_parsing(monkeypatch):
     records = h.get()
     assert len(records) == 1
     assert records[0].net_payment is None  # value skipped
+
+
+def test_history_statewide_summary():
+    class FakeResp:
+        text = HTML_FIXTURE
+        def raise_for_status(self): return None
+    class FakeClient:
+        def post(self, *a, **kw): return FakeResp()
+
+    h = MixedBeverageHistory()
+    h.client = FakeClient()
+    h.statewide_summary("State Revenue", "Total Taxes")
+    assert h.endpoint == "StatewideAllocMixBevResults"
+    assert h.payload["stateOption"] == "State Revenue"
+    assert h.payload["summaryType"] == "Total Taxes"
+
+
+def test_history_with_summary_type_error():
+    h = MixedBeverageHistory()
+    with pytest.raises(InvalidRequest) as excinfo:
+        h.with_summary_type("Total Taxes")
+    assert "Must call for_city, in_county, or for_special_district first" in str(excinfo.value)
+
+
+def test_history_reset():
+    h = MixedBeverageHistory()
+    h.for_city("Austin").with_summary_type("Gross Receipts")
+    assert h.endpoint is not None
+    assert h.payload["summaryType"] == "Gross Receipts"
+
+    h.reset()
+    assert h.endpoint is None
+    assert h.payload == {"summaryType": "Total Taxes"}

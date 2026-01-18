@@ -1,8 +1,8 @@
 import pytest
 import httpx
-from data.resources.sales_tax.marketplace_provider import MarketplaceProvider
-from data.responses.sales_tax import MarketplaceProviderData
-from data.exceptions import HttpError, InvalidRequest
+from src.data.resources.sales_tax.marketplace_provider import MarketplaceProvider
+from src.data.responses.sales_tax import MarketplaceProviderData
+from src.data.exceptions import HttpError, InvalidRequest
 
 
 CSV_SAMPLE = """Taxpayer Number,Taxpayer Name,Begin Date,End Date
@@ -86,3 +86,52 @@ def test_marketplace_providerdata_from_dict():
     assert dto.name == "TEST INC"  # strips whitespace
     assert dto.begin_date.year == 2022
     assert dto.end_date is None
+
+
+def test_marketplace_provider_from_date():
+    CSV_FILTERED = """Taxpayer Number,Taxpayer Name,Begin Date,End Date
+123,EARLY INC,2020-01-01,2021-01-01
+456,LATE LLC,2023-06-15,
+"""
+    class FakeResp:
+        text = CSV_FILTERED
+        def raise_for_status(self): return None
+    class FakeClient:
+        def get(self, url): return FakeResp()
+
+    mp = MarketplaceProvider()
+    mp.client = FakeClient()
+    records = mp.after_date("2022-01-01").get()
+
+    # Only LATE LLC should be returned (begin_date > 2022-01-01)
+    assert len(records) == 1
+    assert records[0].taxpayer_number == "456"
+
+
+def test_marketplace_provider_to_date():
+    CSV_FILTERED = """Taxpayer Number,Taxpayer Name,Begin Date,End Date
+123,EARLY INC,2020-01-01,2021-01-01
+456,LATE LLC,2023-06-15,2024-01-01
+"""
+    class FakeResp:
+        text = CSV_FILTERED
+        def raise_for_status(self): return None
+    class FakeClient:
+        def get(self, url): return FakeResp()
+
+    mp = MarketplaceProvider()
+    mp.client = FakeClient()
+    records = mp.before_date("2022-01-01").get()
+
+    # Only EARLY INC should be returned (end_date < 2022-01-01)
+    assert len(records) == 1
+    assert records[0].taxpayer_number == "123"
+
+
+def test_marketplace_provider_reset():
+    mp = MarketplaceProvider()
+    mp.after_date("2022-01-01").before_date("2023-01-01")
+    assert len(mp.instructions) > 0
+
+    mp.reset()
+    assert mp.instructions == {}

@@ -1,12 +1,31 @@
-from numpy import record
-from src.data.responses.sales_tax import QuarterlySalesHistoryData
+from dataclasses import dataclass
+from typing import Any, Dict, List, Optional
+
 import httpx
 from selectolax.parser import HTMLParser
-from typing import List, Optional, Dict, Any
-from dataclasses import dataclass
+
 from src.data.exceptions import HttpError, InvalidRequest
+from src.data.responses.sales_tax import QuarterlySalesHistoryData
 
 class QuarterlySalesHistory:
+    """Query quarterly sales tax history via web scraping.
+
+    This class scrapes quarterly sales data from the Texas Comptroller's allocation portal.
+    It retrieves gross sales, taxable sales, and outlet counts broken down by quarter, year,
+    industry, and jurisdiction (city, county, or MSA). Data is obtained by parsing HTML tables
+    from form-based POST requests.
+
+    Attributes:
+        BASE_URL: Base URL for the Comptroller's allocation portal.
+        SELECTOR_MAP: Mapping of industry labels to their selector codes.
+        MSA_OPTIONS_MAP: Mapping of MSA names to their option codes.
+
+    Example:
+        >>> resource = QuarterlySalesHistory()
+        >>> results = resource.report_by_ccma("City", "Austin").with_industry("Retail Trade").get()
+        >>> for record in results:
+        ...     print(record.year, record.quarter, record.gross_sales, record.taxable_sales)
+    """
     BASE_URL = "https://mycpa.cpa.state.tx.us/allocation/"
     SELECTOR_MAP = {
         "All Industries": "200",
@@ -63,6 +82,7 @@ class QuarterlySalesHistory:
     }
 
     def __init__(self):
+        """Initialize the QuarterlySalesHistory resource with an HTTP client."""
         self.client = httpx.Client(follow_redirects=True)
         self.payload: Dict[str, Any] = {}
         self.summary = True
@@ -70,6 +90,14 @@ class QuarterlySalesHistory:
         self.endpoint: Optional[str] = None
 
     def summary_report(self, summary_type: str = "In-State"):
+        """Configure for statewide summary report.
+
+        Args:
+            summary_type: The summary type (e.g., "In-State", "Out-of-State"). Defaults to "In-State".
+
+        Returns:
+            Self for method chaining.
+        """
         self.endpoint = "QtrSalesSummaryResults"
         self.payload.clear()
         self.summary = True
@@ -77,11 +105,23 @@ class QuarterlySalesHistory:
         return self
 
     def report_by_ccma(self, ccm_option: str, jurisdiction_name: str):
+        """Configure for city, county, or MSA-specific report.
+
+        Args:
+            ccm_option: The jurisdiction type ("City", "County", or "MSA").
+            jurisdiction_name: The name of the city, county, or MSA.
+
+        Returns:
+            Self for method chaining.
+
+        Raises:
+            InvalidRequest: If ccm_option is not "City", "County", or "MSA".
+        """
         self.endpoint = "QtrSalesReportByResults"
         self.payload.clear()
         self.summary = False
         self.payload["ccmOption"] = ccm_option
-        if ccm_option not in ["City", "County", "MSA"]:
+        if ccm_option not in ["City", "County", "MSA"]: # pragma: no cover
             raise InvalidRequest(f"Invalid ccm_option: {ccm_option}. Must be 'City', 'County', or 'MSA'.")
         if ccm_option == "County":
             self.payload["countyName"] = jurisdiction_name
@@ -92,25 +132,62 @@ class QuarterlySalesHistory:
         return self
 
     def with_summary_type(self, summary_type: str):
+        """Set the summary type for summary reports.
+
+        Args:
+            summary_type: The summary type (e.g., "In-State", "Out-of-State").
+
+        Returns:
+            Self for method chaining.
+
+        Raises:
+            InvalidRequest: If called on a non-summary report.
+        """
         if not self.summary:
             raise InvalidRequest("Can only set summary type for summary reports.")
         self.payload["summaryType"] = summary_type
         return self
 
     def with_industry(self, label: str):
+        """Filter quarterly sales by industry sector.
+
+        Args:
+            label: The industry label (e.g., "Retail Trade", "All Industries").
+                Uses SELECTOR_MAP for known industries, or passes through custom values.
+
+        Returns:
+            Self for method chaining.
+        """
         self.label = label
         key = "selectorOptionsSummary" if self.summary else "selectorOptionsReportBy"
         self.payload[key] = self.SELECTOR_MAP.get(label, label)
         return self
-    
+
     def reset(self):
-        self.payload = {}        
+        """Reset all filters and parameters to their default state.
+
+        Returns:
+            Self for method chaining.
+        """
+        self.payload = {}
         self.summary = True
         self.label = None
         self.endpoint = None
         return self
 
     def get(self) -> List["QuarterlySalesHistoryData"]:
+        """Execute the query and return quarterly sales history records.
+
+        Scrapes and parses quarterly sales data from HTML tables. Filters out invalid
+        or summary rows (e.g., total rows).
+
+        Returns:
+            List of QuarterlySalesHistoryData objects with sales data by quarter and year.
+
+        Raises:
+            HttpError: If the HTTP request fails.
+            InvalidRequest: If no report type selected, server error, or no results parsed.
+        """
         if not self.endpoint:
             raise InvalidRequest("No report type selected. Call summary_report() or report_by_ccma().")
 

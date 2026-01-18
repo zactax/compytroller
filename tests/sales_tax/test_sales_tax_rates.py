@@ -1,8 +1,8 @@
-from data.responses.sales_tax import SalesTaxRateData
+from src.data.responses.sales_tax import SalesTaxRateData
 import pytest
 import httpx
-from data.resources.sales_tax.rates import SalesTaxRates
-from data.exceptions import HttpError, InvalidRequest
+from src.data.resources.sales_tax.rates import SalesTaxRates
+from src.data.exceptions import HttpError, InvalidRequest
 
 
 def test_sales_tax_rates_parsing(dummy_client):
@@ -21,7 +21,7 @@ def test_sales_tax_rates_parsing(dummy_client):
     results = (
         SalesTaxRates(client)
         .for_city("Austin")
-        .for_county("Travis")
+        .in_county("Travis")
         .for_type("CITY")
         .for_year(2024)
         .sort_by("report_month", desc=True)
@@ -85,3 +85,14 @@ def test_sales_tax_rate_data_from_dict_handles_bad_values():
     assert dto.report_month is None
     assert dto.report_year is None
     assert dto.county_name == "Bexar"
+
+
+def test_sales_tax_rates_reset(dummy_client):
+    sample = [{"city_name": "Austin"}]
+    client = dummy_client(sample)
+    resource = SalesTaxRates(client)
+    resource.for_city("Austin").for_year(2024).sort_by("report_month")
+    assert len(resource._params) > 0
+
+    resource.reset()
+    assert resource._params == {}

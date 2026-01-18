@@ -1,6 +1,6 @@
 import pytest
 from datetime import date
-from data.responses.sales_tax import (
+from src.data.responses.sales_tax import (
     ComparisonSummaryData,
     SingleLocalAllocationData,
     SingleLocalTaxRateData,
@@ -31,8 +31,8 @@ def test_comparison_summary_data_from_dict_handles_variants():
         "period_percent_change": "5.0",
     }
     dto = ComparisonSummaryData.from_dict(data)
-    assert dto.jurisdiction == "Austin"
-    assert dto.percent_change == 5.0
+    assert dto.city == "Austin"
+    assert dto.period_percent_change == 5.0
 
 
 #  SingleLocalAllocationData 
@@ -75,7 +75,7 @@ def test_local_allocation_payment_details_parsing():
         "authority_name": "Austin",
         "allocation_month": "2023-05-01",
         "allocation_date": "2023-05-01T00:00:00.000",
-        "total_collections": "1000.0",
+        "total_coll": "1000.0",
     }
     dto = LocalAllocationPaymentDetailsData.from_dict(data)
     assert dto.authority_name == "Austin"

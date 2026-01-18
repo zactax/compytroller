@@ -1,27 +1,75 @@
-import httpx
 from typing import List
-from src.data.responses.franchise_tax import FranchiseTaxPermitHolderData
+
+import httpx
+
 from src.data.exceptions import HttpError, InvalidRequest
+from src.data.responses.franchise_tax import FranchiseTaxPermitHolderData
 
 class ActiveFranchiseTaxPermitHolders:
+    """Query active franchise tax permit holders in Texas.
+
+    This class provides access to the Active Franchise Tax Permit Holders dataset via the
+    Socrata API. It contains information about businesses registered for franchise tax in
+    Texas, including organizational types, exempt status, right to transact business codes,
+    and responsibility dates. The dataset includes extensive filtering options for various
+    organizational and exemption codes.
+
+    Attributes:
+        DATASET_ID: Socrata dataset identifier (9cir-efmm) for franchise tax permits.
+
+    Example:
+        >>> resource = ActiveFranchiseTaxPermitHolders(client)
+        >>> results = resource.in_city("Austin").for_org_type("CT").limit(50).get()
+        >>> for holder in results:
+        ...     print(holder.taxpayer_number, holder.taxpayer_name, holder.taxpayer_city)
+    """
     DATASET_ID = "9cir-efmm"
 
     def __init__(self, socrata_client):
+        """Initialize the ActiveFranchiseTaxPermitHolders resource.
+
+        Args:
+            socrata_client: An instance of SocrataClient for API requests.
+        """
         self.client = socrata_client
         self._params = {}
         self._where_clauses = []
-        
+
     def for_taxpayer(self, number: str):
+        """Filter permit holders by taxpayer number.
+
+        Args:
+            number: The taxpayer number to filter by.
+
+        Returns:
+            Self for method chaining.
+        """
         self._params["taxpayer_number"] = number
         return self
-    
+
     def in_city(self, city: str):
+        """Filter permit holders by city name.
+
+        Args:
+            city: The city name to filter by (case-insensitive).
+
+        Returns:
+            Self for method chaining.
+        """
         self._params["taxpayer_city"] = city.upper()
         return self
-    
+
     def for_org_type(self, org_type: str):
-        """
-        AB          TEXAS BUSINESS ASSOC            
+        """Filter permit holders by organizational type code.
+
+        Organizational type codes identify the legal structure of the business entity
+        (e.g., corporation, partnership, LLC, etc.). See the full list of codes in the
+        method body comments.
+
+        Args:
+            org_type: The organizational type code (e.g., "CT" for Texas Profit Corporation,
+                "CL" for Texas Limited Liability Company). Available codes include:
+                AB          TEXAS BUSINESS ASSOC            
         AC          FRGN BUSINESS ASSOC             
         AF          FOREIGN PROFESSIONAL ASSOCIATION
         AP          TEXAS PROFESSIONAL ASSOCIATION  
@@ -99,26 +147,38 @@ class ActiveFranchiseTaxPermitHolders:
         TI          FOREIGN REAL ESTATE INVESTMENT TRUST 
         TR          TRUST                                
         UF          UNKNOWN - FRANCHISE                  
-        UK          UNKNOWN  
+        UK          UNKNOWN
+
+        Returns:
+            Self for method chaining.
         """
         self._params["taxpayer_organizational_type"] = org_type.upper()
         return self
-    
+
     def with_right_to_transact(self, status: str):
-        """
-        A = Active
+        """Filter permit holders by right to transact business status code.
+
+        Args:
+            status: The right to transact code. Available values:
+                A = Active
         D = Active - Eligible for Termination/Withdrawal
         N = Forfeited
         I = Franchise Tax Involuntarily Ended
         U = Franchise Tax Not Established
         blank = Franchise Tax Ended
+
+        Returns:
+            Self for method chaining.
         """
         self._params["right_to_transact_business_code"] = status.upper()
         return self
-    
+
     def with_exempt_reason(self, reason: str):
-        """
-        00 = Not Exempt
+        """Filter permit holders by exemption reason code.
+
+        Args:
+            reason: The exemption reason code. Available values:
+                00 = Not Exempt
         01 = Gross Receipts, Sec.171.052
         02 = Railway Terminal Corporation, Sec.171.053
         03 = Nonprofit Corporation Organized to Promote County, City or,
@@ -238,56 +298,148 @@ class ActiveFranchiseTaxPermitHolders:
         100 = 501(c)(6) GROUP 
         101 = 501(c)(7) GROUP 
         102 = 501(c)(16) GROUP
+
+        Returns:
+            Self for method chaining.
         """
         self._params["current_exempt_reason_code"] = reason
         return self
-    
-    def responsibility_begin_before(self, date: str):
+
+    def responsibility_start_before(self, date: str):
+        """Filter permit holders whose responsibility began before a specific date.
+
+        Args:
+            date: The cutoff date in ISO format (YYYY-MM-DD).
+
+        Returns:
+            Self for method chaining.
+        """
         self._where_clauses.append(f"responsibility_beginning_date < '{date}'")
         return self
-    
-    def responsibility_begin_after(self, date: str):
+
+    def responsibility_start_after(self, date: str):
+        """Filter permit holders whose responsibility began after a specific date.
+
+        Args:
+            date: The cutoff date in ISO format (YYYY-MM-DD).
+
+        Returns:
+            Self for method chaining.
+        """
         self._where_clauses.append(f"responsibility_beginning_date > '{date}'")
         return self
-    
-    def responsibility_begin_between(self, start: str, end: str):
+
+    def responsibility_start_between(self, start: str, end: str):
+        """Filter permit holders whose responsibility began within a date range.
+
+        Args:
+            start: The start date in ISO format (YYYY-MM-DD).
+            end: The end date in ISO format (YYYY-MM-DD).
+
+        Returns:
+            Self for method chaining.
+        """
         self._where_clauses.append(
             f"responsibility_beginning_date BETWEEN '{start}' AND '{end}'"
         )
         return self
-    
+
     def exempt_begin_before(self, date: str):
+        """Filter permit holders whose exemption began before a specific date.
+
+        Args:
+            date: The cutoff date in ISO format (YYYY-MM-DD).
+
+        Returns:
+            Self for method chaining.
+        """
         self._where_clauses.append(f"exempt_begin_date < '{date}'")
         return self
-    
+
     def exempt_begin_after(self, date: str):
+        """Filter permit holders whose exemption began after a specific date.
+
+        Args:
+            date: The cutoff date in ISO format (YYYY-MM-DD).
+
+        Returns:
+            Self for method chaining.
+        """
         self._where_clauses.append(f"exempt_begin_date > '{date}'")
         return self
-    
+
     def exempt_begin_between(self, start: str, end: str):
+        """Filter permit holders whose exemption began within a date range.
+
+        Args:
+            start: The start date in ISO format (YYYY-MM-DD).
+            end: The end date in ISO format (YYYY-MM-DD).
+
+        Returns:
+            Self for method chaining.
+        """
         self._where_clauses.append(
             f"exempt_begin_date BETWEEN '{start}' AND '{end}'"
         )
         return self
-    
+
     def for_naics_code(self, naics_code: str):
+        """Filter permit holders by NAICS industry code.
+
+        Args:
+            naics_code: The NAICS code to filter by.
+
+        Returns:
+            Self for method chaining.
+        """
         self._params["_621111"] = naics_code
         return self
-    
+
     def sort_by(self, field: str, desc: bool = False):
+        """Sort results by a specific field.
+
+        Args:
+            field: The field name to sort by.
+            desc: If True, sort in descending order. Defaults to False (ascending).
+
+        Returns:
+            Self for method chaining.
+        """
         self._params["$order"] = f"{field} DESC" if desc else field
         return self
-    
+
     def limit(self, n: int):
+        """Limit the number of results returned.
+
+        Args:
+            n: Maximum number of results to return.
+
+        Returns:
+            Self for method chaining.
+        """
         self._params["$limit"] = n
         return self
-    
+
     def reset(self):
+        """Reset all filters and parameters to their default state.
+
+        Returns:
+            Self for method chaining.
+        """
         self._params = {}
         self._where_clauses = []
         return self
 
     def get(self) -> List[FranchiseTaxPermitHolderData]:
+        """Execute the query and return franchise tax permit holder records.
+
+        Returns:
+            List of FranchiseTaxPermitHolderData objects matching the query filters.
+
+        Raises:
+            HttpError: If the HTTP request to the Socrata API fails.
+            InvalidRequest: If no records match the query parameters.
+        """
         if self._where_clauses:
             self._params["$where"] = " AND ".join(self._where_clauses)
         
@@ -299,6 +451,6 @@ class ActiveFranchiseTaxPermitHolders:
             raise HttpError(str(exc))
 
         if not records:
-            raise InvalidRequest("No records returned from Active Franchise Tax Permit Holders dataset")
+            raise InvalidRequest(f"No records returned from {self.__class__.__name__}")
 
         return [FranchiseTaxPermitHolderData.from_dict(r) for r in records]
