@@ -150,8 +150,7 @@ except InvalidRequest as e:
 
 ## Authentication
 
-Most data sources require a Socrata app token. Get yours at:
-https://data.texas.gov/profile/app_tokens
+Most data sources require a Socrata app token. Get yours by creating an account on https://data.texas.gov and then navigating to https://data.texas.gov/profile/edit/developer_settings.
 
 ## Requirements
 
