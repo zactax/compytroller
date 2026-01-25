@@ -7,7 +7,8 @@ from src.data.responses.sales_tax import CountySPDMTAAllocationData
 
 
 class CountySPDMTAAllocations:
-    """Query county, special district, and transit authority sales tax allocations.
+    """
+    Query county, special district, and transit authority sales tax allocations.
 
     This class provides access to the County/SPD/MTA Allocations dataset via the
     Socrata API. It contains allocation data for counties, special purpose districts (SPD),
@@ -25,7 +26,8 @@ class CountySPDMTAAllocations:
     DATASET_ID = "qsh8-tby8"
 
     def __init__(self, socrata_client):
-        """Initialize the CountySPDMTAAllocations resource.
+        """
+        Initialize the CountySPDMTAAllocations resource.
 
         Args:
             socrata_client: An instance of SocrataClient for API requests.
@@ -34,7 +36,8 @@ class CountySPDMTAAllocations:
         self._params = {}
 
     def for_type(self, type_name: str):
-        """Filter allocations by jurisdiction type.
+        """
+        Filter allocations by jurisdiction type.
 
         Args:
             type_name: The type to filter by (e.g., "County", "SPD", "MTA").
@@ -46,7 +49,8 @@ class CountySPDMTAAllocations:
         return self
 
     def with_name(self, name: str):
-        """Filter allocations by jurisdiction name.
+        """
+        Filter allocations by jurisdiction name.
 
         Args:
             name: The name of the county, district, or authority.
@@ -58,7 +62,8 @@ class CountySPDMTAAllocations:
         return self
 
     def sort_by(self, field: str, desc: bool = False):
-        """Sort results by a specific field.
+        """
+        Sort results by a specific field.
 
         Args:
             field: The field name to sort by.
@@ -71,7 +76,8 @@ class CountySPDMTAAllocations:
         return self
 
     def limit(self, n: int):
-        """Limit the number of results returned.
+        """
+        Limit the number of results returned.
 
         Args:
             n: Maximum number of results to return.
@@ -83,7 +89,8 @@ class CountySPDMTAAllocations:
         return self
 
     def reset(self):
-        """Reset all filters and parameters to their default state.
+        """
+        Reset all filters and parameters to their default state.
 
         Returns:
             Self for method chaining.
@@ -92,7 +99,8 @@ class CountySPDMTAAllocations:
         return self
 
     def get(self) -> List[CountySPDMTAAllocationData]:
-        """Execute the query and return allocation records.
+        """
+        Execute the query and return allocation records.
 
         Returns:
             List of CountySPDMTAAllocationData objects matching the query filters.

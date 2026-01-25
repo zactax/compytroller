@@ -11,7 +11,7 @@ class ComptrollerClient:
 
     Example:
         >>> client = ComptrollerClient(app_token="your_token")
-        >>> sales_data = client.sales_tax().active_permits().in_city("Austin").get()
+        >>> sales_data = client.sales_tax().active_permits().for_city("Austin").get()
 
     Attributes:
         socrata: The underlying SocrataClient used for HTTP requests.

@@ -7,7 +7,8 @@ from src.data.responses.sales_tax import SingleLocalAllocationData
 
 
 class SingleLocalAllocations:
-    """Query single local sales tax allocations in Texas.
+    """
+    Query single local sales tax allocations in Texas.
 
     This class provides access to the Single Local Allocations dataset via the Socrata API.
     It contains monthly allocation data for single local taxing jurisdictions including cities,
@@ -25,7 +26,8 @@ class SingleLocalAllocations:
     DATASET_ID = "5yx2-afcg"
 
     def __init__(self, socrata_client):
-        """Initialize the SingleLocalAllocations resource.
+        """
+        Initialize the SingleLocalAllocations resource.
 
         Args:
             socrata_client: An instance of SocrataClient for API requests.
@@ -34,7 +36,8 @@ class SingleLocalAllocations:
         self._params = {}
 
     def for_city(self, city: str):
-        """Filter allocations for a specific city.
+        """
+        Filter allocations for a specific city.
 
         Args:
             city: The city name to filter by.
@@ -47,7 +50,8 @@ class SingleLocalAllocations:
         return self
 
     def in_county(self, county: str):
-        """Filter allocations for a specific county.
+        """
+        Filter allocations for a specific county.
 
         Args:
             county: The county name to filter by.
@@ -60,7 +64,8 @@ class SingleLocalAllocations:
         return self
 
     def for_spd(self, spd_name: str):
-        """Filter allocations for a special purpose district.
+        """
+        Filter allocations for a special purpose district.
 
         Args:
             spd_name: The SPD name to filter by.
@@ -73,7 +78,8 @@ class SingleLocalAllocations:
         return self
 
     def for_mta(self, mta_name: str):
-        """Filter allocations for a mass transit authority.
+        """
+        Filter allocations for a mass transit authority.
 
         Args:
             mta_name: The MTA name to filter by.
@@ -86,7 +92,8 @@ class SingleLocalAllocations:
         return self
 
     def for_year(self, year: int):
-        """Filter allocations by reporting year.
+        """
+        Filter allocations by reporting year.
 
         Args:
             year: The report year to filter by (e.g., 2023).
@@ -98,7 +105,8 @@ class SingleLocalAllocations:
         return self
 
     def for_month(self, month: int):
-        """Filter allocations by reporting month.
+        """
+        Filter allocations by reporting month.
 
         Args:
             month: The report month to filter by (1-12).
@@ -115,7 +123,8 @@ class SingleLocalAllocations:
         return self
 
     def sort_by(self, field: str, desc: bool = False):
-        """Sort results by a specific field.
+        """
+        Sort results by a specific field.
 
         Args:
             field: The field name to sort by.
@@ -128,7 +137,8 @@ class SingleLocalAllocations:
         return self
 
     def limit(self, n: int):
-        """Limit the number of results returned.
+        """
+        Limit the number of results returned.
 
         Args:
             n: Maximum number of results to return.
@@ -140,7 +150,8 @@ class SingleLocalAllocations:
         return self
 
     def reset(self):
-        """Reset all filters and parameters to their default state.
+        """
+        Reset all filters and parameters to their default state.
 
         Returns:
             Self for method chaining.
@@ -149,7 +160,8 @@ class SingleLocalAllocations:
         return self
 
     def get(self) -> List[SingleLocalAllocationData]:
-        """Execute the query and return single local allocation records.
+        """
+        Execute the query and return single local allocation records.
 
         Returns:
             List of SingleLocalAllocationData objects matching the query filters.
@@ -171,7 +183,8 @@ class SingleLocalAllocations:
         return [SingleLocalAllocationData.from_dict(r) for r in records]
     
     def get_all(self) -> List[SingleLocalAllocationData]:
-        """Retrieve all single local allocation records without filtering.
+        """
+        Retrieve all single local allocation records without filtering.
 
         Warning: This method retrieves the entire dataset which may be very large.
         Use with caution and consider applying filters for better performance.

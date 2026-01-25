@@ -71,7 +71,7 @@ Current and historical sales tax rates by jurisdiction.
 ```python
 rates = (client.sales_tax()
     .rates()
-    .in_city("Austin")
+    .for_city("Austin")
     .get())
 ```
 
@@ -117,8 +117,8 @@ history = (client.sales_tax()
 ### Allocation Payment Details
 
 **Source Type:** Socrata API
-**Dataset ID:** `qwe5-t7ba`
-**URL:** https://data.texas.gov/dataset/Sales-Tax-Local-Allocation-Payment-Detail/qwe5-t7ba
+**Dataset ID:** `3p4v-vsr3`
+**URL:** https://data.texas.gov/dataset/Sales-Tax-Local-Allocation-Payment-Detail/3p4v-vsr3
 
 **Description:**
 Detailed breakdown of local sales tax allocation payments.
@@ -138,7 +138,7 @@ Detailed breakdown of local sales tax allocation payments.
 ```python
 details = (client.sales_tax()
     .allocation_payment_details()
-    .in_city("Dallas")
+    .for_city("Dallas")
     .get())
 ```
 
@@ -378,8 +378,8 @@ rates = (client.sales_tax()
 ### City/County Comparison Summary
 
 **Source Type:** Socrata API
-**Dataset ID:** `7p3s-vkws`
-**URL:** https://data.texas.gov/dataset/Sales-Tax-City-County-Comparison-Summary/7p3s-vkws
+**Dataset ID:** `53pa-m7sm`
+**URL:** https://data.texas.gov/dataset/Sales-Tax-City-County-Comparison-Summary/53pa-m7sm
 
 **Description:**
 Comparison of sales tax payments between cities and their counties.
@@ -400,7 +400,7 @@ Comparison of sales tax payments between cities and their counties.
 ```python
 comparison = (client.sales_tax()
     .city_county_comparison_summary()
-    .in_city("Austin")
+    .for_city("Austin")
     .get())
 ```
 
@@ -411,8 +411,8 @@ comparison = (client.sales_tax()
 ### County/SPD/MTA Allocations
 
 **Source Type:** Socrata API
-**Dataset ID:** `5cyp-j5c2`
-**URL:** https://data.texas.gov/dataset/Sales-Tax-County-SPD-MTA-Allocations/5cyp-j5c2
+**Dataset ID:** `qsh8-tby8`
+**URL:** https://data.texas.gov/dataset/Sales-Tax-County-SPD-MTA-Allocations/qsh8-tby8
 
 **Description:**
 Combined allocations for counties, special purpose districts, and metropolitan transit authorities.
@@ -628,7 +628,6 @@ Full list: https://www.census.gov/naics/
 - **County**: County government
 - **SPD**: Special Purpose District
 - **MTA**: Metropolitan Transit Authority
-- **TA**: Transit Authority
 
 ## Data Quality Notes
 

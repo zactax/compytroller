@@ -8,7 +8,8 @@ from src.data.exceptions import HttpError, InvalidRequest
 from src.data.responses.sales_tax import QuarterlySalesHistoryData
 
 class QuarterlySalesHistory:
-    """Query quarterly sales tax history via web scraping.
+    """
+    Query quarterly sales tax history via web scraping.
 
     This class scrapes quarterly sales data from the Texas Comptroller's allocation portal.
     It retrieves gross sales, taxable sales, and outlet counts broken down by quarter, year,
@@ -82,7 +83,9 @@ class QuarterlySalesHistory:
     }
 
     def __init__(self):
-        """Initialize the QuarterlySalesHistory resource with an HTTP client."""
+        """
+        Initialize the QuarterlySalesHistory resource with an HTTP client
+        """
         self.client = httpx.Client(follow_redirects=True)
         self.payload: Dict[str, Any] = {}
         self.summary = True
@@ -90,7 +93,8 @@ class QuarterlySalesHistory:
         self.endpoint: Optional[str] = None
 
     def summary_report(self, summary_type: str = "In-State"):
-        """Configure for statewide summary report.
+        """
+        Configure for statewide summary report.
 
         Args:
             summary_type: The summary type (e.g., "In-State", "Out-of-State"). Defaults to "In-State".
@@ -105,7 +109,8 @@ class QuarterlySalesHistory:
         return self
 
     def report_by_ccma(self, ccm_option: str, jurisdiction_name: str):
-        """Configure for city, county, or MSA-specific report.
+        """
+        Configure for city, county, or MSA-specific report.
 
         Args:
             ccm_option: The jurisdiction type ("City", "County", or "MSA").
@@ -132,7 +137,8 @@ class QuarterlySalesHistory:
         return self
 
     def with_summary_type(self, summary_type: str):
-        """Set the summary type for summary reports.
+        """
+        Set the summary type for summary reports.
 
         Args:
             summary_type: The summary type (e.g., "In-State", "Out-of-State").
@@ -164,7 +170,8 @@ class QuarterlySalesHistory:
         return self
 
     def reset(self):
-        """Reset all filters and parameters to their default state.
+        """
+        Reset all filters and parameters to their default state.
 
         Returns:
             Self for method chaining.
@@ -176,7 +183,8 @@ class QuarterlySalesHistory:
         return self
 
     def get(self) -> List["QuarterlySalesHistoryData"]:
-        """Execute the query and return quarterly sales history records.
+        """
+        Execute the query and return quarterly sales history records.
 
         Scrapes and parses quarterly sales data from HTML tables. Filters out invalid
         or summary rows (e.g., total rows).

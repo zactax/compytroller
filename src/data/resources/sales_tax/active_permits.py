@@ -7,7 +7,8 @@ from src.data.responses.sales_tax import ActivePermitData
 
 
 class ActivePermits:
-    """Query active sales tax permits from the Texas Comptroller.
+    """
+    Query active sales tax permits from the Texas Comptroller.
 
     This class provides access to the Active Sales Tax Permits dataset via the Socrata API,
     containing information about businesses with active sales tax permits in Texas. The data
@@ -18,14 +19,15 @@ class ActivePermits:
 
     Example:
         >>> resource = ActivePermits(client)
-        >>> results = resource.in_city("Austin").with_naics("722511").limit(10).get()
+        >>> results = resource.for_city("Austin").with_naics("722511").limit(10).get()
         >>> for permit in results:
         ...     print(permit.taxpayer_number, permit.outlet_city)
     """
     DATASET_ID = "jrea-zgmq"
 
     def __init__(self, socrata_client):
-        """Initialize the ActivePermits resource.
+        """
+        Initialize the ActivePermits resource.
 
         Args:
             socrata_client: An instance of SocrataClient for API requests.
@@ -35,7 +37,8 @@ class ActivePermits:
         self._where_clauses = []
 
     def for_taxpayer(self, number):
-        """Filter permits by taxpayer number.
+        """
+        Filter permits by taxpayer number.
 
         Args:
             number: The taxpayer number to filter by.
@@ -46,8 +49,9 @@ class ActivePermits:
         self._params["taxpayer_number"] = str(number)
         return self
 
-    def in_city(self, city: str):
-        """Filter permits by outlet city name.
+    def for_city(self, city: str):
+        """
+        Filter permits by outlet city name.
 
         Args:
             city: The city name to filter by (case-insensitive).
@@ -59,7 +63,8 @@ class ActivePermits:
         return self
 
     def in_county(self, county_code: str):
-        """Filter permits by county code.
+        """
+        Filter permits by county code.
 
         County codes are 3-digit numeric codes identifying Texas counties.
 
@@ -74,7 +79,8 @@ class ActivePermits:
         return self
 
     def with_naics(self, code):
-        """Filter permits by NAICS industry code.
+        """
+        Filter permits by NAICS industry code.
 
         Args:
             code: The NAICS code to filter by (e.g., "722511" for full-service restaurants).
@@ -86,7 +92,8 @@ class ActivePermits:
         return self
 
     def issued_after(self, date: str):
-        """Filter permits issued after a specific date.
+        """
+        Filter permits issued after a specific date.
 
         Args:
             date: The cutoff date in ISO format (YYYY-MM-DD).
@@ -98,7 +105,8 @@ class ActivePermits:
         return self
 
     def first_sale_after(self, date: str):
-        """Filter permits where first sale occurred after a specific date.
+        """
+        Filter permits where first sale occurred after a specific date.
 
         Args:
             date: The cutoff date in ISO format (YYYY-MM-DD).
@@ -110,7 +118,8 @@ class ActivePermits:
         return self
 
     def between_issue_dates(self, start: str, end: str):
-        """Filter permits issued within a date range.
+        """
+        Filter permits issued within a date range.
 
         Args:
             start: The start date in ISO format (YYYY-MM-DD).
@@ -125,7 +134,8 @@ class ActivePermits:
         return self
 
     def sort_by(self, field: str, desc: bool = False):
-        """Sort results by a specific field.
+        """
+        Sort results by a specific field.
 
         Args:
             field: The field name to sort by.
@@ -138,7 +148,8 @@ class ActivePermits:
         return self
 
     def limit(self, n: int):
-        """Limit the number of results returned.
+        """
+        Limit the number of results returned.
 
         Args:
             n: Maximum number of results to return.
@@ -150,7 +161,8 @@ class ActivePermits:
         return self
 
     def reset(self):
-        """Reset all filters and parameters to their default state.
+        """
+        Reset all filters and parameters to their default state.
 
         Returns:
             Self for method chaining.
@@ -160,7 +172,8 @@ class ActivePermits:
         return self
 
     def get(self) -> List[ActivePermitData]:
-        """Execute the query and return matching active permit records.
+        """
+        Execute the query and return matching active permit records.
 
         Returns:
             List of ActivePermitData objects matching the query filters.

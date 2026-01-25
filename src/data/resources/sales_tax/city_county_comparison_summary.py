@@ -7,7 +7,8 @@ from src.data.responses.sales_tax import ComparisonSummaryData
 
 
 class CityCountyComparisonSummary:
-    """Query city and county sales tax comparison summaries.
+    """
+    Query city and county sales tax comparison summaries.
 
     This class provides access to the City County Comparison Summary dataset via the
     Socrata API. It contains comparative sales tax statistics for cities and counties
@@ -25,7 +26,8 @@ class CityCountyComparisonSummary:
     DATASET_ID = "53pa-m7sm"
 
     def __init__(self, socrata_client):
-        """Initialize the CityCountyComparisonSummary resource.
+        """
+        Initialize the CityCountyComparisonSummary resource.
 
         Args:
             socrata_client: An instance of SocrataClient for API requests.
@@ -34,7 +36,8 @@ class CityCountyComparisonSummary:
         self._params = {}
 
     def for_city(self, name: str):
-        """Filter comparison data by city name.
+        """
+        Filter comparison data by city name.
 
         Args:
             name: The city name to filter by.
@@ -46,7 +49,8 @@ class CityCountyComparisonSummary:
         return self
 
     def in_county(self, name: str):
-        """Filter comparison data by county name.
+        """
+        Filter comparison data by county name.
 
         Args:
             name: The county name to filter by.
@@ -58,7 +62,8 @@ class CityCountyComparisonSummary:
         return self
 
     def sort_by(self, field: str, desc: bool = False):
-        """Sort results by a specific field.
+        """
+        Sort results by a specific field.
 
         Args:
             field: The field name to sort by.
@@ -71,7 +76,8 @@ class CityCountyComparisonSummary:
         return self
 
     def limit(self, n: int):
-        """Limit the number of results returned.
+        """
+        Limit the number of results returned.
 
         Args:
             n: Maximum number of results to return.
@@ -83,7 +89,8 @@ class CityCountyComparisonSummary:
         return self
 
     def reset(self):
-        """Reset all filters and parameters to their default state.
+        """
+        Reset all filters and parameters to their default state.
 
         Returns:
             Self for method chaining.
@@ -92,7 +99,8 @@ class CityCountyComparisonSummary:
         return self
 
     def get(self) -> List[ComparisonSummaryData]:
-        """Execute the query and return comparison summary records.
+        """
+        Execute the query and return comparison summary records.
 
         Returns:
             List of ComparisonSummaryData objects matching the query filters.

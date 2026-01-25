@@ -120,7 +120,7 @@ def test_mixed_beverage_reset(dummy_client):
     sample = [{"taxpayer_name": "TEST"}]
     client = dummy_client(sample)
     resource = MixedBeverageGrossReceipts(client)
-    resource.for_taxpayer("123").taxpayer_in_city("Austin").sort_by("taxpayer_name")
+    resource.for_taxpayer("123").taxpayer_for_city("Austin").sort_by("taxpayer_name")
     assert len(resource._params) > 0
 
     resource.reset()
@@ -128,11 +128,11 @@ def test_mixed_beverage_reset(dummy_client):
     assert resource._where_clauses == []
 
 
-def test_mixed_beverage_location_in_city(dummy_client):
+def test_mixed_beverage_location_for_city(dummy_client):
     sample = [{"location_city": "AUSTIN"}]
     client = dummy_client(sample)
     resource = MixedBeverageGrossReceipts(client)
-    resource.location_in_city("Austin")
+    resource.location_for_city("Austin")
     assert resource._params["location_city"] == "AUSTIN"
 
 

@@ -74,11 +74,11 @@ def test_active_permit_holders_for_taxpayer(dummy_client):
     assert resource._params["taxpayer_number"] == "12345678901"
 
 
-def test_active_permit_holders_in_city(dummy_client):
+def test_active_permit_holders_for_city(dummy_client):
     sample = [{"taxpayer_name": "TEST"}]
     client = dummy_client(sample)
     resource = ActiveFranchiseTaxPermitHolders(client)
-    resource.in_city("Austin")
+    resource.for_city("Austin")
     assert resource._params["taxpayer_city"] == "AUSTIN"
 
 
@@ -130,27 +130,27 @@ def test_active_permit_holders_responsibility_start_between(dummy_client):
     assert "responsibility_beginning_date BETWEEN '2023-01-01' AND '2023-12-31'" in resource._where_clauses
 
 
-def test_active_permit_holders_exempt_begin_before(dummy_client):
+def test_active_permit_holders_exempt_start_before(dummy_client):
     sample = [{"taxpayer_name": "TEST"}]
     client = dummy_client(sample)
     resource = ActiveFranchiseTaxPermitHolders(client)
-    resource.exempt_begin_before("2023-01-01")
+    resource.exempt_start_before("2023-01-01")
     assert "exempt_begin_date < '2023-01-01'" in resource._where_clauses
 
 
-def test_active_permit_holders_exempt_begin_after(dummy_client):
+def test_active_permit_holders_exempt_start_after(dummy_client):
     sample = [{"taxpayer_name": "TEST"}]
     client = dummy_client(sample)
     resource = ActiveFranchiseTaxPermitHolders(client)
-    resource.exempt_begin_after("2023-01-01")
+    resource.exempt_start_after("2023-01-01")
     assert "exempt_begin_date > '2023-01-01'" in resource._where_clauses
 
 
-def test_active_permit_holders_exempt_begin_between(dummy_client):
+def test_active_permit_holders_exempt_start_between(dummy_client):
     sample = [{"taxpayer_name": "TEST"}]
     client = dummy_client(sample)
     resource = ActiveFranchiseTaxPermitHolders(client)
-    resource.exempt_begin_between("2023-01-01", "2023-12-31")
+    resource.exempt_start_between("2023-01-01", "2023-12-31")
     assert "exempt_begin_date BETWEEN '2023-01-01' AND '2023-12-31'" in resource._where_clauses
 
 
@@ -185,7 +185,7 @@ def test_active_permit_holders_reset(dummy_client):
     sample = [{"taxpayer_name": "TEST"}]
     client = dummy_client(sample)
     resource = ActiveFranchiseTaxPermitHolders(client)
-    resource.for_taxpayer("123").in_city("Austin").responsibility_start_before("2023-01-01")
+    resource.for_taxpayer("123").for_city("Austin").responsibility_start_before("2023-01-01")
     assert len(resource._params) > 0
     assert len(resource._where_clauses) > 0
 
@@ -203,7 +203,7 @@ def test_active_permit_holders_with_where_clauses(dummy_client):
     }]
     client = dummy_client(sample)
     resource = ActiveFranchiseTaxPermitHolders(client)
-    results = resource.responsibility_start_after("2023-01-01").exempt_begin_before("2024-01-01").get()
+    results = resource.responsibility_start_after("2023-01-01").exempt_start_before("2024-01-01").get()
 
     # Verify where clauses were properly constructed
     assert len(results) == 1

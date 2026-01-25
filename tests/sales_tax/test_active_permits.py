@@ -23,7 +23,7 @@ def test_active_permits_parsing(dummy_client):
     permits = (
         ActivePermits(client)
         .for_taxpayer("123")
-        .in_city("Austin")
+        .for_city("Austin")
         .in_county("227")
         .with_naics("445120")
         .issued_after("2019-01-01")
@@ -71,7 +71,7 @@ def test_active_permits_reset(dummy_client):
     sample = [{"taxpayer_number": "123"}]
     client = dummy_client(sample)
     resource = ActivePermits(client)
-    resource.for_taxpayer("123").in_city("Austin").issued_after("2020-01-01").sort_by("outlet_city")
+    resource.for_taxpayer("123").for_city("Austin").issued_after("2020-01-01").sort_by("outlet_city")
     assert len(resource._params) > 0
     assert len(resource._where_clauses) > 0
 

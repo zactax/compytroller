@@ -49,7 +49,7 @@ client = ComptrollerClient(app_token="your-app-token-here")
 # Get sales tax rates for a specific city
 rates = (client.sales_tax()
     .rates()
-    .in_city("Austin")
+    .for_city("Austin")
     .get())
 
 # Get active permits for a taxpayer
@@ -79,7 +79,7 @@ All data sources support method chaining for intuitive query construction:
 ```python
 results = (client.sales_tax()
     .active_permits()
-    .in_city("Houston")
+    .for_city("Houston")
     .in_county("Harris")
     .issued_after("2024-01-01")
     .sort_by("outlet_city", desc=True)

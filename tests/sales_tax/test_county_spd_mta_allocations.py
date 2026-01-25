@@ -1,6 +1,6 @@
 import pytest
 import httpx
-from src.data.resources.sales_tax.county_city_mta_allocations import CountySPDMTAAllocations
+from data.resources.sales_tax.county_spd_mta_allocations import CountySPDMTAAllocations
 from src.data.responses.sales_tax import CountySPDMTAAllocationData
 from src.data.exceptions import HttpError, InvalidRequest
 
@@ -30,7 +30,7 @@ def test_county_spd_mta_allocations_parsing(dummy_client):
     assert r.name == "Travis"
 
 
-def test_county_spd_mta_allocations_for_county(dummy_client):
+def test_county_spd_mta_allocations_in_county(dummy_client):
     sample = [{"type": "COUNTY", "name": "Travis"}]
     client = dummy_client(sample)
     resource = CountySPDMTAAllocations(client)

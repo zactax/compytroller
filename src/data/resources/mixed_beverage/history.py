@@ -9,7 +9,8 @@ from src.data.responses.mixed_beverage_tax import MixedBeverageHistoryData
 
 
 class MixedBeverageHistory:
-    """Query mixed beverage tax allocation history via web scraping.
+    """
+    Query mixed beverage tax allocation history via web scraping.
 
     This class scrapes mixed beverage tax allocation data from the Texas Comptroller's
     allocation portal. It retrieves monthly allocation amounts for cities, counties,
@@ -29,13 +30,16 @@ class MixedBeverageHistory:
     BASE_URL = "https://mycpa.cpa.state.tx.us/allocation/"
 
     def __init__(self):
-        """Initialize the MixedBeverageHistory resource with an HTTP client."""
+        """
+        Initialize the MixedBeverageHistory resource with an HTTP client.
+        """
         self.client = httpx.Client(follow_redirects=True)
         self.endpoint = None
         self.payload = {"summaryType": "Total Taxes"}
 
     def for_city(self, name: str):
-        """Filter allocation history for a specific city.
+        """
+        Filter allocation history for a specific city.
 
         Args:
             name: The city name to query.
@@ -48,7 +52,8 @@ class MixedBeverageHistory:
         return self
 
     def in_county(self, name: str):
-        """Filter allocation history for a specific county.
+        """
+        Filter allocation history for a specific county.
 
         Args:
             name: The county name to query.
@@ -61,7 +66,8 @@ class MixedBeverageHistory:
         return self
 
     def for_special_district(self, name: str):
-        """Filter allocation history for a special purpose district.
+        """
+        Filter allocation history for a special purpose district.
 
         Args:
             name: The special district name to query.
@@ -74,7 +80,8 @@ class MixedBeverageHistory:
         return self
 
     def with_summary_type(self, summary_type: str):
-        """Set the summary type for the query.
+        """
+        Set the summary type for the query.
 
         Args:
             summary_type: The type of summary (e.g., "Total Taxes", "Gross Receipts", "Sales Tax").
@@ -91,7 +98,8 @@ class MixedBeverageHistory:
         return self
 
     def statewide_summary(self, summary_scope: str, summary_type: str):
-        """Query statewide mixed beverage allocation summary data.
+        """
+        Query statewide mixed beverage allocation summary data.
 
         Args:
             summary_scope: The scope of the summary. Options include:
@@ -107,7 +115,8 @@ class MixedBeverageHistory:
         return self
 
     def reset(self):
-        """Reset all filters and parameters to their default state.
+        """
+        Reset all filters and parameters to their default state.
 
         Returns:
             Self for method chaining.
@@ -117,7 +126,8 @@ class MixedBeverageHistory:
         return self
 
     def get(self) -> List[MixedBeverageHistoryData]:
-        """Execute the query and return mixed beverage allocation history records.
+        """
+        Execute the query and return mixed beverage allocation history records.
 
         Scrapes and parses allocation data from HTML tables returned by the portal.
         Filters out invalid rows and parses monthly allocation amounts.

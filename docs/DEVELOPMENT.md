@@ -55,7 +55,7 @@ Or use the pytest configuration which sets this automatically.
 For testing against live data:
 
 1. Sign up at https://data.texas.gov
-2. Generate an app token at https://data.texas.gov/profile/app_tokens
+2. Generate an app token at https://data.texas.gov/profile/edit/developer_settings
 3. Set environment variable:
 
 ```bash
@@ -233,7 +233,7 @@ def test_with_dummy_client(dummy_client):
 
 ### Test Coverage
 
-Maintain >80% code coverage:
+Maintain >99% code coverage:
 
 ```bash
 pytest --cov=src --cov-report=term-missing
@@ -430,7 +430,7 @@ Check what parameters are being sent:
 
 ```python
 source = client.sales_tax().active_permits()
-source.in_city("Austin").limit(10)
+source.for_city("Austin").limit(10)
 
 # Access internal params
 print(source._params)
@@ -460,7 +460,7 @@ Follow Semantic Versioning (semver):
 ### Pre-Release Checklist
 
 - [ ] All tests passing
-- [ ] Code coverage >80%
+- [ ] Code coverage >99%
 - [ ] Documentation updated
 - [ ] CHANGELOG.md updated
 - [ ] Version bumped in setup.py/pyproject.toml

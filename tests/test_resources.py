@@ -25,7 +25,7 @@ class DummyClient:
 
 
 def test_sales_tax_resource_factories():
-    from src.data.resources.sales_tax.county_city_mta_allocations import CountySPDMTAAllocations
+    from data.resources.sales_tax.county_spd_mta_allocations import CountySPDMTAAllocations
 
     st = SalesTaxResource(DummyClient())
 

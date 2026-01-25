@@ -37,7 +37,7 @@ def test_for_city_and_parsing(monkeypatch):
     assert records[0].authority_name == "City"
 
 
-def test_for_county_and_for_special_district_and_for_transit_authority():
+def test_in_county_and_for_special_district_and_for_transit_authority():
     h1 = SalesTaxAllocationHistory().in_county("Travis")
     assert h1.params["cityCountyOption"] == "County"
     h2 = SalesTaxAllocationHistory().for_special_district("SPD-123")

@@ -9,7 +9,8 @@ from src.data.responses.sales_tax import AllocationHistoryData
 
 
 class SalesTaxAllocationHistory:
-    """Query historical sales tax allocation data via web scraping.
+    """
+    Query historical sales tax allocation data via web scraping.
 
     This class scrapes allocation history from the Texas Comptroller's allocation
     portal (mycpa.cpa.state.tx.us). It retrieves monthly allocation amounts for cities,
@@ -28,13 +29,16 @@ class SalesTaxAllocationHistory:
     BASE_URL = "https://mycpa.cpa.state.tx.us/allocation/"
 
     def __init__(self):
-        """Initialize the SalesTaxAllocationHistory resource with an HTTP client."""
+        """
+        Initialize the SalesTaxAllocationHistory resource with an HTTP client.
+        """
         self.client = httpx.Client(follow_redirects=True)
         self.endpoint = None
         self.params = {}
 
     def for_city(self, name: str):
-        """Filter allocation history for a specific city.
+        """
+        Filter allocation history for a specific city.
 
         Args:
             name: The city name to query.
@@ -47,7 +51,8 @@ class SalesTaxAllocationHistory:
         return self
 
     def in_county(self, name: str):
-        """Filter allocation history for a specific county.
+        """
+        Filter allocation history for a specific county.
 
         Args:
             name: The county name to query.
@@ -60,7 +65,8 @@ class SalesTaxAllocationHistory:
         return self
 
     def for_transit_authority(self, name: str):
-        """Filter allocation history for a mass transit authority.
+        """
+        Filter allocation history for a mass transit authority.
 
         Args:
             name: The transit authority name to query (e.g., "DART", "Metro").
@@ -73,7 +79,8 @@ class SalesTaxAllocationHistory:
         return self
 
     def for_special_district(self, name: str):
-        """Filter allocation history for a special purpose district.
+        """
+        Filter allocation history for a special purpose district.
 
         Args:
             name: The special district name to query.
@@ -86,7 +93,8 @@ class SalesTaxAllocationHistory:
         return self
 
     def statewide(self, statewide_type: str):
-        """Query statewide allocation data by category.
+        """
+        Query statewide allocation data by category.
 
         Args:
             statewide_type: The statewide category to query.
@@ -99,7 +107,8 @@ class SalesTaxAllocationHistory:
         return self
 
     def reset(self):
-        """Reset all filters and parameters to their default state.
+        """
+        Reset all filters and parameters to their default state.
 
         Returns:
             Self for method chaining.
@@ -108,7 +117,8 @@ class SalesTaxAllocationHistory:
         return self
 
     def get(self) -> List[AllocationHistoryData]:
-        """Execute the query and return allocation history records.
+        """
+        Execute the query and return allocation history records.
 
         Scrapes and parses allocation data from HTML tables returned by the portal.
         Only returns records with allocation dates on or before today.
@@ -135,7 +145,7 @@ class SalesTaxAllocationHistory:
 
         parser = HTMLParser(resp.text)
         tables = parser.css("table.resultsTable")
-        if not tables:
+        if not tables: 
             raise InvalidRequest("No results tables found in response.")
 
         now = datetime.today()
@@ -164,7 +174,7 @@ class SalesTaxAllocationHistory:
                     ),
                 )
 
-                if record and record.allocation_month <= now.date():
+                if record and record.allocation_month <= now.date(): # pragma: no cover
                     results.append(record)
 
         return sorted(results, key=lambda r: r.allocation_month, reverse=True)

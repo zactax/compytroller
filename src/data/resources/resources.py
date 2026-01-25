@@ -1,5 +1,5 @@
 from src.data.resources.sales_tax.allocation_payment_detail import LocalAllocationPaymentDetail
-from src.data.resources.sales_tax.county_city_mta_allocations import CountySPDMTAAllocations
+from data.resources.sales_tax.county_spd_mta_allocations import CountySPDMTAAllocations
 from src.data.resources.sales_tax.city_county_comparison_summary import CityCountyComparisonSummary
 from src.data.resources.sales_tax.marketplace_provider_allocations import MarketplaceProviderAllocations
 from src.data.resources.sales_tax.single_local_allocations import SingleLocalAllocations
@@ -28,7 +28,8 @@ class SalesTaxResource:
     """
 
     def __init__(self, socrata_client = None):
-        """Initialize the SalesTaxResource.
+        """
+        Initialize the SalesTaxResource.
 
         Args:
             socrata_client: Optional SocrataClient instance for API communication.
@@ -36,7 +37,8 @@ class SalesTaxResource:
         self.client = socrata_client
 
     def local_allocation_payment_details(self):
-        """Access local allocation payment detail data.
+        """
+        Access local allocation payment detail data.
 
         Returns:
             LocalAllocationPaymentDetail instance for querying payment details.
@@ -49,7 +51,8 @@ class SalesTaxResource:
         return LocalAllocationPaymentDetail(self.client)
 
     def city_county_comparison_summary(self):
-        """Access city and county comparison summary data.
+        """
+        Access city and county comparison summary data.
 
         Returns:
             CityCountyComparisonSummary instance for querying comparison data.
@@ -62,7 +65,8 @@ class SalesTaxResource:
         return CityCountyComparisonSummary(self.client)
 
     def county_spd_mta_allocations(self):
-        """Access county, special purpose district, and MTA allocation data.
+        """
+        Access county, special purpose district, and MTA allocation data.
 
         Returns:
             CountySPDMTAAllocations instance for querying allocation data.
@@ -75,7 +79,8 @@ class SalesTaxResource:
         return CountySPDMTAAllocations(self.client)
 
     def single_local_allocations(self):
-        """Access single local jurisdiction allocation data.
+        """
+        Access single local jurisdiction allocation data.
 
         Returns:
             SingleLocalAllocations instance for querying allocation data.
@@ -88,7 +93,8 @@ class SalesTaxResource:
         return SingleLocalAllocations(self.client)
 
     def marketplace_provider_allocations(self):
-        """Access marketplace provider allocation data.
+        """
+        Access marketplace provider allocation data.
 
         Returns:
             MarketplaceProviderAllocations instance for querying provider allocations.
@@ -101,7 +107,8 @@ class SalesTaxResource:
         return MarketplaceProviderAllocations(self.client)
 
     def permitted_locations(self):
-        """Access sales tax permitted location data.
+        """
+        Access sales tax permitted location data.
 
         Returns:
             PermittedLocations instance for querying location data.
@@ -114,7 +121,8 @@ class SalesTaxResource:
         return PermittedLocations(self.client)
 
     def active_permits(self):
-        """Access active sales tax permit data.
+        """
+        Access active sales tax permit data.
 
         Returns:
             ActivePermits instance for querying active permit data.
@@ -127,7 +135,8 @@ class SalesTaxResource:
         return ActivePermits(self.client)
 
     def rates(self):
-        """Access sales tax rate data by jurisdiction.
+        """
+        Access sales tax rate data by jurisdiction.
 
         Returns:
             SalesTaxRates instance for querying tax rate data.
@@ -140,7 +149,8 @@ class SalesTaxResource:
         return SalesTaxRates(self.client)
 
     def direct_pay_taxpayers(self):
-        """Access direct pay taxpayer data.
+        """
+        Access direct pay taxpayer data.
 
         Returns:
             DirectPayTaxpayers instance for querying direct pay taxpayer data.
@@ -153,7 +163,8 @@ class SalesTaxResource:
         return DirectPayTaxpayers(self.client)
 
     def allocation_history(self):
-        """Access historical sales tax allocation data.
+        """
+        Access historical sales tax allocation data.
 
         This method scrapes data from the Comptroller's allocation website
         and does not require a Socrata client.
@@ -164,7 +175,8 @@ class SalesTaxResource:
         return SalesTaxAllocationHistory()
 
     def marketplace_provider(self):
-        """Access marketplace provider data.
+        """
+        Access marketplace provider data.
 
         This method downloads data from a CSV file and does not require
         a Socrata client.
@@ -175,7 +187,8 @@ class SalesTaxResource:
         return MarketplaceProvider()
 
     def quarterly_sales_history(self):
-        """Access quarterly sales history data.
+        """
+        Access quarterly sales history data.
 
         This method scrapes data from the Comptroller's website and does
         not require a Socrata client.
@@ -186,7 +199,8 @@ class SalesTaxResource:
         return QuarterlySalesHistory()
 
     def single_local_tax_rates(self):
-        """Access single local tax rate data.
+        """
+        Access single local tax rate data.
 
         This method downloads data from a CSV file and does not require
         a Socrata client.
@@ -197,7 +211,8 @@ class SalesTaxResource:
         return SingleLocalTaxRates()
 
 class MixedBeverageResource:
-    """Factory class for accessing mixed beverage tax data resources.
+    """
+    Factory class for accessing mixed beverage tax data resources.
 
     This class provides factory methods to create resource instances for
     querying mixed beverage tax datasets from the Texas Comptroller's office.
@@ -207,7 +222,8 @@ class MixedBeverageResource:
     """
 
     def __init__(self, socrata_client):
-        """Initialize the MixedBeverageResource.
+        """
+        Initialize the MixedBeverageResource.
 
         Args:
             socrata_client: SocrataClient instance for API communication.
@@ -215,7 +231,8 @@ class MixedBeverageResource:
         self.client = socrata_client
 
     def history(self):
-        """Access historical mixed beverage tax allocation data.
+        """
+        Access historical mixed beverage tax allocation data.
 
         This method scrapes data from the Comptroller's allocation website
         and does not require a Socrata client.
@@ -226,7 +243,8 @@ class MixedBeverageResource:
         return MixedBeverageHistory()
 
     def gross_receipts(self):
-        """Access mixed beverage gross receipts data.
+        """
+        Access mixed beverage gross receipts data.
 
         Returns:
             MixedBeverageGrossReceipts instance for querying gross receipts data.
@@ -234,7 +252,8 @@ class MixedBeverageResource:
         return MixedBeverageGrossReceipts(self.client)
 
 class FranchiseResource:
-    """Factory class for accessing franchise tax data resources.
+    """
+    Factory class for accessing franchise tax data resources.
 
     This class provides factory methods to create resource instances for
     querying franchise tax datasets from the Texas Comptroller's office.
@@ -244,7 +263,8 @@ class FranchiseResource:
     """
 
     def __init__(self, socrata_client):
-        """Initialize the FranchiseResource.
+        """
+        Initialize the FranchiseResource.
 
         Args:
             socrata_client: SocrataClient instance for API communication.
@@ -252,7 +272,8 @@ class FranchiseResource:
         self.client = socrata_client
 
     def active_permit_holders(self):
-        """Access active franchise tax permit holder data.
+        """
+        Access active franchise tax permit holder data.
 
         Returns:
             ActiveFranchiseTaxPermitHolders instance for querying permit holder data.

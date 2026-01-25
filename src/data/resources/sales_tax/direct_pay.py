@@ -6,7 +6,8 @@ from src.data.exceptions import HttpError, InvalidRequest
 from src.data.responses.sales_tax import DirectPayTaxpayerData
 
 class DirectPayTaxpayers:
-    """Query sales tax direct pay taxpayers in Texas.
+    """
+    Query sales tax direct pay taxpayers in Texas.
 
     This class provides access to the Direct Pay Taxpayers dataset via the Socrata API.
     Direct pay taxpayers are authorized to purchase goods and services tax-free and remit
@@ -17,14 +18,15 @@ class DirectPayTaxpayers:
 
     Example:
         >>> resource = DirectPayTaxpayers(client)
-        >>> results = resource.in_city("Austin").with_naics("541").limit(25).get()
+        >>> results = resource.for_city("Austin").with_naics("541").limit(25).get()
         >>> for taxpayer in results:
         ...     print(taxpayer.taxpayer_name, taxpayer.city, taxpayer.naics_code)
     """
     DATASET_ID = "deed-e7u6"
 
     def __init__(self, socrata_client):
-        """Initialize the DirectPayTaxpayers resource.
+        """
+        Initialize the DirectPayTaxpayers resource.
 
         Args:
             socrata_client: An instance of SocrataClient for API requests.
@@ -33,7 +35,8 @@ class DirectPayTaxpayers:
         self._params = {}
 
     def with_naics(self, code: str):
-        """Filter direct pay taxpayers by NAICS industry code.
+        """
+        Filter direct pay taxpayers by NAICS industry code.
 
         Args:
             code: The NAICS code to filter by.
@@ -45,7 +48,8 @@ class DirectPayTaxpayers:
         return self
 
     def in_county(self, county: str):
-        """Filter direct pay taxpayers by county name.
+        """
+        Filter direct pay taxpayers by county name.
 
         Args:
             county: The county name to filter by (case-insensitive).
@@ -56,8 +60,9 @@ class DirectPayTaxpayers:
         self._params["county"] = county.upper()
         return self
 
-    def in_city(self, city: str):
-        """Filter direct pay taxpayers by city name.
+    def for_city(self, city: str):
+        """
+        Filter direct pay taxpayers by city name.
 
         Args:
             city: The city name to filter by (case-insensitive).
@@ -69,7 +74,8 @@ class DirectPayTaxpayers:
         return self
 
     def sort_by(self, field: str, desc: bool = False):
-        """Sort results by a specific field.
+        """
+        Sort results by a specific field.
 
         Args:
             field: The field name to sort by.
@@ -82,7 +88,8 @@ class DirectPayTaxpayers:
         return self
 
     def limit(self, n: int):
-        """Limit the number of results returned.
+        """
+        Limit the number of results returned.
 
         Args:
             n: Maximum number of results to return.
@@ -94,7 +101,8 @@ class DirectPayTaxpayers:
         return self
 
     def reset(self):
-        """Reset all filters and parameters to their default state.
+        """
+        Reset all filters and parameters to their default state.
 
         Returns:
             Self for method chaining.
@@ -103,7 +111,8 @@ class DirectPayTaxpayers:
         return self
 
     def get(self) -> List["DirectPayTaxpayerData"]:
-        """Execute the query and return direct pay taxpayer records.
+        """
+        Execute the query and return direct pay taxpayer records.
 
         Returns:
             List of DirectPayTaxpayerData objects matching the query filters.

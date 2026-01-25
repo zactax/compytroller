@@ -11,7 +11,8 @@ from src.data.utils import parse_date
 
 
 class MarketplaceProvider:
-    """Query marketplace providers registered with the Texas Comptroller.
+    """
+    Query marketplace providers registered with the Texas Comptroller.
 
     This class downloads and parses marketplace provider data from a CSV file published by
     the Texas Comptroller. Marketplace providers are platforms (like Amazon or eBay) that
@@ -36,7 +37,8 @@ class MarketplaceProvider:
 
     @staticmethod
     def _coerce_cutoff(cutoff: Union[str, date]) -> date:
-        """Convert string or date to date object.
+        """
+        Convert string or date to date object.
 
         Args:
             cutoff: Date string (YYYY-MM-DD) or date object.
@@ -55,7 +57,8 @@ class MarketplaceProvider:
         return parsed
 
     def before_date(self, cutoff_date: Union[str, date]) -> List[MarketplaceProviderData]:
-        """Filter providers whose registration ended before a specific date.
+        """
+        Filter providers whose registration ended before a specific date.
 
         Only returns providers with an end_date that is strictly before the cutoff date.
 
@@ -69,7 +72,8 @@ class MarketplaceProvider:
         return self
 
     def after_date(self, cutoff_date: Union[str, date]) -> List[MarketplaceProviderData]:
-        """Filter providers whose registration began after a specific date.
+        """
+        Filter providers whose registration began after a specific date.
 
         Only returns providers with a begin_date that is strictly after the cutoff date.
 
@@ -83,7 +87,8 @@ class MarketplaceProvider:
         return self
 
     def reset(self):
-        """Reset all filters to their default state.
+        """
+        Reset all filters to their default state.
 
         Returns:
             Self for method chaining.
@@ -92,7 +97,8 @@ class MarketplaceProvider:
         return self
 
     def get(self) -> List[MarketplaceProviderData]:
-        """Download, parse, and return filtered marketplace provider records.
+        """
+        Download, parse, and return filtered marketplace provider records.
 
         Downloads the CSV file, parses it into data objects, and applies any date filters
         that were specified via before_date() or after_date() methods.

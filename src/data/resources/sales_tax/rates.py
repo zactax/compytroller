@@ -7,7 +7,8 @@ from src.data.responses.sales_tax import SalesTaxRateData
 
 
 class SalesTaxRates:
-    """Query sales tax rates for Texas jurisdictions.
+    """
+    Query sales tax rates for Texas jurisdictions.
 
     This class provides access to the Sales Tax Rates dataset via the Socrata API.
     It contains current and historical sales tax rates for cities, counties, special
@@ -25,7 +26,8 @@ class SalesTaxRates:
     DATASET_ID = "tmhs-ahbh"
 
     def __init__(self, socrata_client):
-        """Initialize the SalesTaxRates resource.
+        """
+        Initialize the SalesTaxRates resource.
 
         Args:
             socrata_client: An instance of SocrataClient for API requests.
@@ -34,7 +36,8 @@ class SalesTaxRates:
         self._params = {}
 
     def for_city(self, city: str):
-        """Filter sales tax rates by city name.
+        """
+        Filter sales tax rates by city name.
 
         Args:
             city: The city name to filter by.
@@ -46,7 +49,8 @@ class SalesTaxRates:
         return self
 
     def in_county(self, county: str):
-        """Filter sales tax rates by county name.
+        """
+        Filter sales tax rates by county name.
 
         Args:
             county: The county name to filter by.
@@ -58,7 +62,8 @@ class SalesTaxRates:
         return self
 
     def for_type(self, jurisdiction_type: str):
-        """Filter sales tax rates by jurisdiction type.
+        """
+        Filter sales tax rates by jurisdiction type.
 
         Args:
             jurisdiction_type: The type to filter by (e.g., "SPD List", "City List").
@@ -70,7 +75,8 @@ class SalesTaxRates:
         return self
 
     def for_year(self, year: int):
-        """Filter sales tax rates by report year.
+        """
+        Filter sales tax rates by report year.
 
         Args:
             year: The report year to filter by (e.g., 2023).
@@ -82,7 +88,8 @@ class SalesTaxRates:
         return self
 
     def sort_by(self, field: str, desc: bool = False):
-        """Sort results by a specific field.
+        """
+        Sort results by a specific field.
 
         Args:
             field: The field name to sort by.
@@ -95,7 +102,8 @@ class SalesTaxRates:
         return self
 
     def limit(self, n: int):
-        """Limit the number of results returned.
+        """
+        Limit the number of results returned.
 
         Args:
             n: Maximum number of results to return.
@@ -107,7 +115,8 @@ class SalesTaxRates:
         return self
 
     def reset(self):
-        """Reset all filters and parameters to their default state.
+        """
+        Reset all filters and parameters to their default state.
 
         Returns:
             Self for method chaining.
@@ -116,7 +125,8 @@ class SalesTaxRates:
         return self
 
     def get(self) -> List["SalesTaxRateData"]:
-        """Execute the query and return sales tax rate records.
+        """
+        Execute the query and return sales tax rate records.
 
         Returns:
             List of SalesTaxRateData objects matching the query filters.

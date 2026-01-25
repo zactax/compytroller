@@ -48,7 +48,7 @@ permits = (client.sales_tax()
 for permit in permits:
     print(f"Outlet: {permit.outlet_name}")
     print(f"Address: {permit.outlet_address}, {permit.outlet_city}")
-    print(f"Status: {permit.permit_status}")
+    print(f"First Sale Date: {permit.outlet_first_sales_date}")
     print("---")
 ```
 
@@ -57,7 +57,7 @@ for permit in permits:
 ```python
 austin_permits = (client.sales_tax()
     .active_permits()
-    .in_city("Austin")
+    .for_city("Austin")
     .limit(50)
     .get())
 ```
@@ -82,7 +82,7 @@ recent_permits = (client.sales_tax()
 ```python
 permits = (client.sales_tax()
     .active_permits()
-    .in_city("Houston")
+    .for_city("Houston")
     .in_county("201")  # Harris County
     .issued_after("2024-01-01")
     .sort_by("outlet_city", desc=False)
@@ -97,14 +97,13 @@ permits = (client.sales_tax()
 ```python
 rates = (client.sales_tax()
     .rates()
-    .in_city("Dallas")
+    .for_city("Dallas")
     .get())
 
 for rate in rates:
     print(f"Effective: {rate.effective_date}")
-    print(f"State: {rate.state_rate}%")
-    print(f"Local: {rate.local_rate}%")
-    print(f"Combined: {rate.combined_rate}%")
+    print(f"Old Rate: {rate.old_rate}%")
+    print(f"New Rate: {rate.new_rate}%")
 ```
 
 #### Compare Rates Across Counties
@@ -120,7 +119,7 @@ for county in counties:
         .get())
 
     if rates:
-        print(f"{county} County: {rates[0].combined_rate}%")
+        print(f"{county} County: {rates[0].new_rate}%")
 ```
 
 ### Allocation History
@@ -134,10 +133,7 @@ history = (client.sales_tax()
     .get())
 
 for record in history:
-    print(f"{record.period}: ${record.current_payment:,.2f}")
-    if record.prior_payment:
-        change = ((record.current_payment - record.prior_payment) / record.prior_payment) * 100
-        print(f"  Change: {change:+.2f}%")
+    print(f"{record.allocation_month}: ${record.net_payment:,.2f}")
 ```
 
 #### Get County Allocation History
@@ -145,10 +141,10 @@ for record in history:
 ```python
 history = (client.sales_tax()
     .allocation_history()
-    .for_county("Travis")
+    .in_county("Travis")
     .get())
 
-total_collections = sum(h.collections or 0 for h in history)
+total_collections = sum(h.net_payment or 0 for h in history)
 print(f"Total collections: ${total_collections:,.2f}")
 ```
 
@@ -159,23 +155,13 @@ print(f"Total collections: ${total_collections:,.2f}")
 ```python
 locations = (client.sales_tax()
     .permitted_locations()
-    .for_taxpayer("12345678")
+    .with_tp_number("12345678")
     .get())
 
 for loc in locations:
     print(f"Location: {loc.outlet_name}")
     print(f"City: {loc.outlet_city}, ZIP: {loc.outlet_zip}")
     print(f"County: {loc.outlet_county}")
-```
-
-#### Find Locations by ZIP Code
-
-```python
-locations = (client.sales_tax()
-    .permitted_locations()
-    .in_zip("78701")
-    .limit(25)
-    .get())
 ```
 
 ### Direct Pay Taxpayers
@@ -187,8 +173,8 @@ direct_pay = (client.sales_tax()
     .get())
 
 for taxpayer in direct_pay:
-    print(f"{taxpayer.taxpayer_name} (#{taxpayer.taxpayer_number})")
-    print(f"Effective: {taxpayer.effective_date}")
+    print(f"{taxpayer.name} (#{taxpayer.tp_id})")
+    print(f"Effective: {taxpayer.responsibility_begin_date}")
 ```
 
 ### Quarterly Sales History
@@ -197,13 +183,12 @@ for taxpayer in direct_pay:
 
 ```python
 sales = (client.sales_tax()
-    .quarterly_sales_history()
-    .for_city("Austin")
-    .for_industry("Retail Trade")
+    .report_by_ccma("City", "Austin")
+    .with_industry("Retail Trade")
     .get())
 
 for record in sales:
-    print(f"Quarter: {record.period}")
+    print(f"Quarter: {record.quarter, record.year}")
     print(f"Sales: ${record.taxable_sales:,.2f}")
 ```
 
@@ -212,7 +197,7 @@ for record in sales:
 ```python
 sales = (client.sales_tax()
     .quarterly_sales_history()
-    .for_msa("Austin-Round Rock")
+    .report_by_ccma("MSA","Austin-Round Rock MSA")
     .get())
 ```
 
@@ -226,8 +211,8 @@ providers = client.sales_tax().marketplace_provider().get()
 print(f"Total providers: {len(providers)}")
 
 for provider in providers[:10]:
-    print(f"{provider.provider_name}")
-    print(f"  Registered: {provider.registration_date}")
+    print(f"{provider.name}")
+    print(f"  Begin Date: {provider.begin_date}")
 ```
 
 #### Get Marketplace Provider Allocations
@@ -235,7 +220,7 @@ for provider in providers[:10]:
 ```python
 allocations = (client.sales_tax()
     .marketplace_provider_allocations()
-    .for_provider("Amazon")
+    .for_authority("Austin")
     .limit(100)
     .get())
 ```
@@ -250,9 +235,9 @@ allocations = (client.sales_tax()
     .get())
 
 for alloc in allocations:
-    print(f"Jurisdiction: {alloc.jurisdiction_name}")
-    print(f"Current: ${alloc.current_year_payment:,.2f}")
-    print(f"Prior: ${alloc.prior_year_payment:,.2f}")
+    print(f"Jurisdiction: {alloc.tax_authority}")
+    print(f"Current: ${alloc.current_net_payment:,.2f}")
+    print(f"Prior: ${alloc.prior_year_net_payment:,.2f}")
 ```
 
 ### City/County Comparison Summary
@@ -260,13 +245,13 @@ for alloc in allocations:
 ```python
 comparison = (client.sales_tax()
     .city_county_comparison_summary()
-    .in_city("Austin")
+    .for_city("Austin")
     .get())
 
 for comp in comparison:
-    print(f"Period: {comp.period}")
-    print(f"City payment: ${comp.city_payment:,.2f}")
-    print(f"County payment: ${comp.county_payment:,.2f}")
+    print(f"Period: {comp.report_month, comp.report_year}")
+    print(f"Payment: ${comp.net_payment_this_period:,.2f}")
+    print(f"Period % Change: ${comp.period_percent_change:,.2f}")
 ```
 
 ### County/SPD/MTA Allocations
@@ -274,7 +259,8 @@ for comp in comparison:
 ```python
 allocations = (client.sales_tax()
     .county_spd_mta_allocations()
-    .in_county("Travis")
+    .for_type("County")
+    .with_name("Travis")
     .get())
 ```
 
@@ -292,13 +278,8 @@ holders = (client.franchise_tax()
 
 for holder in holders:
     print(f"Name: {holder.taxpayer_name}")
-    print(f"Entity Type: {holder.entity_type}")
-    print(f"State of Formation: {holder.state_of_formation}")
     print(f"Address: {holder.taxpayer_address}")
     print(f"City: {holder.taxpayer_city}, {holder.taxpayer_state}")
-
-    if holder.exemption_type:
-        print(f"Exemption: {holder.exemption_type}")
 ```
 
 #### Get Recent Permit Holders
@@ -306,12 +287,12 @@ for holder in holders:
 ```python
 holders = (client.franchise_tax()
     .active_permit_holders()
-    .sort_by("registration_date", desc=True)
+    .sort_by("responsibility_beginning_date", desc=True)
     .limit(100)
     .get())
 
 for holder in holders[:10]:
-    print(f"{holder.taxpayer_name} - Registered: {holder.registration_date}")
+    print(f"{holder.taxpayer_name} - Registered: {holder.responsibility_beginning_date}")
 ```
 
 ## Mixed Beverage Tax Examples
@@ -363,26 +344,11 @@ for record in history:
 ```python
 history = (client.mixed_beverage_tax()
     .history()
-    .for_county("Travis")
+    .in_county("Travis")
     .get())
 ```
 
 ## Advanced Queries
-
-### Chaining Multiple Filters
-
-```python
-# Complex query combining multiple filters
-results = (client.sales_tax()
-    .active_permits()
-    .in_city("San Antonio")
-    .in_county("015")  # Bexar County
-    .issued_after("2023-01-01")
-    .between_dates("2023-01-01", "2024-12-31")
-    .sort_by("issue_date", desc=True)
-    .limit(50)
-    .get())
-```
 
 ### Resetting Filters
 
@@ -390,11 +356,11 @@ results = (client.sales_tax()
 query = client.sales_tax().active_permits()
 
 # First query
-austin_permits = query.in_city("Austin").limit(10).get()
+austin_permits = query.for_city("Austin").limit(10).get()
 
 # Reset and run different query
 query.reset()
-houston_permits = query.in_city("Houston").limit(10).get()
+houston_permits = query.for_city("Houston").limit(10).get()
 ```
 
 ### Sorting Results
@@ -410,23 +376,9 @@ permits = (client.sales_tax()
 # Sort descending
 permits = (client.sales_tax()
     .active_permits()
-    .sort_by("issue_date", desc=True)
+    .sort_by("outlet_permit_issue_date", desc=True)
     .limit(100)
     .get())
-```
-
-### Direct Socrata API Access
-
-```python
-# For custom queries not covered by the high-level API
-dataset_id = "jrea-zgmq"  # Active permits dataset
-params = {
-    "$where": "outlet_city='Austin'",
-    "$limit": 50,
-    "$order": "issue_date DESC"
-}
-
-raw_data = client.get(dataset_id, params)
 ```
 
 ## Error Handling
@@ -437,7 +389,7 @@ raw_data = client.get(dataset_id, params)
 from data.exceptions import HttpError, InvalidRequest
 
 try:
-    rates = client.sales_tax().rates().in_city("Austin").get()
+    rates = client.sales_tax().rates().for_city("Austin").get()
 except HttpError as e:
     print(f"HTTP Error occurred:")
     print(f"  Status Code: {e.status_code}")
@@ -481,7 +433,7 @@ def query_with_retry(query_func, max_retries=3):
 
 # Usage
 results = query_with_retry(
-    lambda: client.sales_tax().rates().in_city("Austin").get()
+    lambda: client.sales_tax().rates().for_city("Austin").get()
 )
 ```
 
@@ -494,7 +446,7 @@ import pandas as pd
 
 permits = (client.sales_tax()
     .active_permits()
-    .in_city("Austin")
+    .for_city("Austin")
     .limit(100)
     .get())
 
@@ -532,7 +484,7 @@ for city, count in sorted(by_city.items(), key=lambda x: x[1], reverse=True)[:10
 ```python
 permits = (client.sales_tax()
     .active_permits()
-    .in_city("Dallas")
+    .for_city("Dallas")
     .limit(500)
     .get())
 
@@ -550,7 +502,7 @@ import csv
 
 permits = (client.sales_tax()
     .active_permits()
-    .in_city("Houston")
+    .for_city("Houston")
     .limit(100)
     .get())
 
@@ -571,18 +523,9 @@ history = (client.sales_tax()
     .get())
 
 # Calculate total allocations
-total_current = sum(h.current_payment or 0 for h in history)
-total_prior = sum(h.prior_payment or 0 for h in history)
-total_collections = sum(h.collections or 0 for h in history)
+total_payments = sum(h.net_payment or 0 for h in history)
 
-print(f"Total Current Payments: ${total_current:,.2f}")
-print(f"Total Prior Payments: ${total_prior:,.2f}")
-print(f"Total Collections: ${total_collections:,.2f}")
-
-# Calculate year-over-year change
-if total_prior > 0:
-    yoy_change = ((total_current - total_prior) / total_prior) * 100
-    print(f"Year-over-Year Change: {yoy_change:+.2f}%")
+print(f"Total Allocations: ${total_payments:,.2f}")
 ```
 
 ### Combining Multiple Queries
@@ -610,39 +553,6 @@ print(f"Taxpayer {taxpayer_number}:")
 print(f"  Sales Tax Permits: {len(permits)}")
 print(f"  Permitted Locations: {len(locations)}")
 print(f"  Franchise Tax Status: {'Active' if franchise else 'None'}")
-```
-
-### Pagination Pattern
-
-```python
-def get_all_permits(city, batch_size=1000):
-    """Fetch all permits for a city in batches"""
-    all_permits = []
-    offset = 0
-
-    while True:
-        batch = (client.sales_tax()
-            .active_permits()
-            .in_city(city)
-            .limit(batch_size)
-            .get())
-
-        if not batch:
-            break
-
-        all_permits.extend(batch)
-
-        if len(batch) < batch_size:
-            # Last batch
-            break
-
-        offset += batch_size
-
-    return all_permits
-
-# Usage
-all_austin_permits = get_all_permits("Austin")
-print(f"Total permits in Austin: {len(all_austin_permits)}")
 ```
 
 ### Date Range Queries
@@ -680,7 +590,7 @@ sample = client.sales_tax().rates().limit(10).get()
 # More efficient - uses API filtering
 permits = (client.sales_tax()
     .active_permits()
-    .in_city("Austin")
+    .for_city("Austin")
     .get())
 
 # Less efficient - fetches all, filters in memory
@@ -698,19 +608,7 @@ def get_city_rates(city):
     if city not in _cache:
         _cache[city] = (client.sales_tax()
             .rates()
-            .in_city(city)
+            .for_city(city)
             .get())
     return _cache[city]
-```
-
-### Use Appropriate Data Sources
-
-```python
-# For historical allocation data, use allocation_history()
-# (web scraping - slower but comprehensive)
-history = client.sales_tax().allocation_history().for_city("Austin").get()
-
-# For current data, use API-based sources
-# (faster, better for real-time queries)
-permits = client.sales_tax().active_permits().in_city("Austin").get()
 ```

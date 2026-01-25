@@ -84,7 +84,7 @@ def test_history_no_endpoint():
     with pytest.raises(InvalidRequest):
         h.get()
 
-def test_history_for_county_sets_payload():
+def test_history_in_county_sets_payload():
     h = MixedBeverageHistory().in_county("Travis")
     assert h.endpoint == "CtyCntyAllocMixBevResults"
     assert h.payload["ccmOption"] == "County"

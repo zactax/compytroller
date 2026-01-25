@@ -22,7 +22,7 @@ def test_direct_pay_parsing(dummy_client):
     taxpayers = (
         DirectPayTaxpayers(client)
         .with_naics("445120")
-        .in_city("austin")
+        .for_city("austin")
         .in_county("travis")
         .sort_by("name", desc=True)
         .limit(10)
@@ -67,7 +67,7 @@ def test_direct_pay_reset(dummy_client):
     sample = [{"name": "TEST"}]
     client = dummy_client(sample)
     resource = DirectPayTaxpayers(client)
-    resource.with_naics("445120").in_city("Austin").sort_by("name")
+    resource.with_naics("445120").for_city("Austin").sort_by("name")
     assert len(resource._params) > 0
 
     resource.reset()

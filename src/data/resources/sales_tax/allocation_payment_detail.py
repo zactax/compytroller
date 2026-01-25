@@ -7,7 +7,8 @@ from src.data.responses.sales_tax import LocalAllocationPaymentDetailsData
 
 
 class LocalAllocationPaymentDetail:
-    """Query detailed local sales tax allocation payment records.
+    """
+    Query detailed local sales tax allocation payment records.
 
     This class provides access to the Local Allocation Payment Detail dataset via the
     Socrata API. It contains detailed payment breakdowns for local taxing authorities
@@ -25,7 +26,8 @@ class LocalAllocationPaymentDetail:
     DATASET_ID = "3p4v-vsr3"
 
     def __init__(self, socrata_client):
-        """Initialize the LocalAllocationPaymentDetail resource.
+        """
+        Initialize the LocalAllocationPaymentDetail resource.
 
         Args:
             socrata_client: An instance of SocrataClient for API requests.
@@ -34,7 +36,8 @@ class LocalAllocationPaymentDetail:
         self._params = {}
 
     def for_city(self, city: str):
-        """Filter payment details by city name.
+        """
+        Filter payment details by city name.
 
         Args:
             city: The city name to filter by (case-insensitive).
@@ -46,7 +49,8 @@ class LocalAllocationPaymentDetail:
         return self
 
     def with_authority_id(self, authority_id: str):
-        """Filter payment details by authority ID.
+        """
+        Filter payment details by authority ID.
 
         Args:
             authority_id: The authority identifier to filter by.
@@ -58,7 +62,8 @@ class LocalAllocationPaymentDetail:
         return self
 
     def for_month(self, month: str):
-        """Filter payment details by allocation month.
+        """
+        Filter payment details by allocation month.
 
         Args:
             month: The allocation month as a floating timestamp (e.g., "2024-01-01T00:00:00").
@@ -70,7 +75,8 @@ class LocalAllocationPaymentDetail:
         return self
 
     def sort_by(self, field: str, desc: bool = False):
-        """Sort results by a specific field.
+        """
+        Sort results by a specific field.
 
         Args:
             field: The field name to sort by.
@@ -83,7 +89,8 @@ class LocalAllocationPaymentDetail:
         return self
 
     def limit(self, n: int):
-        """Limit the number of results returned.
+        """
+        Limit the number of results returned.
 
         Args:
             n: Maximum number of results to return.
@@ -95,7 +102,8 @@ class LocalAllocationPaymentDetail:
         return self
 
     def reset(self):
-        """Reset all filters and parameters to their default state.
+        """
+        Reset all filters and parameters to their default state.
 
         Returns:
             Self for method chaining.
@@ -104,7 +112,8 @@ class LocalAllocationPaymentDetail:
         return self
 
     def get(self) -> List[LocalAllocationPaymentDetailsData]:
-        """Execute the query and return payment detail records.
+        """
+        Execute the query and return payment detail records.
 
         Returns:
             List of LocalAllocationPaymentDetailsData objects matching the query filters.

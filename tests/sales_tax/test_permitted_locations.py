@@ -39,7 +39,7 @@ def test_permitted_locations_parsing(dummy_client):
     client = dummy_client(sample)
     results = (
         PermittedLocations(client)
-        .in_city("austin")
+        .for_city("austin")
         .with_naics("445120")
         .with_tp_number("123456789")
         .with_city_taid("123")
@@ -121,7 +121,7 @@ def test_permitted_locations_reset(dummy_client):
     sample = [{"tp_name": "TEST"}]
     client = dummy_client(sample)
     resource = PermittedLocations(client)
-    resource.in_city("Austin").with_naics("445120").limit(100)
+    resource.for_city("Austin").with_naics("445120").limit(100)
     assert len(resource._params) > 0
 
     resource.reset()

@@ -6,7 +6,8 @@ from src.data.exceptions import HttpError, InvalidRequest
 from src.data.responses.sales_tax import PermittedLocationData
 
 class PermittedLocations:
-    """Query sales tax permitted business locations in Texas.
+    """
+    Query sales tax permitted business locations in Texas.
 
     This class provides access to the Permitted Locations dataset via the Socrata API.
     It contains detailed information about business locations with sales tax permits,
@@ -18,14 +19,15 @@ class PermittedLocations:
 
     Example:
         >>> resource = PermittedLocations(client)
-        >>> results = resource.in_city("Austin").with_naics("722").limit(100).get()
+        >>> results = resource.for_city("Austin").with_naics("722").limit(100).get()
         >>> for location in results:
         ...     print(location.tp_number, location.tp_city, location.naics)
     """
     DATASET_ID = "3kx8-uryv"
 
     def __init__(self, socrata_client):
-        """Initialize the PermittedLocations resource.
+        """
+        Initialize the PermittedLocations resource.
 
         Args:
             socrata_client: An instance of SocrataClient for API requests.
@@ -33,8 +35,9 @@ class PermittedLocations:
         self.client = socrata_client
         self._params = {}
 
-    def in_city(self, city: str):
-        """Filter permitted locations by city name.
+    def for_city(self, city: str):
+        """
+        Filter permitted locations by city name.
 
         Args:
             city: The city name to filter by (case-insensitive).
@@ -46,7 +49,8 @@ class PermittedLocations:
         return self
 
     def with_naics(self, code: str):
-        """Filter permitted locations by NAICS industry code.
+        """
+        Filter permitted locations by NAICS industry code.
 
         Args:
             code: The NAICS code to filter by (e.g., "722" for food services).
@@ -58,7 +62,8 @@ class PermittedLocations:
         return self
 
     def with_tp_number(self, tp_number: str):
-        """Filter permitted locations by taxpayer number.
+        """
+        Filter permitted locations by taxpayer number.
 
         Args:
             tp_number: The taxpayer number to filter by.
@@ -70,7 +75,8 @@ class PermittedLocations:
         return self
 
     def with_city_taid(self, taid: str):
-        """Filter permitted locations by city taxing authority ID.
+        """
+        Filter permitted locations by city taxing authority ID.
 
         Args:
             taid: The city TAID to filter by.
@@ -82,7 +88,8 @@ class PermittedLocations:
         return self
 
     def with_county_taid(self, taid: str):
-        """Filter permitted locations by county taxing authority ID.
+        """
+        Filter permitted locations by county taxing authority ID.
 
         Args:
             taid: The county TAID to filter by.
@@ -94,7 +101,8 @@ class PermittedLocations:
         return self
 
     def with_mta_taid(self, taid: str, slot: int = 1):
-        """Filter permitted locations by mass transit authority TAID.
+        """
+        Filter permitted locations by mass transit authority TAID.
 
         Locations can have up to 2 MTA TAIDs (slots 1 and 2).
 
@@ -114,7 +122,8 @@ class PermittedLocations:
         return self
 
     def with_spd_taid(self, taid: str, slot: int = 1):
-        """Filter permitted locations by special purpose district TAID.
+        """
+        Filter permitted locations by special purpose district TAID.
 
         Locations can have up to 4 SPD TAIDs (slots 1-4).
 
@@ -134,7 +143,8 @@ class PermittedLocations:
         return self
 
     def sort_by(self, field: str, desc: bool = False):
-        """Sort results by a specific field.
+        """
+        Sort results by a specific field.
 
         Args:
             field: The field name to sort by.
@@ -147,7 +157,8 @@ class PermittedLocations:
         return self
 
     def limit(self, n: int):
-        """Limit the number of results returned.
+        """
+        Limit the number of results returned.
 
         Args:
             n: Maximum number of results to return.
@@ -159,7 +170,8 @@ class PermittedLocations:
         return self
 
     def reset(self):
-        """Reset all filters and parameters to their default state.
+        """
+        Reset all filters and parameters to their default state.
 
         Returns:
             Self for method chaining.
@@ -168,7 +180,8 @@ class PermittedLocations:
         return self
 
     def get(self) -> List["PermittedLocationData"]:
-        """Execute the query and return permitted location records.
+        """
+        Execute the query and return permitted location records.
 
         Returns:
             List of PermittedLocationData objects matching the query filters.

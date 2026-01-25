@@ -10,7 +10,8 @@ from src.data.responses.sales_tax import SingleLocalTaxRateData
 from src.data.utils import parse_date
 
 class SingleLocalTaxRates:
-    """Query single local tax rate taxpayers via CSV download.
+    """
+    Query single local tax rate taxpayers via CSV download.
 
     This class downloads and parses single local tax rate data from a CSV file published by
     the Texas Comptroller. Single local tax rate taxpayers remit sales tax at a single rate
@@ -29,11 +30,14 @@ class SingleLocalTaxRates:
     CSV_URL = "https://assets.comptroller.texas.gov/open-data-files/single-local-tax-rate.csv"
 
     def __init__(self):
-        """Initialize the SingleLocalTaxRates resource with an HTTP client."""
+        """
+        Initialize the SingleLocalTaxRates resource with an HTTP client.
+        """
         self.client = httpx.Client(follow_redirects=True)
 
     def get_all(self) -> list[SingleLocalTaxRateData]:
-        """Download and parse all single local tax rate records.
+        """
+        Download and parse all single local tax rate records.
 
         Returns:
             List of all SingleLocalTaxRateData objects from the CSV file.
@@ -68,7 +72,8 @@ class SingleLocalTaxRates:
     
     @staticmethod
     def _coerce_cutoff(cutoff: Union[str, date]) -> date:
-        """Convert string or date to date object.
+        """
+        Convert string or date to date object.
 
         Args:
             cutoff: Date string (YYYY-MM-DD) or date object.
@@ -87,7 +92,8 @@ class SingleLocalTaxRates:
         return parsed
 
     def get_before_date(self, cutoff_date: Union[str, date]) -> List[SingleLocalTaxRateData]:
-        """Filter taxpayers whose registration ended before a specific date.
+        """
+        Filter taxpayers whose registration ended before a specific date.
 
         Only returns taxpayers with an end_date that is strictly before the cutoff date.
 
@@ -109,7 +115,8 @@ class SingleLocalTaxRates:
         ]
 
     def get_after_date(self, cutoff_date: Union[str, date]) -> List[SingleLocalTaxRateData]:
-        """Filter taxpayers whose registration began after a specific date.
+        """
+        Filter taxpayers whose registration began after a specific date.
 
         Only returns taxpayers with a begin_date that is strictly after the cutoff date.
 

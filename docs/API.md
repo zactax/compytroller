@@ -19,16 +19,17 @@ Complete API documentation for Compytroller.
 
 Main entry point for accessing Texas Comptroller data.
 
-#### Factory Method
+#### Constructor
 
 ```python
-ComptrollerClient.factory(app_token: str) -> ComptrollerClient
+ComptrollerClient(app_token: str, base_url: str = "https://data.texas.gov/resource")
 ```
 
 Creates a new client instance with the provided Socrata app token.
 
 **Parameters:**
 - `app_token` (str): Your Socrata application token from data.texas.gov
+- `base_url` (str, optional): Base URL for the Socrata API. Defaults to Texas data portal.
 
 **Returns:**
 - `ComptrollerClient`: Configured client instance
@@ -37,6 +38,19 @@ Creates a new client instance with the provided Socrata app token.
 ```python
 from data import ComptrollerClient
 
+client = ComptrollerClient(app_token="your-app-token")
+```
+
+#### Factory Method
+
+```python
+ComptrollerClient.factory(app_token: str) -> ComptrollerClient
+```
+
+Alternative factory method to create a client instance.
+
+**Example:**
+```python
 client = ComptrollerClient.factory("your-app-token")
 ```
 
@@ -101,7 +115,7 @@ Factory for sales tax data sources.
 - `active_permits() -> ActivePermits`
 - `rates() -> SalesTaxRates`
 - `allocation_history() -> SalesTaxAllocationHistory`
-- `allocation_payment_details() -> LocalAllocationPaymentDetail`
+- `local_allocation_payment_details() -> LocalAllocationPaymentDetail`
 - `single_local_allocations() -> SingleLocalAllocations`
 - `marketplace_provider_allocations() -> MarketplaceProviderAllocations`
 - `marketplace_provider() -> MarketplaceProvider`
@@ -140,17 +154,12 @@ Query active sales tax permits.
 #### Filter Methods
 
 ```python
-for_taxpayer(taxpayer_number: str) -> Self
+for_taxpayer(number: str) -> Self
 ```
 Filter by taxpayer number.
 
 ```python
-for_outlet(outlet_number: str) -> Self
-```
-Filter by outlet number.
-
-```python
-in_city(city_name: str) -> Self
+for_city(city: str) -> Self
 ```
 Filter by outlet city name.
 
@@ -160,12 +169,22 @@ in_county(county_code: str) -> Self
 Filter by county code.
 
 ```python
+with_naics(code: str) -> Self
+```
+Filter by NAICS industry code.
+
+```python
 issued_after(date: str) -> Self
 ```
 Filter permits issued after a specific date (format: YYYY-MM-DD).
 
 ```python
-between_dates(start_date: str, end_date: str) -> Self
+first_sale_after(date: str) -> Self
+```
+Filter permits where first sale occurred after a specific date.
+
+```python
+between_issue_dates(start: str, end: str) -> Self
 ```
 Filter permits issued between two dates.
 
@@ -196,7 +215,8 @@ Execute query and return results.
 permits = (client.sales_tax()
     .active_permits()
     .for_taxpayer("12345678")
-    .in_city("Austin")
+    .for_city("Austin")
+    .with_naics("722511")
     .limit(10)
     .get())
 ```
@@ -210,7 +230,7 @@ Query sales tax rate changes.
 #### Filter Methods
 
 ```python
-in_city(city: str) -> Self
+for_city(city: str) -> Self
 ```
 Filter by city name.
 
@@ -220,14 +240,24 @@ in_county(county: str) -> Self
 Filter by county name.
 
 ```python
-limit(n: int) -> Self
+for_type(jurisdiction_type: str) -> Self
 ```
-Limit number of results.
+Filter by jurisdiction type (e.g., "SPD List", "City List").
+
+```python
+for_year(year: int) -> Self
+```
+Filter by report year.
 
 ```python
 sort_by(field: str, desc: bool = False) -> Self
 ```
 Sort results by field name.
+
+```python
+limit(n: int) -> Self
+```
+Limit number of results.
 
 ```python
 reset() -> Self
@@ -250,34 +280,49 @@ Query permitted location details.
 #### Filter Methods
 
 ```python
-for_taxpayer(taxpayer_number: str) -> Self
+with_tp_number(tp_number: str) -> Self
 ```
 Filter by taxpayer number.
 
 ```python
-in_city(city: str) -> Self
+for_city(city: str) -> Self
 ```
 Filter by city name.
 
 ```python
-in_county(county: str) -> Self
+with_naics(code: str) -> Self
 ```
-Filter by county name.
+Filter by NAICS industry code.
 
 ```python
-in_zip(zip_code: str) -> Self
+with_city_taid(taid: str) -> Self
 ```
-Filter by ZIP code.
+Filter by city taxing authority ID.
 
 ```python
-limit(n: int) -> Self
+with_county_taid(taid: str) -> Self
 ```
-Limit number of results.
+Filter by county taxing authority ID.
+
+```python
+with_mta_taid(taid: str, slot: int = 1) -> Self
+```
+Filter by mass transit authority TAID. Slot must be 1 or 2.
+
+```python
+with_spd_taid(taid: str, slot: int = 1) -> Self
+```
+Filter by special purpose district TAID. Slot must be 1, 2, 3, or 4.
 
 ```python
 sort_by(field: str, desc: bool = False) -> Self
 ```
 Sort results by field name.
+
+```python
+limit(n: int) -> Self
+```
+Limit number of results.
 
 ```python
 reset() -> Self
@@ -300,19 +345,29 @@ Query direct pay taxpayer list.
 #### Filter Methods
 
 ```python
-for_taxpayer(taxpayer_number: str) -> Self
+with_naics(code: str) -> Self
 ```
-Filter by taxpayer number.
+Filter by NAICS industry code.
 
 ```python
-limit(n: int) -> Self
+in_county(county: str) -> Self
 ```
-Limit number of results.
+Filter by county name.
+
+```python
+for_city(city: str) -> Self
+```
+Filter by city name.
 
 ```python
 sort_by(field: str, desc: bool = False) -> Self
 ```
 Sort results by field name.
+
+```python
+limit(n: int) -> Self
+```
+Limit number of results.
 
 ```python
 reset() -> Self
@@ -333,12 +388,12 @@ Query historical sales tax allocation data (web scraping).
 #### Filter Methods
 
 ```python
-for_city(city_name: str) -> Self
+for_city(name: str) -> Self
 ```
 Set city name for allocation history query.
 
 ```python
-for_county(county_name: str) -> Self
+in_county(name: str) -> Self
 ```
 Set county name for allocation history query.
 
@@ -351,6 +406,16 @@ Set transit authority name.
 for_special_district(name: str) -> Self
 ```
 Set special district name.
+
+```python
+statewide(statewide_type: str) -> Self
+```
+Query statewide allocation data by category.
+
+```python
+reset() -> Self
+```
+Clear all filters.
 
 #### Execution
 
@@ -374,24 +439,31 @@ Query quarterly sales history data by jurisdiction and industry (web scraping).
 #### Filter Methods
 
 ```python
-for_city(city_name: str) -> Self
+summary_report(summary_type: str = "In-State") -> Self
 ```
-Filter by city name.
+Configure for statewide summary report.
 
 ```python
-for_county(county_name: str) -> Self
+report_by_ccma(ccm_option: str, jurisdiction_name: str) -> Self
 ```
-Filter by county name.
+Configure for city, county, or MSA-specific report.
+- `ccm_option`: "City", "County", or "MSA"
+- `jurisdiction_name`: Name of the city, county, or MSA
 
 ```python
-for_industry(industry_name: str) -> Self
+with_summary_type(summary_type: str) -> Self
 ```
-Filter by industry name.
+Set the summary type for summary reports (e.g., "In-State", "Out-of-State").
 
 ```python
-for_msa(msa_name: str) -> Self
+with_industry(label: str) -> Self
 ```
-Filter by Metropolitan Statistical Area name.
+Filter by industry sector (e.g., "Retail Trade", "All Industries").
+
+```python
+reset() -> Self
+```
+Clear all filters.
 
 #### Execution
 
@@ -400,20 +472,52 @@ get() -> List[QuarterlySalesHistoryData]
 ```
 Execute query and return results.
 
+**Example:**
+```python
+quarterly = (client.sales_tax()
+    .quarterly_sales_history()
+    .report_by_ccma("City", "Austin")
+    .with_industry("Retail Trade")
+    .get())
+```
+
 ### MarketplaceProvider
 
 Query marketplace provider registry (CSV download).
 
 **Data Source:** CSV file from assets.comptroller.texas.gov
 
+#### Filter Methods
+
+```python
+after_date(cutoff_date: Union[str, date]) -> Self
+```
+Filter providers whose registration began after a specific date.
+
+```python
+before_date(cutoff_date: Union[str, date]) -> Self
+```
+Filter providers whose registration ended before a specific date.
+
+```python
+reset() -> Self
+```
+Clear all filters.
+
 #### Execution
 
 ```python
 get() -> List[MarketplaceProviderData]
 ```
-Download and parse marketplace provider CSV.
+Download and parse marketplace provider CSV with optional date filters.
 
-**Note:** This data source does not support filters. It returns the complete provider list.
+**Example:**
+```python
+providers = (client.sales_tax()
+    .marketplace_provider()
+    .after_date("2023-01-01")
+    .get())
+```
 
 ### SingleLocalAllocations
 
@@ -424,19 +528,44 @@ Query single local jurisdiction allocations.
 #### Filter Methods
 
 ```python
-for_taxpayer(taxpayer_number: str) -> Self
+for_city(city: str) -> Self
 ```
-Filter by taxpayer number.
+Filter allocations for a specific city.
 
 ```python
-limit(n: int) -> Self
+in_county(county: str) -> Self
 ```
-Limit number of results.
+Filter allocations for a specific county.
+
+```python
+for_spd(spd_name: str) -> Self
+```
+Filter allocations for a special purpose district.
+
+```python
+for_mta(mta_name: str) -> Self
+```
+Filter allocations for a mass transit authority.
+
+```python
+for_year(year: int) -> Self
+```
+Filter by reporting year.
+
+```python
+for_month(month: int) -> Self
+```
+Filter by reporting month (1-12).
 
 ```python
 sort_by(field: str, desc: bool = False) -> Self
 ```
 Sort results by field name.
+
+```python
+limit(n: int) -> Self
+```
+Limit number of results.
 
 ```python
 reset() -> Self
@@ -450,6 +579,11 @@ get() -> List[SingleLocalAllocationData]
 ```
 Execute query and return results.
 
+```python
+get_all() -> List[SingleLocalAllocationData]
+```
+Retrieve all records without filtering (use with caution).
+
 ### MarketplaceProviderAllocations
 
 Query marketplace provider allocations.
@@ -459,19 +593,29 @@ Query marketplace provider allocations.
 #### Filter Methods
 
 ```python
-for_provider(provider_name: str) -> Self
+for_authority(name: str) -> Self
 ```
-Filter by provider name.
+Filter by authority name (searches both original and uppercase).
 
 ```python
-limit(n: int) -> Self
+for_type(authority_type: str) -> Self
 ```
-Limit number of results.
+Filter by authority type (e.g., "CITY", "COUNTY", "SPD", "TRANSIT").
+
+```python
+for_year(year: int) -> Self
+```
+Filter by allocation year.
 
 ```python
 sort_by(field: str, desc: bool = False) -> Self
 ```
 Sort results by field name.
+
+```python
+limit(n: int) -> Self
+```
+Limit number of results.
 
 ```python
 reset() -> Self
@@ -489,29 +633,34 @@ Execute query and return results.
 
 Query detailed payment breakdown data.
 
-**Socrata Dataset ID:** `qwe5-t7ba`
+**Socrata Dataset ID:** `3p4v-vsr3`
 
 #### Filter Methods
 
 ```python
-in_city(city: str) -> Self
+for_city(city: str) -> Self
 ```
 Filter by city name.
 
 ```python
-in_county(county: str) -> Self
+with_authority_id(authority_id: str) -> Self
 ```
-Filter by county name.
+Filter by authority ID.
 
 ```python
-limit(n: int) -> Self
+for_month(month: str) -> Self
 ```
-Limit number of results.
+Filter by allocation month (floating timestamp format).
 
 ```python
 sort_by(field: str, desc: bool = False) -> Self
 ```
 Sort results by field name.
+
+```python
+limit(n: int) -> Self
+```
+Limit number of results.
 
 ```python
 reset() -> Self
@@ -529,29 +678,29 @@ Execute query and return results.
 
 Query city/county payment comparison data.
 
-**Socrata Dataset ID:** `7p3s-vkws`
+**Socrata Dataset ID:** `53pa-m7sm`
 
 #### Filter Methods
 
 ```python
-in_city(city: str) -> Self
+for_city(name: str) -> Self
 ```
 Filter by city name.
 
 ```python
-in_county(county: str) -> Self
+in_county(name: str) -> Self
 ```
 Filter by county name.
-
-```python
-limit(n: int) -> Self
-```
-Limit number of results.
 
 ```python
 sort_by(field: str, desc: bool = False) -> Self
 ```
 Sort results by field name.
+
+```python
+limit(n: int) -> Self
+```
+Limit number of results.
 
 ```python
 reset() -> Self
@@ -569,24 +718,29 @@ Execute query and return results.
 
 Query county/special district/MTA allocation data.
 
-**Socrata Dataset ID:** `5cyp-j5c2`
+**Socrata Dataset ID:** `qsh8-tby8`
 
 #### Filter Methods
 
 ```python
-in_county(county: str) -> Self
+for_type(type_name: str) -> Self
 ```
-Filter by county name.
+Filter by jurisdiction type (e.g., "County", "SPD", "MTA").
 
 ```python
-limit(n: int) -> Self
+with_name(name: str) -> Self
 ```
-Limit number of results.
+Filter by jurisdiction name.
 
 ```python
 sort_by(field: str, desc: bool = False) -> Self
 ```
 Sort results by field name.
+
+```python
+limit(n: int) -> Self
+```
+Limit number of results.
 
 ```python
 reset() -> Self
@@ -600,35 +754,45 @@ get() -> List[CountySPDMTAAllocationData]
 ```
 Execute query and return results.
 
+**Example:**
+```python
+allocations = (client.sales_tax()
+    .county_spd_mta_allocations()
+    .for_type("County")
+    .with_name("Travis")
+    .limit(20)
+    .get())
+```
+
 ### SingleLocalTaxRates
 
-Query single local tax rate data.
+Query single local tax rate data (CSV download).
 
-**Note:** Internal data source, does not use Socrata API.
+**Data Source:** CSV file from assets.comptroller.texas.gov
 
-#### Filter Methods
-
-```python
-limit(n: int) -> Self
-```
-Limit number of results.
+#### Execution Methods
 
 ```python
-sort_by(field: str, desc: bool = False) -> Self
+get_all() -> List[SingleLocalTaxRateData]
 ```
-Sort results by field name.
+Download and parse all single local tax rate records.
 
 ```python
-reset() -> Self
+get_after_date(cutoff_date: Union[str, date]) -> List[SingleLocalTaxRateData]
 ```
-Clear all filters.
-
-#### Execution
+Get taxpayers whose registration began after a specific date.
 
 ```python
-get() -> List[SingleLocalTaxRateData]
+get_before_date(cutoff_date: Union[str, date]) -> List[SingleLocalTaxRateData]
 ```
-Execute query and return results.
+Get taxpayers whose registration ended before a specific date.
+
+**Example:**
+```python
+rates = (client.sales_tax()
+    .single_local_tax_rates()
+    .get_after_date("2023-01-01"))
+```
 
 ## Franchise Tax Data Sources
 
@@ -641,19 +805,79 @@ Query active franchise tax permit holders.
 #### Filter Methods
 
 ```python
-for_taxpayer(taxpayer_number: str) -> Self
+for_taxpayer(number: str) -> Self
 ```
 Filter by taxpayer number.
 
 ```python
-limit(n: int) -> Self
+for_city(city: str) -> Self
 ```
-Limit number of results.
+Filter by city name.
+
+```python
+for_org_type(org_type: str) -> Self
+```
+Filter by organizational type code (e.g., "CT" for Texas Profit Corporation, "CL" for Texas LLC).
+
+```python
+with_right_to_transact(status: str) -> Self
+```
+Filter by right to transact business status code:
+- `A` = Active
+- `D` = Active - Eligible for Termination/Withdrawal
+- `N` = Forfeited
+- `I` = Franchise Tax Involuntarily Ended
+- `U` = Franchise Tax Not Established
+
+```python
+with_exempt_reason(reason: str) -> Self
+```
+Filter by exemption reason code (e.g., "00" = Not Exempt, "19" = 501(c)(3) Nonprofit).
+
+```python
+responsibility_start_before(date: str) -> Self
+```
+Filter permit holders whose responsibility began before a specific date.
+
+```python
+responsibility_start_after(date: str) -> Self
+```
+Filter permit holders whose responsibility began after a specific date.
+
+```python
+responsibility_start_between(start: str, end: str) -> Self
+```
+Filter permit holders whose responsibility began within a date range.
+
+```python
+exempt_start_before(date: str) -> Self
+```
+Filter permit holders whose exemption began before a specific date.
+
+```python
+exempt_start_after(date: str) -> Self
+```
+Filter permit holders whose exemption began after a specific date.
+
+```python
+exempt_start_between(start: str, end: str) -> Self
+```
+Filter permit holders whose exemption began within a date range.
+
+```python
+for_naics_code(naics_code: str) -> Self
+```
+Filter by NAICS industry code.
 
 ```python
 sort_by(field: str, desc: bool = False) -> Self
 ```
 Sort results by field name.
+
+```python
+limit(n: int) -> Self
+```
+Limit number of results.
 
 ```python
 reset() -> Self
@@ -671,7 +895,10 @@ Execute query and return results.
 ```python
 holders = (client.franchise_tax()
     .active_permit_holders()
-    .for_taxpayer("12345678")
+    .for_city("Austin")
+    .for_org_type("CL")
+    .with_right_to_transact("A")
+    .limit(50)
     .get())
 ```
 
@@ -686,24 +913,64 @@ Query mixed beverage gross receipts by beverage type.
 #### Filter Methods
 
 ```python
-for_taxpayer(taxpayer_number: str) -> Self
+for_taxpayer(number: str) -> Self
 ```
 Filter by taxpayer number.
 
 ```python
-for_year(year: int) -> Self
+taxpayer_for_city(city: str) -> Self
 ```
-Filter by year.
+Filter by taxpayer's city.
 
 ```python
-limit(n: int) -> Self
+for_location(name: str) -> Self
 ```
-Limit number of results.
+Filter by location name.
+
+```python
+location_for_city(city: str) -> Self
+```
+Filter by location city.
+
+```python
+location_inside_city_limits(inside: bool = True) -> Self
+```
+Filter by whether location is inside city limits.
+
+```python
+with_location_number(location_number: str) -> Self
+```
+Filter by location number.
+
+```python
+with_tabc_permit(tabc_permit: str) -> Self
+```
+Filter by TABC permit number.
+
+```python
+responsibility_start_after(date: str) -> Self
+```
+Filter where responsibility began after a specific date.
+
+```python
+responsibility_start_before(date: str) -> Self
+```
+Filter where responsibility began before a specific date.
+
+```python
+responsibility_between_dates(start: str, end: str) -> Self
+```
+Filter where responsibility began within a date range.
 
 ```python
 sort_by(field: str, desc: bool = False) -> Self
 ```
 Sort results by field name.
+
+```python
+limit(n: int) -> Self
+```
+Limit number of results.
 
 ```python
 reset() -> Self
@@ -721,7 +988,7 @@ Execute query and return results.
 ```python
 receipts = (client.mixed_beverage_tax()
     .gross_receipts()
-    .for_year(2024)
+    .location_for_city("Austin")
     .limit(100)
     .get())
 ```
@@ -733,12 +1000,12 @@ Query historical mixed beverage allocation data (web scraping).
 #### Filter Methods
 
 ```python
-for_city(city_name: str) -> Self
+for_city(name: str) -> Self
 ```
 Set city name for allocation history query.
 
 ```python
-for_county(county_name: str) -> Self
+in_county(name: str) -> Self
 ```
 Set county name for allocation history query.
 
@@ -747,12 +1014,38 @@ for_special_district(name: str) -> Self
 ```
 Set special district name.
 
+```python
+with_summary_type(summary_type: str) -> Self
+```
+Set the summary type (e.g., "Total Taxes", "Gross Receipts", "Sales Tax").
+
+```python
+statewide_summary(summary_scope: str, summary_type: str) -> Self
+```
+Query statewide mixed beverage allocation summary.
+- `summary_scope`: "State Revenue", "All Counties", "All Cities", "All SPDs"
+- `summary_type`: "Total Taxes", "Gross Receipts", "Sales Tax"
+
+```python
+reset() -> Self
+```
+Clear all filters.
+
 #### Execution
 
 ```python
 get() -> List[MixedBeverageHistoryData]
 ```
 Execute query and return results.
+
+**Example:**
+```python
+history = (client.mixed_beverage_tax()
+    .history()
+    .for_city("Austin")
+    .with_summary_type("Total Taxes")
+    .get())
+```
 
 ## Response Models
 
@@ -1012,11 +1305,12 @@ Low-level HTTP client for Socrata Open Data API.
 ### Constructor
 
 ```python
-SocrataClient(app_token: str)
+SocrataClient(app_token: str, base_url: str = "https://data.texas.gov/resource")
 ```
 
 **Parameters:**
 - `app_token` (str): Socrata application token
+- `base_url` (str): Base URL for the Socrata API
 
 ### Methods
 

@@ -7,7 +7,8 @@ from src.data.responses.sales_tax import MarketplaceProviderAllocationData
 
 
 class MarketplaceProviderAllocations:
-    """Query sales tax allocations from marketplace providers.
+    """
+    Query sales tax allocations from marketplace providers.
 
     This class provides access to the Marketplace Provider Allocations dataset via the
     Socrata API. It contains allocation data showing how marketplace sales tax revenue
@@ -25,7 +26,8 @@ class MarketplaceProviderAllocations:
     DATASET_ID = "hezn-fbgw"
 
     def __init__(self, socrata_client):
-        """Initialize the MarketplaceProviderAllocations resource.
+        """
+        Initialize the MarketplaceProviderAllocations resource.
 
         Args:
             socrata_client: An instance of SocrataClient for API requests.
@@ -35,7 +37,8 @@ class MarketplaceProviderAllocations:
         self.authority_name = []
 
     def for_authority(self, name: str):
-        """Filter allocations by authority name.
+        """
+        Filter allocations by authority name.
 
         Note: Authority names in the dataset may be stored in different cases.
         This method searches for both the original case and uppercase versions.
@@ -51,10 +54,11 @@ class MarketplaceProviderAllocations:
         return self
 
     def for_type(self, authority_type: str):
-        """Filter allocations by authority type.
+        """
+        Filter allocations by authority type.
 
         Args:
-            authority_type: The type to filter by (e.g., "CITY", "COUNTY", "SPD", "MTA").
+            authority_type: The type to filter by (e.g., "CITY", "COUNTY", "SPD", "TRANSIT").
 
         Returns:
             Self for method chaining.
@@ -63,7 +67,8 @@ class MarketplaceProviderAllocations:
         return self
 
     def for_year(self, year: int):
-        """Filter allocations by year.
+        """
+        Filter allocations by year.
 
         Args:
             year: The allocation year to filter by (e.g., 2023).
@@ -75,7 +80,8 @@ class MarketplaceProviderAllocations:
         return self
 
     def sort_by(self, field: str, desc: bool = False):
-        """Sort results by a specific field.
+        """
+        Sort results by a specific field.
 
         Args:
             field: The field name to sort by.
@@ -88,7 +94,8 @@ class MarketplaceProviderAllocations:
         return self
 
     def limit(self, n: int):
-        """Limit the number of results returned.
+        """
+        Limit the number of results returned.
 
         Args:
             n: Maximum number of results to return.
@@ -100,7 +107,8 @@ class MarketplaceProviderAllocations:
         return self
 
     def reset(self):
-        """Reset all filters and parameters to their default state.
+        """
+        Reset all filters and parameters to their default state.
 
         Returns:
             Self for method chaining.
@@ -110,7 +118,8 @@ class MarketplaceProviderAllocations:
         return self
 
     def get(self) -> List["MarketplaceProviderAllocationData"]:
-        """Execute the query and return marketplace provider allocation records.
+        """
+        Execute the query and return marketplace provider allocation records.
 
         If filtering by authority name, this method queries both the original case
         and uppercase versions to ensure complete results.

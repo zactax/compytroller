@@ -753,7 +753,6 @@ class AllocationHistoryData:
     allocation_month: date
     allocation_date: date
     net_payment: Optional[float]
-    total_collections: Optional[float]
 
     @classmethod
     def from_row(cls, row: List[str], year_text: str, authority_id: str, authority_name: str):
@@ -793,7 +792,6 @@ class AllocationHistoryData:
             allocation_month=dt.date().replace(day=1),
             allocation_date=dt.date(),
             net_payment=f(amount_text),
-            total_collections=None,
         )
 @dataclass
 class QuarterlySalesHistoryData:
