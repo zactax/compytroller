@@ -1,6 +1,6 @@
 import pytest
 import httpx
-from data.resources.sales_tax.county_spd_mta_allocations import CountySPDMTAAllocations
+from src.data.resources.sales_tax.county_spd_mta_allocations import CountySPDMTAAllocations
 from src.data.responses.sales_tax import CountySPDMTAAllocationData
 from src.data.exceptions import HttpError, InvalidRequest
 
