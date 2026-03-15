@@ -1,5 +1,5 @@
 from src.data.resources.sales_tax.allocation_payment_detail import LocalAllocationPaymentDetail
-from data.resources.sales_tax.county_spd_mta_allocations import CountySPDMTAAllocations
+from src.data.resources.sales_tax.county_spd_mta_allocations import CountySPDMTAAllocations
 from src.data.resources.sales_tax.city_county_comparison_summary import CityCountyComparisonSummary
 from src.data.resources.sales_tax.marketplace_provider_allocations import MarketplaceProviderAllocations
 from src.data.resources.sales_tax.single_local_allocations import SingleLocalAllocations
