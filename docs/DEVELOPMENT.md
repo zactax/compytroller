@@ -17,7 +17,7 @@ Guide for contributing to and developing Compytroller.
 
 ### Prerequisites
 
-- Python 3.8 or higher
+- Python 3.10 or higher
 - pip package manager
 - Git
 

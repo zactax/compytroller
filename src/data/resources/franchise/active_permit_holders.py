@@ -4,6 +4,7 @@ import httpx
 
 from src.data.exceptions import HttpError, InvalidRequest
 from src.data.responses.franchise_tax import FranchiseTaxPermitHolderData
+from src.data.fields import FranchiseTaxPermitHolderField, RightToTransactCode
 
 class ActiveFranchiseTaxPermitHolders:
     """
@@ -159,7 +160,7 @@ class ActiveFranchiseTaxPermitHolders:
         self._params["taxpayer_organizational_type"] = org_type.upper()
         return self
 
-    def with_right_to_transact(self, status: str):
+    def with_right_to_transact(self, status: str | RightToTransactCode):
         """
         Filter permit holders by right to transact business status code.
 
@@ -408,7 +409,7 @@ class ActiveFranchiseTaxPermitHolders:
         self._params["_621111"] = naics_code
         return self
 
-    def sort_by(self, field: str, desc: bool = False):
+    def sort_by(self, field: str | FranchiseTaxPermitHolderField, desc: bool = False):
         """
         Sort results by a specific field.
 

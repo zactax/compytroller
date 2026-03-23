@@ -4,6 +4,7 @@ import httpx
 
 from src.data.exceptions import HttpError, InvalidRequest
 from src.data.responses.sales_tax import ComparisonSummaryData
+from src.data.fields import ComparisonSummaryField
 
 
 class CityCountyComparisonSummary:
@@ -61,7 +62,7 @@ class CityCountyComparisonSummary:
         self._params["county"] = name
         return self
 
-    def sort_by(self, field: str, desc: bool = False):
+    def sort_by(self, field: str | ComparisonSummaryField, desc: bool = False):
         """
         Sort results by a specific field.
 

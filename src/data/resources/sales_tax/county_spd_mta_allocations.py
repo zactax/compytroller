@@ -4,6 +4,7 @@ import httpx
 
 from src.data.exceptions import HttpError, InvalidRequest
 from src.data.responses.sales_tax import CountySPDMTAAllocationData
+from src.data.fields import AuthorityType, CountySPDMTAAllocationField
 
 
 class CountySPDMTAAllocations:
@@ -35,7 +36,7 @@ class CountySPDMTAAllocations:
         self.client = socrata_client
         self._params = {}
 
-    def for_type(self, type_name: str):
+    def for_type(self, type_name: str | AuthorityType):
         """
         Filter allocations by jurisdiction type.
 
@@ -61,7 +62,7 @@ class CountySPDMTAAllocations:
         self._params["name"] = name
         return self
 
-    def sort_by(self, field: str, desc: bool = False):
+    def sort_by(self, field: str | CountySPDMTAAllocationField, desc: bool = False):
         """
         Sort results by a specific field.
 
