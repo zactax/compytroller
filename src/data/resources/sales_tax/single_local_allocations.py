@@ -4,6 +4,7 @@ import httpx
 
 from src.data.exceptions import HttpError, InvalidRequest
 from src.data.responses.sales_tax import SingleLocalAllocationData
+from src.data.fields import SingleLocalAllocationField
 
 
 class SingleLocalAllocations:
@@ -122,7 +123,7 @@ class SingleLocalAllocations:
         self._params["report_month"] = month
         return self
 
-    def sort_by(self, field: str, desc: bool = False):
+    def sort_by(self, field: str | SingleLocalAllocationField, desc: bool = False):
         """
         Sort results by a specific field.
 

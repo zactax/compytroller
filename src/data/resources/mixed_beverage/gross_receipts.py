@@ -8,6 +8,7 @@ import pandas as pd
 from src.data.exceptions import HttpError, InvalidRequest
 from src.data.responses.mixed_beverage_tax import MixedBeverageGrossReceiptsData
 from src.data.utils import parse_date
+from src.data.fields import MixedBeverageGrossReceiptsField
 
 class MixedBeverageGrossReceipts:
     """
@@ -174,7 +175,7 @@ class MixedBeverageGrossReceipts:
         )
         return self
 
-    def sort_by(self, field: str, desc: bool = False):
+    def sort_by(self, field: str | MixedBeverageGrossReceiptsField, desc: bool = False):
         """
         Sort results by a specific field.
 

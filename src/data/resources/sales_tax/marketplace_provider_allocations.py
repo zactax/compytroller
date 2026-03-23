@@ -4,6 +4,7 @@ import httpx
 
 from src.data.exceptions import HttpError, InvalidRequest
 from src.data.responses.sales_tax import MarketplaceProviderAllocationData
+from src.data.fields import AuthorityType, MarketplaceProviderAllocationField
 
 
 class MarketplaceProviderAllocations:
@@ -53,7 +54,7 @@ class MarketplaceProviderAllocations:
         self.authority_name.append(name.upper())
         return self
 
-    def for_type(self, authority_type: str):
+    def for_type(self, authority_type: str | AuthorityType):
         """
         Filter allocations by authority type.
 
@@ -79,7 +80,7 @@ class MarketplaceProviderAllocations:
         self._params["allocation_year"] = year
         return self
 
-    def sort_by(self, field: str, desc: bool = False):
+    def sort_by(self, field: str | MarketplaceProviderAllocationField, desc: bool = False):
         """
         Sort results by a specific field.
 

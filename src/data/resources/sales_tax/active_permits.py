@@ -4,6 +4,7 @@ import httpx
 
 from src.data.exceptions import HttpError, InvalidRequest
 from src.data.responses.sales_tax import ActivePermitData
+from src.data.fields import ActivePermitField
 
 
 class ActivePermits:
@@ -133,7 +134,7 @@ class ActivePermits:
         )
         return self
 
-    def sort_by(self, field: str, desc: bool = False):
+    def sort_by(self, field: str | ActivePermitField, desc: bool = False):
         """
         Sort results by a specific field.
 

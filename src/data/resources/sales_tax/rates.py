@@ -4,6 +4,7 @@ import httpx
 
 from src.data.exceptions import HttpError, InvalidRequest
 from src.data.responses.sales_tax import SalesTaxRateData
+from src.data.fields import SalesTaxRateField, SalesTaxRateType
 
 
 class SalesTaxRates:
@@ -61,7 +62,7 @@ class SalesTaxRates:
         self._params["county_name"] = county
         return self
 
-    def for_type(self, jurisdiction_type: str):
+    def for_type(self, jurisdiction_type: str | SalesTaxRateType):
         """
         Filter sales tax rates by jurisdiction type.
 
@@ -87,7 +88,7 @@ class SalesTaxRates:
         self._params["report_year"] = year
         return self
 
-    def sort_by(self, field: str, desc: bool = False):
+    def sort_by(self, field: str | SalesTaxRateField, desc: bool = False):
         """
         Sort results by a specific field.
 

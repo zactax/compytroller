@@ -4,6 +4,7 @@ import httpx
 
 from src.data.exceptions import HttpError, InvalidRequest
 from src.data.responses.sales_tax import LocalAllocationPaymentDetailsData
+from src.data.fields import AllocationPaymentDetailField
 
 
 class LocalAllocationPaymentDetail:
@@ -74,7 +75,7 @@ class LocalAllocationPaymentDetail:
         self._params["allocation_month"] = f"'{month}'"
         return self
 
-    def sort_by(self, field: str, desc: bool = False):
+    def sort_by(self, field: str | AllocationPaymentDetailField, desc: bool = False):
         """
         Sort results by a specific field.
 
