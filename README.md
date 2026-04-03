@@ -87,6 +87,28 @@ results = (client.sales_tax()
     .get())
 ```
 
+### Field Enums
+Optional enums for `sort_by()` fields and categorical filters provide IDE autocompletion and eliminate magic strings:
+
+```python
+from data.fields import ActivePermitField, AuthorityType
+
+# Sort by field enum instead of a raw string
+permits = (client.sales_tax()
+    .active_permits()
+    .sort_by(ActivePermitField.OUTLET_CITY)
+    .limit(100)
+    .get())
+
+# Categorical enum for filter values
+allocations = (client.sales_tax()
+    .county_spd_mta_allocations()
+    .for_type(AuthorityType.COUNTY)
+    .get())
+```
+
+All enums inherit from `str`, so raw strings continue to work everywhere.
+
 ### Type-Safe Responses
 All responses are returned as Python dataclasses with full type hints:
 
@@ -154,7 +176,7 @@ Most data sources require a Socrata app token. Get yours by creating an account 
 
 ## Requirements
 
-- Python 3.8+
+- Python 3.10+
 - httpx
 - pandas
 - selectolax

@@ -348,6 +348,56 @@ history = (client.mixed_beverage_tax()
     .get())
 ```
 
+## Using Field Enums
+
+Field enums provide IDE autocompletion for `sort_by()` fields and categorical filter values. They're optional — raw strings still work.
+
+### Sorting with Field Enums
+
+```python
+from data.fields import ActivePermitField, SalesTaxRateField
+
+# Instead of sort_by("outlet_city")
+permits = (client.sales_tax()
+    .active_permits()
+    .sort_by(ActivePermitField.OUTLET_CITY, desc=True)
+    .limit(100)
+    .get())
+
+# Instead of sort_by("new_rate")
+rates = (client.sales_tax()
+    .rates()
+    .for_city("Austin")
+    .sort_by(SalesTaxRateField.NEW_RATE, desc=True)
+    .get())
+```
+
+### Categorical Filter Enums
+
+```python
+from data.fields import AuthorityType, RightToTransactCode, SalesTaxRateType
+
+# Instead of for_type("COUNTY")
+allocations = (client.sales_tax()
+    .county_spd_mta_allocations()
+    .for_type(AuthorityType.COUNTY)
+    .with_name("Travis")
+    .get())
+
+# Instead of for_type("SPD List")
+spd_rates = (client.sales_tax()
+    .rates()
+    .for_type(SalesTaxRateType.SPD_LIST)
+    .get())
+
+# Instead of with_right_to_transact("A")
+active_holders = (client.franchise_tax()
+    .active_permit_holders()
+    .with_right_to_transact(RightToTransactCode.ACTIVE)
+    .limit(50)
+    .get())
+```
+
 ## Advanced Queries
 
 ### Resetting Filters

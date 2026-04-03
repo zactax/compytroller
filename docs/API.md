@@ -143,6 +143,58 @@ Factory for mixed beverage tax data sources.
 - `gross_receipts() -> MixedBeverageGrossReceipts`
 - `history() -> MixedBeverageHistory`
 
+## Field Enums
+
+Optional enums for `sort_by()` fields and categorical filter values. All enums inherit from `str` and can be used anywhere a raw string is accepted.
+
+```python
+from data.fields import ActivePermitField, AuthorityType, RightToTransactCode
+```
+
+### Sort Field Enums
+
+| Enum | Resource | Members |
+|------|----------|---------|
+| `ActivePermitField` | `active_permits()` | `TAXPAYER_NUMBER`, `OUTLET_CITY`, `OUTLET_COUNTY_CODE`, `OUTLET_NAICS_CODE`, etc. |
+| `AllocationPaymentDetailField` | `local_allocation_payment_details()` | `AUTHORITY_ID`, `TOTAL_COLLECTIONS`, `NET_PAYMENT`, etc. |
+| `ComparisonSummaryField` | `city_county_comparison_summary()` | `CITY`, `COUNTY`, `NET_PAYMENT_THIS_PERIOD`, `YEAR_PERCENT_CHANGE`, etc. |
+| `CountySPDMTAAllocationField` | `county_spd_mta_allocations()` | `NAME`, `JURISDICTION_TYPE`, `NET_PAYMENT_THIS_PERIOD`, etc. |
+| `DirectPayTaxpayerField` | `direct_pay_taxpayers()` | `ID`, `NAME`, `COUNTY`, `NAICS_CODE`, etc. |
+| `MarketplaceProviderAllocationField` | `marketplace_provider_allocations()` | `AUTHORITY_TYPE`, `AUTHORITY_NAME`, `AMOUNT_ALLOCATED`, etc. |
+| `PermittedLocationField` | `permitted_locations()` | `OUTLET_CITY`, `OUTLET_COUNTY`, `OUTLET_NAICS_CODE`, etc. |
+| `SalesTaxRateField` | `rates()` | `CITY_NAME`, `COUNTY_NAME`, `NEW_RATE`, `EFFECTIVE_DATE`, etc. |
+| `SingleLocalAllocationField` | `single_local_allocations()` | `AUTHORITY_NAME`, `CURRENT_NET_PAYMENT`, `PRIOR_NET_PAYMENT`, etc. |
+| `FranchiseTaxPermitHolderField` | `active_permit_holders()` | `TAXPAYER_NAME`, `TAXPAYER_CITY`, `NAICS_CODE`, `RIGHT_TO_TRANSACT_BUSINESS_CODE`, etc. |
+| `MixedBeverageGrossReceiptsField` | `gross_receipts()` | `LOCATION_NAME`, `LOCATION_CITY`, `TOTAL_RECEIPTS`, `LIQUOR_RECEIPTS`, etc. |
+
+### Categorical Enums
+
+| Enum | Used with | Values |
+|------|-----------|--------|
+| `AuthorityType` | `county_spd_mta_allocations().for_type()` | `CITY`, `COUNTY`, `SPD`, `MTA`, `TRANSIT` |
+| `SalesTaxRateType` | `rates().for_type()` | `CITY_LIST`, `SPD_LIST` |
+| `RightToTransactCode` | `active_permit_holders().with_right_to_transact()` | `ACTIVE`, `ELIGIBLE_FOR_TERMINATION`, `FORFEITED`, `INVOLUNTARILY_ENDED`, `NOT_ESTABLISHED` |
+
+**Example:**
+
+```python
+from data.fields import ActivePermitField, RightToTransactCode
+
+# Use enum for sort_by
+permits = (client.sales_tax()
+    .active_permits()
+    .sort_by(ActivePermitField.OUTLET_CITY, desc=True)
+    .limit(100)
+    .get())
+
+# Use enum for categorical filter
+holders = (client.franchise_tax()
+    .active_permit_holders()
+    .with_right_to_transact(RightToTransactCode.ACTIVE)
+    .limit(50)
+    .get())
+```
+
 ## Sales Tax Data Sources
 
 ### ActivePermits
