@@ -2,32 +2,33 @@ from typing import List
 
 import httpx
 
-from src.data.exceptions import HttpError, InvalidRequest
-from src.data.responses.sales_tax import DirectPayTaxpayerData
-from src.data.fields import DirectPayTaxpayerField
+from src.compytroller.exceptions import HttpError, InvalidRequest
+from src.compytroller.responses.sales_tax import LocalAllocationPaymentDetailsData
+from src.compytroller.fields import AllocationPaymentDetailField
 
-class DirectPayTaxpayers:
+
+class LocalAllocationPaymentDetail:
     """
-    Query sales tax direct pay taxpayers in Texas.
+    Query detailed local sales tax allocation payment records.
 
-    This class provides access to the Direct Pay Taxpayers dataset via the Socrata API.
-    Direct pay taxpayers are authorized to purchase goods and services tax-free and remit
-    sales tax directly to the Comptroller, typically large businesses or government entities.
+    This class provides access to the Local Allocation Payment Detail dataset via the
+    Socrata API. It contains detailed payment breakdowns for local taxing authorities
+    including cities, showing allocation amounts by month and payment type.
 
     Attributes:
-        DATASET_ID: Socrata dataset identifier (deed-e7u6) for direct pay taxpayers.
+        DATASET_ID: Socrata dataset identifier (3p4v-vsr3) for payment details.
 
     Example:
-        >>> resource = DirectPayTaxpayers(client)
-        >>> results = resource.for_city("Austin").with_naics("541").limit(25).get()
-        >>> for taxpayer in results:
-        ...     print(taxpayer.taxpayer_name, taxpayer.city, taxpayer.naics_code)
+        >>> resource = LocalAllocationPaymentDetail(client)
+        >>> results = resource.for_city("Austin").for_month("2024-01-01T00:00:00").limit(50).get()
+        >>> for record in results:
+        ...     print(record.authority_name, record.allocation_month, record.net_payment)
     """
-    DATASET_ID = "deed-e7u6"
+    DATASET_ID = "3p4v-vsr3"
 
     def __init__(self, socrata_client):
         """
-        Initialize the DirectPayTaxpayers resource.
+        Initialize the LocalAllocationPaymentDetail resource.
 
         Args:
             socrata_client: An instance of SocrataClient for API requests.
@@ -35,35 +36,9 @@ class DirectPayTaxpayers:
         self.client = socrata_client
         self._params = {}
 
-    def with_naics(self, code: str):
-        """
-        Filter direct pay taxpayers by NAICS industry code.
-
-        Args:
-            code: The NAICS code to filter by.
-
-        Returns:
-            Self for method chaining.
-        """
-        self._params["naics_code"] = code
-        return self
-
-    def in_county(self, county: str):
-        """
-        Filter direct pay taxpayers by county name.
-
-        Args:
-            county: The county name to filter by (case-insensitive).
-
-        Returns:
-            Self for method chaining.
-        """
-        self._params["county"] = county.upper()
-        return self
-
     def for_city(self, city: str):
         """
-        Filter direct pay taxpayers by city name.
+        Filter payment details by city name.
 
         Args:
             city: The city name to filter by (case-insensitive).
@@ -71,10 +46,36 @@ class DirectPayTaxpayers:
         Returns:
             Self for method chaining.
         """
-        self._params["city"] = city.upper()
+        self._params["authority_name"] = f"'{city.upper()}'"
         return self
 
-    def sort_by(self, field: str | DirectPayTaxpayerField, desc: bool = False):
+    def with_authority_id(self, authority_id: str):
+        """
+        Filter payment details by authority ID.
+
+        Args:
+            authority_id: The authority identifier to filter by.
+
+        Returns:
+            Self for method chaining.
+        """
+        self._params["authority_id"] = f"'{authority_id}'"
+        return self
+
+    def for_month(self, month: str):
+        """
+        Filter payment details by allocation month.
+
+        Args:
+            month: The allocation month as a floating timestamp (e.g., "2024-01-01T00:00:00").
+
+        Returns:
+            Self for method chaining.
+        """
+        self._params["allocation_month"] = f"'{month}'"
+        return self
+
+    def sort_by(self, field: str | AllocationPaymentDetailField, desc: bool = False):
         """
         Sort results by a specific field.
 
@@ -111,12 +112,12 @@ class DirectPayTaxpayers:
         self._params = {}
         return self
 
-    def get(self) -> List["DirectPayTaxpayerData"]:
+    def get(self) -> List[LocalAllocationPaymentDetailsData]:
         """
-        Execute the query and return direct pay taxpayer records.
+        Execute the query and return payment detail records.
 
         Returns:
-            List of DirectPayTaxpayerData objects matching the query filters.
+            List of LocalAllocationPaymentDetailsData objects matching the query filters.
 
         Raises:
             HttpError: If the HTTP request to the Socrata API fails.
@@ -132,4 +133,4 @@ class DirectPayTaxpayers:
         if not records:
             raise InvalidRequest(f"No records returned from {self.__class__.__name__}")
 
-        return [DirectPayTaxpayerData.from_dict(r) for r in records]
+        return [LocalAllocationPaymentDetailsData.from_dict(r) for r in records]

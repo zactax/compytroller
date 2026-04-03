@@ -1,6 +1,6 @@
 import pytest
 from datetime import date
-from src.data.responses.franchise_tax import FranchiseTaxPermitHolderData
+from src.compytroller.responses.franchise_tax import FranchiseTaxPermitHolderData
 
 
 def test_franchise_tax_permit_holder_data_from_dict_valid():

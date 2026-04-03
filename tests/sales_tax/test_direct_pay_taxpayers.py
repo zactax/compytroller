@@ -1,8 +1,8 @@
 import pytest
 import httpx
 from datetime import date
-from src.data.resources.sales_tax.direct_pay import DirectPayTaxpayers, DirectPayTaxpayerData
-from src.data.exceptions import HttpError, InvalidRequest
+from src.compytroller.resources.sales_tax.direct_pay import DirectPayTaxpayers, DirectPayTaxpayerData
+from src.compytroller.exceptions import HttpError, InvalidRequest
 
 
 def test_direct_pay_parsing(dummy_client):

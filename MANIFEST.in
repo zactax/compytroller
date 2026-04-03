@@ -8,7 +8,7 @@ include pyproject.toml
 include requirements.txt
 
 # Include type hints
-recursive-include src/data py.typed *.pyi
+recursive-include src/compytroller py.typed *.pyi
 
 # Exclude development files
 exclude .gitignore

@@ -2,7 +2,7 @@
 
 import pytest
 
-from src.data.fields import (
+from src.compytroller.fields import (
     ActivePermitField,
     AllocationPaymentDetailField,
     AuthorityType,
@@ -18,12 +18,12 @@ from src.data.fields import (
     SalesTaxRateType,
     SingleLocalAllocationField,
 )
-from src.data.resources.sales_tax.active_permits import ActivePermits
-from src.data.resources.sales_tax.rates import SalesTaxRates
-from src.data.resources.franchise.active_permit_holders import (
+from src.compytroller.resources.sales_tax.active_permits import ActivePermits
+from src.compytroller.resources.sales_tax.rates import SalesTaxRates
+from src.compytroller.resources.franchise.active_permit_holders import (
     ActiveFranchiseTaxPermitHolders,
 )
-from src.data.resources.mixed_beverage.gross_receipts import MixedBeverageGrossReceipts
+from src.compytroller.resources.mixed_beverage.gross_receipts import MixedBeverageGrossReceipts
 
 
 # ---------------------------------------------------------------------------
@@ -145,7 +145,7 @@ class TestEnumsWithResources:
         assert resource._params["$order"] == "total_receipts DESC"
 
     def test_for_type_with_authority_type(self, dummy_client):
-        from src.data.resources.sales_tax.marketplace_provider_allocations import (
+        from src.compytroller.resources.sales_tax.marketplace_provider_allocations import (
             MarketplaceProviderAllocations,
         )
 
@@ -181,12 +181,12 @@ class TestEnumsWithResources:
 class TestPackageImports:
     """Enums are importable from the top-level data package."""
 
-    def test_import_from_data(self):
-        from src.data import ActivePermitField as APF
+    def test_import_from_compytroller(self):
+        from src.compytroller import ActivePermitField as APF
 
         assert APF.OUTLET_CITY == "outlet_city"
 
     def test_import_from_data_fields(self):
-        from src.data.fields import ActivePermitField as APF
+        from src.compytroller.fields import ActivePermitField as APF
 
         assert APF.OUTLET_CITY == "outlet_city"

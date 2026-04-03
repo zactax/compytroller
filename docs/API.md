@@ -36,7 +36,7 @@ Creates a new client instance with the provided Socrata app token.
 
 **Example:**
 ```python
-from data import ComptrollerClient
+from compytroller import ComptrollerClient
 
 client = ComptrollerClient(app_token="your-app-token")
 ```
@@ -148,7 +148,7 @@ Factory for mixed beverage tax data sources.
 Optional enums for `sort_by()` fields and categorical filter values. All enums inherit from `str` and can be used anywhere a raw string is accepted.
 
 ```python
-from data.fields import ActivePermitField, AuthorityType, RightToTransactCode
+from compytroller.fields import ActivePermitField, AuthorityType, RightToTransactCode
 ```
 
 ### Sort Field Enums
@@ -178,7 +178,7 @@ from data.fields import ActivePermitField, AuthorityType, RightToTransactCode
 **Example:**
 
 ```python
-from data.fields import ActivePermitField, RightToTransactCode
+from compytroller.fields import ActivePermitField, RightToTransactCode
 
 # Use enum for sort_by
 permits = (client.sales_tax()
@@ -1280,7 +1280,7 @@ class InvalidRequest(TexasComptrollerError):
 
 **Example:**
 ```python
-from data.exceptions import HttpError, InvalidRequest
+from compytroller.exceptions import HttpError, InvalidRequest
 
 try:
     results = client.sales_tax().rates().get()
@@ -1384,7 +1384,7 @@ Execute a GET request against a Socrata dataset.
 
 **Example:**
 ```python
-from data.socrata import SocrataClient
+from compytroller.socrata import SocrataClient
 
 client = SocrataClient("your-app-token")
 data = client.get("jrea-zgmq", {"$limit": 10})

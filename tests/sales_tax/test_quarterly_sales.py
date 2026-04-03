@@ -1,8 +1,8 @@
-from src.data.responses.sales_tax import QuarterlySalesHistoryData
+from src.compytroller.responses.sales_tax import QuarterlySalesHistoryData
 import pytest
 import httpx
-from src.data.resources.sales_tax.quarterly_sales_history import QuarterlySalesHistory
-from src.data.exceptions import HttpError, InvalidRequest
+from src.compytroller.resources.sales_tax.quarterly_sales_history import QuarterlySalesHistory
+from src.compytroller.exceptions import HttpError, InvalidRequest
 
 
 HTML_SAMPLE = """

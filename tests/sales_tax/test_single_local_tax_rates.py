@@ -1,8 +1,8 @@
-from src.data.responses.sales_tax import SingleLocalTaxRateData
+from src.compytroller.responses.sales_tax import SingleLocalTaxRateData
 import pytest
 import httpx
-from src.data.resources.sales_tax.single_local_tax_rates import SingleLocalTaxRates
-from src.data.exceptions import HttpError, InvalidRequest
+from src.compytroller.resources.sales_tax.single_local_tax_rates import SingleLocalTaxRates
+from src.compytroller.exceptions import HttpError, InvalidRequest
 
 
 CSV_SAMPLE = """Taxpayer Number,Taxpayer Name,Begin Date,End Date

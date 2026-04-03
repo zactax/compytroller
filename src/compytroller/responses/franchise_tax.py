@@ -2,7 +2,7 @@ from dataclasses import dataclass
 from datetime import date
 from typing import Any, Dict, Optional
 
-from src.data.utils import parse_date
+from src.compytroller.utils import parse_date
 
 
 @dataclass

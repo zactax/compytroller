@@ -2,9 +2,9 @@ from typing import List
 
 import httpx
 
-from src.data.exceptions import HttpError, InvalidRequest
-from src.data.responses.sales_tax import ComparisonSummaryData
-from src.data.fields import ComparisonSummaryField
+from src.compytroller.exceptions import HttpError, InvalidRequest
+from src.compytroller.responses.sales_tax import ComparisonSummaryData
+from src.compytroller.fields import ComparisonSummaryField
 
 
 class CityCountyComparisonSummary:

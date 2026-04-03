@@ -1,8 +1,8 @@
 import pytest
 import httpx
-from src.data.resources.mixed_beverage.gross_receipts import MixedBeverageGrossReceipts
-from src.data.responses.mixed_beverage_tax import MixedBeverageGrossReceiptsData
-from src.data.exceptions import HttpError, InvalidRequest
+from src.compytroller.resources.mixed_beverage.gross_receipts import MixedBeverageGrossReceipts
+from src.compytroller.responses.mixed_beverage_tax import MixedBeverageGrossReceiptsData
+from src.compytroller.exceptions import HttpError, InvalidRequest
 
 
 def test_mixed_beverage_parsing(dummy_client):

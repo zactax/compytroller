@@ -4,8 +4,8 @@ from typing import List
 import httpx
 from selectolax.parser import HTMLParser
 
-from src.data.exceptions import HttpError, InvalidRequest
-from src.data.responses.sales_tax import AllocationHistoryData
+from src.compytroller.exceptions import HttpError, InvalidRequest
+from src.compytroller.responses.sales_tax import AllocationHistoryData
 
 
 class SalesTaxAllocationHistory:

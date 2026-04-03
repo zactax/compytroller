@@ -4,17 +4,17 @@ Thank you for your interest in contributing to Compytroller! This document cover
 
 ## Import Path Convention
 
-**Always use `src.data` imports**, not bare `data` imports.
+**Always use `src.compytroller` imports**, not bare `compytroller` imports.
 
 ```python
 # Correct
-from src.data.resources.sales_tax.active_permits import ActivePermits
+from src.compytroller.resources.sales_tax.active_permits import ActivePermits
 
 # Wrong — causes circular imports
-from data.resources.sales_tax.active_permits import ActivePermits
+from compytroller.resources.sales_tax.active_permits import ActivePermits
 ```
 
-The project's `pyproject.toml` maps the `data` package to `src/data/` via `package-dir = {"" = "src"}`. This means `data.foo` and `src.data.foo` resolve to the same physical module, but Python treats them as separate modules. Mixing both styles causes circular imports and `isinstance` failures because classes loaded via different paths have different identities.
+The project's `pyproject.toml` maps the `compytroller` package to `src/compytroller/` via `package-dir = {"" = "src"}`. This means `compytroller.foo` and `src.compytroller.foo` resolve to the same physical module, but Python treats them as separate modules. Mixing both styles causes circular imports and `isinstance` failures because classes loaded via different paths have different identities.
 
 This applies to all source code in `src/` and `tests/`.
 

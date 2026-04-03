@@ -3,7 +3,7 @@
 Import field enums for use with ``sort_by()`` and categorical enums for
 ``for_type()`` and similar filter methods::
 
-    from data.fields import ActivePermitField, AuthorityType
+    from compytroller.fields import ActivePermitField, AuthorityType
 
     results = (client.sales_tax()
         .active_permits()
