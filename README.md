@@ -25,7 +25,7 @@ pip install compytroller
 ### From Source
 
 ```bash
-git clone https://github.com/TeamZac/compytroller-project.git
+git clone https://github.com/zactax/compytroller-project.git
 cd compytroller-project
 pip install -e .
 ```

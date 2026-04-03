@@ -8,7 +8,7 @@ version = "0.1.0"
 description = "A Python library for accessing Texas Comptroller of Public Accounts tax and financial data"
 readme = "README.md"
 authors = [
-    {name = "TeamZac", email = "your-email@example.com"}
+    {name = "ZacTax", email = "gavin@zactax.com"}
 ]
 license = "MIT"
 classifiers = [
@@ -59,11 +59,11 @@ docs = [
 ]
 
 [project.urls]
-Homepage = "https://github.com/TeamZac/compytroller-project"
-Documentation = "https://github.com/TeamZac/compytroller-project/blob/main/README.md"
-Repository = "https://github.com/TeamZac/compytroller-project"
-"Bug Tracker" = "https://github.com/TeamZac/compytroller-project/issues"
-Changelog = "https://github.com/TeamZac/compytroller-project/blob/main/CHANGELOG.md"
+Homepage = "https://github.com/zactax/compytroller-project"
+Documentation = "https://github.com/zactax/compytroller-project/blob/main/README.md"
+Repository = "https://github.com/zactax/compytroller-project"
+"Bug Tracker" = "https://github.com/zactax/compytroller-project/issues"
+Changelog = "https://github.com/zactax/compytroller-project/blob/main/CHANGELOG.md"
 
 [tool.setuptools]
 package-dir = {"" = "src"}
