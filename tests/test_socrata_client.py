@@ -1,7 +1,7 @@
 import pytest
 import httpx
 from unittest.mock import patch
-from src.data.socrata import SocrataClient
+from src.compytroller.socrata import SocrataClient
 
 class FakeResponse:
     def __init__(self, json_data=None, status_code=200, raise_error=None):
@@ -20,7 +20,7 @@ def test_socrata_client_init(monkeypatch):
     monkeypatch.setenv("app_token", "dummy")
 
     # Patch httpx.Client so it never runs
-    with patch("data.socrata.httpx.Client") as MockHttpx:
+    with patch("compytroller.socrata.httpx.Client") as MockHttpx:
         MockHttpx.return_value = object()  # stub out the client
         client = SocrataClient("https://data.texas.gov", "dummy")
         assert isinstance(client, SocrataClient)

@@ -1,9 +1,9 @@
-from src.data.responses.sales_tax import PermittedLocationData
+from src.compytroller.responses.sales_tax import PermittedLocationData
 import pytest
 import httpx
 from datetime import date
-from src.data.resources.sales_tax.permitted_locations import PermittedLocations
-from src.data.exceptions import HttpError, InvalidRequest
+from src.compytroller.resources.sales_tax.permitted_locations import PermittedLocations
+from src.compytroller.exceptions import HttpError, InvalidRequest
 
 
 def test_permitted_locations_parsing(dummy_client):

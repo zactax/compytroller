@@ -1,8 +1,8 @@
-from src.data.responses.sales_tax import SingleLocalAllocationData
+from src.compytroller.responses.sales_tax import SingleLocalAllocationData
 import pytest
 import httpx
-from src.data.resources.sales_tax.single_local_allocations import SingleLocalAllocations
-from src.data.exceptions import HttpError, InvalidRequest
+from src.compytroller.resources.sales_tax.single_local_allocations import SingleLocalAllocations
+from src.compytroller.exceptions import HttpError, InvalidRequest
 
 
 def test_single_local_allocations_parsing(dummy_client):
@@ -119,7 +119,7 @@ def test_single_local_allocations_for_mta(dummy_client):
 
 
 def test_single_local_allocations_for_month_invalid():
-    from src.data.resources.sales_tax.single_local_allocations import SingleLocalAllocations
+    from src.compytroller.resources.sales_tax.single_local_allocations import SingleLocalAllocations
     class DummyClient:
         pass
 

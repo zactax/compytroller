@@ -17,7 +17,7 @@ Common usage patterns and examples for Compytroller.
 ### Initialize the Client
 
 ```python
-from data import ComptrollerClient
+from compytroller import ComptrollerClient
 
 # Get your app token from https://data.texas.gov/profile/app_tokens
 client = ComptrollerClient.factory(app_token="your-app-token-here")
@@ -355,7 +355,7 @@ Field enums provide IDE autocompletion for `sort_by()` fields and categorical fi
 ### Sorting with Field Enums
 
 ```python
-from data.fields import ActivePermitField, SalesTaxRateField
+from compytroller.fields import ActivePermitField, SalesTaxRateField
 
 # Instead of sort_by("outlet_city")
 permits = (client.sales_tax()
@@ -375,7 +375,7 @@ rates = (client.sales_tax()
 ### Categorical Filter Enums
 
 ```python
-from data.fields import AuthorityType, RightToTransactCode, SalesTaxRateType
+from compytroller.fields import AuthorityType, RightToTransactCode, SalesTaxRateType
 
 # Instead of for_type("COUNTY")
 allocations = (client.sales_tax()
@@ -436,7 +436,7 @@ permits = (client.sales_tax()
 ### Handling HTTP Errors
 
 ```python
-from data.exceptions import HttpError, InvalidRequest
+from compytroller.exceptions import HttpError, InvalidRequest
 
 try:
     rates = client.sales_tax().rates().for_city("Austin").get()
@@ -467,7 +467,7 @@ else:
 
 ```python
 import time
-from data.exceptions import HttpError
+from compytroller.exceptions import HttpError
 
 def query_with_retry(query_func, max_retries=3):
     for attempt in range(max_retries):

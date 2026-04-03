@@ -1,8 +1,8 @@
 import pytest
 import httpx
-from src.data.resources.franchise.active_permit_holders import ActiveFranchiseTaxPermitHolders
-from src.data.responses.franchise_tax import FranchiseTaxPermitHolderData
-from src.data.exceptions import HttpError, InvalidRequest
+from src.compytroller.resources.franchise.active_permit_holders import ActiveFranchiseTaxPermitHolders
+from src.compytroller.responses.franchise_tax import FranchiseTaxPermitHolderData
+from src.compytroller.exceptions import HttpError, InvalidRequest
 
 
 def test_active_permit_holders_parsing(dummy_client):

@@ -1,8 +1,8 @@
 import pytest
 import httpx
-from src.data.resources.mixed_beverage.history import MixedBeverageHistory
-from src.data.responses.mixed_beverage_tax import MixedBeverageHistoryData
-from src.data.exceptions import HttpError, InvalidRequest
+from src.compytroller.resources.mixed_beverage.history import MixedBeverageHistory
+from src.compytroller.responses.mixed_beverage_tax import MixedBeverageHistoryData
+from src.compytroller.exceptions import HttpError, InvalidRequest
 
 
 HTML_FIXTURE = """

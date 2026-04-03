@@ -1,8 +1,8 @@
-from src.data.responses.sales_tax import SalesTaxRateData
+from src.compytroller.responses.sales_tax import SalesTaxRateData
 import pytest
 import httpx
-from src.data.resources.sales_tax.rates import SalesTaxRates
-from src.data.exceptions import HttpError, InvalidRequest
+from src.compytroller.resources.sales_tax.rates import SalesTaxRates
+from src.compytroller.exceptions import HttpError, InvalidRequest
 
 
 def test_sales_tax_rates_parsing(dummy_client):

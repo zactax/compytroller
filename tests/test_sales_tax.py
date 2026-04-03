@@ -1,6 +1,6 @@
 import pytest
 from datetime import date
-from src.data.responses.sales_tax import (
+from src.compytroller.responses.sales_tax import (
     ComparisonSummaryData,
     SingleLocalAllocationData,
     SingleLocalTaxRateData,

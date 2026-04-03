@@ -41,7 +41,7 @@ pip install -e ".[dev]"
 ## Quick Start
 
 ```python
-from data import ComptrollerClient
+from compytroller import ComptrollerClient
 
 # Initialize the client with your Socrata app token
 client = ComptrollerClient(app_token="your-app-token-here")
@@ -91,7 +91,7 @@ results = (client.sales_tax()
 Optional enums for `sort_by()` fields and categorical filters provide IDE autocompletion and eliminate magic strings:
 
 ```python
-from data.fields import ActivePermitField, AuthorityType
+from compytroller.fields import ActivePermitField, AuthorityType
 
 # Sort by field enum instead of a raw string
 permits = (client.sales_tax()
@@ -113,7 +113,7 @@ All enums inherit from `str`, so raw strings continue to work everywhere.
 All responses are returned as Python dataclasses with full type hints:
 
 ```python
-from data.responses.sales_tax import ActivePermitData
+from compytroller.responses.sales_tax import ActivePermitData
 
 permits: list[ActivePermitData] = client.sales_tax().active_permits().get()
 for permit in permits:
@@ -129,7 +129,7 @@ for permit in permits:
 Custom exceptions for clear error messages:
 
 ```python
-from data.exceptions import HttpError, InvalidRequest
+from compytroller.exceptions import HttpError, InvalidRequest
 
 try:
     results = client.sales_tax().rates().get()

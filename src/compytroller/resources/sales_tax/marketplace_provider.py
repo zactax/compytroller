@@ -5,9 +5,9 @@ from typing import List, Optional, Union
 import httpx
 import pandas as pd
 
-from src.data.exceptions import HttpError, InvalidRequest
-from src.data.responses.sales_tax import MarketplaceProviderData
-from src.data.utils import parse_date
+from src.compytroller.exceptions import HttpError, InvalidRequest
+from src.compytroller.responses.sales_tax import MarketplaceProviderData
+from src.compytroller.utils import parse_date
 
 
 class MarketplaceProvider:

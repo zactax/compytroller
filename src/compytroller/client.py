@@ -1,6 +1,6 @@
 # compytroller/client.py
-from src.data.resources import FranchiseResource, MixedBeverageResource, SalesTaxResource
-from src.data.socrata import SocrataClient
+from src.compytroller.resources import FranchiseResource, MixedBeverageResource, SalesTaxResource
+from src.compytroller.socrata import SocrataClient
 
 class ComptrollerClient:
     """Main client for accessing Texas Comptroller of Public Accounts data.

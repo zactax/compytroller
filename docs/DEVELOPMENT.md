@@ -187,7 +187,7 @@ tests/
 Test individual components in isolation:
 
 ```python
-from data.utils import parse_date
+from compytroller.utils import parse_date
 
 def test_parse_date_valid():
     result = parse_date("2024-01-15")
@@ -206,7 +206,7 @@ Test components working together:
 
 ```python
 from unittest.mock import Mock, patch
-from data.resources.sales_tax.active_permits import ActivePermits
+from compytroller.resources.sales_tax.active_permits import ActivePermits
 
 def test_active_permits_query():
     mock_client = Mock()
@@ -281,7 +281,7 @@ class NewDataSourceData:
 
 ```python
 from typing import List, Optional
-from data.responses.domain import NewDataSourceData
+from compytroller.responses.domain import NewDataSourceData
 
 class NewDataSource:
     """Query new data source."""
@@ -325,7 +325,7 @@ def new_data_source(self) -> NewDataSource:
 
 ```python
 from unittest.mock import Mock
-from data.resources.domain.new_data_source import NewDataSource
+from compytroller.resources.domain.new_data_source import NewDataSource
 
 def test_new_data_source_filter():
     mock_client = Mock()
@@ -401,7 +401,7 @@ def get(self):
 Use IPython or Jupyter for interactive development:
 
 ```python
-from data import ComptrollerClient
+from compytroller import ComptrollerClient
 
 client = ComptrollerClient.factory("your-token")
 

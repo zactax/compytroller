@@ -2,33 +2,33 @@ from typing import List
 
 import httpx
 
-from src.data.exceptions import HttpError, InvalidRequest
-from src.data.responses.sales_tax import LocalAllocationPaymentDetailsData
-from src.data.fields import AllocationPaymentDetailField
+from src.compytroller.exceptions import HttpError, InvalidRequest
+from src.compytroller.responses.sales_tax import SalesTaxRateData
+from src.compytroller.fields import SalesTaxRateField, SalesTaxRateType
 
 
-class LocalAllocationPaymentDetail:
+class SalesTaxRates:
     """
-    Query detailed local sales tax allocation payment records.
+    Query sales tax rates for Texas jurisdictions.
 
-    This class provides access to the Local Allocation Payment Detail dataset via the
-    Socrata API. It contains detailed payment breakdowns for local taxing authorities
-    including cities, showing allocation amounts by month and payment type.
+    This class provides access to the Sales Tax Rates dataset via the Socrata API.
+    It contains current and historical sales tax rates for cities, counties, special
+    purpose districts (SPDs), and other taxing jurisdictions in Texas.
 
     Attributes:
-        DATASET_ID: Socrata dataset identifier (3p4v-vsr3) for payment details.
+        DATASET_ID: Socrata dataset identifier (tmhs-ahbh) for sales tax rates.
 
     Example:
-        >>> resource = LocalAllocationPaymentDetail(client)
-        >>> results = resource.for_city("Austin").for_month("2024-01-01T00:00:00").limit(50).get()
-        >>> for record in results:
-        ...     print(record.authority_name, record.allocation_month, record.net_payment)
+        >>> resource = SalesTaxRates(client)
+        >>> results = resource.for_city("Austin").for_year(2023).get()
+        >>> for rate in results:
+        ...     print(rate.city_name, rate.report_year, rate.combined_rate)
     """
-    DATASET_ID = "3p4v-vsr3"
+    DATASET_ID = "tmhs-ahbh"
 
     def __init__(self, socrata_client):
         """
-        Initialize the LocalAllocationPaymentDetail resource.
+        Initialize the SalesTaxRates resource.
 
         Args:
             socrata_client: An instance of SocrataClient for API requests.
@@ -38,44 +38,57 @@ class LocalAllocationPaymentDetail:
 
     def for_city(self, city: str):
         """
-        Filter payment details by city name.
+        Filter sales tax rates by city name.
 
         Args:
-            city: The city name to filter by (case-insensitive).
+            city: The city name to filter by.
 
         Returns:
             Self for method chaining.
         """
-        self._params["authority_name"] = f"'{city.upper()}'"
+        self._params["city_name"] = city
         return self
 
-    def with_authority_id(self, authority_id: str):
+    def in_county(self, county: str):
         """
-        Filter payment details by authority ID.
+        Filter sales tax rates by county name.
 
         Args:
-            authority_id: The authority identifier to filter by.
+            county: The county name to filter by.
 
         Returns:
             Self for method chaining.
         """
-        self._params["authority_id"] = f"'{authority_id}'"
+        self._params["county_name"] = county
         return self
 
-    def for_month(self, month: str):
+    def for_type(self, jurisdiction_type: str | SalesTaxRateType):
         """
-        Filter payment details by allocation month.
+        Filter sales tax rates by jurisdiction type.
 
         Args:
-            month: The allocation month as a floating timestamp (e.g., "2024-01-01T00:00:00").
+            jurisdiction_type: The type to filter by (e.g., "SPD List", "City List").
 
         Returns:
             Self for method chaining.
         """
-        self._params["allocation_month"] = f"'{month}'"
+        self._params["type"] = jurisdiction_type
         return self
 
-    def sort_by(self, field: str | AllocationPaymentDetailField, desc: bool = False):
+    def for_year(self, year: int):
+        """
+        Filter sales tax rates by report year.
+
+        Args:
+            year: The report year to filter by (e.g., 2023).
+
+        Returns:
+            Self for method chaining.
+        """
+        self._params["report_year"] = year
+        return self
+
+    def sort_by(self, field: str | SalesTaxRateField, desc: bool = False):
         """
         Sort results by a specific field.
 
@@ -112,12 +125,12 @@ class LocalAllocationPaymentDetail:
         self._params = {}
         return self
 
-    def get(self) -> List[LocalAllocationPaymentDetailsData]:
+    def get(self) -> List["SalesTaxRateData"]:
         """
-        Execute the query and return payment detail records.
+        Execute the query and return sales tax rate records.
 
         Returns:
-            List of LocalAllocationPaymentDetailsData objects matching the query filters.
+            List of SalesTaxRateData objects matching the query filters.
 
         Raises:
             HttpError: If the HTTP request to the Socrata API fails.
@@ -133,4 +146,4 @@ class LocalAllocationPaymentDetail:
         if not records:
             raise InvalidRequest(f"No records returned from {self.__class__.__name__}")
 
-        return [LocalAllocationPaymentDetailsData.from_dict(r) for r in records]
+        return [SalesTaxRateData.from_dict(r) for r in records]

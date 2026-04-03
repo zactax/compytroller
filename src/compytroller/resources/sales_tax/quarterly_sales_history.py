@@ -4,8 +4,8 @@ from typing import Any, Dict, List, Optional
 import httpx
 from selectolax.parser import HTMLParser
 
-from src.data.exceptions import HttpError, InvalidRequest
-from src.data.responses.sales_tax import QuarterlySalesHistoryData
+from src.compytroller.exceptions import HttpError, InvalidRequest
+from src.compytroller.responses.sales_tax import QuarterlySalesHistoryData
 
 class QuarterlySalesHistory:
     """

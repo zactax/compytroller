@@ -8,7 +8,7 @@ version = "0.1.0"
 description = "A Python library for accessing Texas Comptroller of Public Accounts tax and financial data"
 readme = "README.md"
 authors = [
-    {name = "TeamZac", email = "your-email@example.com"}
+    {name = "ZacTax", email = "gavin@zactax.com"}
 ]
 license = "MIT"
 classifiers = [
@@ -70,11 +70,11 @@ package-dir = {"" = "src"}
 
 [tool.setuptools.packages.find]
 where = ["src"]
-include = ["data*"]
+include = ["compytroller*"]
 namespaces = false
 
 [tool.setuptools.package-data]
-data = ["py.typed"]
+compytroller = ["py.typed"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
@@ -90,7 +90,7 @@ markers = [
 ]
 
 [tool.coverage.run]
-source = ["src/data"]
+source = ["src/compytroller"]
 branch = true
 
 [tool.coverage.report]

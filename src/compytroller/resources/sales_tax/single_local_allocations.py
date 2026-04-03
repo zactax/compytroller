@@ -2,9 +2,9 @@ from typing import List
 
 import httpx
 
-from src.data.exceptions import HttpError, InvalidRequest
-from src.data.responses.sales_tax import SingleLocalAllocationData
-from src.data.fields import SingleLocalAllocationField
+from src.compytroller.exceptions import HttpError, InvalidRequest
+from src.compytroller.responses.sales_tax import SingleLocalAllocationData
+from src.compytroller.fields import SingleLocalAllocationField
 
 
 class SingleLocalAllocations:

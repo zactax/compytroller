@@ -1,8 +1,8 @@
 import pytest
 import httpx
-from src.data.resources.sales_tax.county_spd_mta_allocations import CountySPDMTAAllocations
-from src.data.responses.sales_tax import CountySPDMTAAllocationData
-from src.data.exceptions import HttpError, InvalidRequest
+from src.compytroller.resources.sales_tax.county_spd_mta_allocations import CountySPDMTAAllocations
+from src.compytroller.responses.sales_tax import CountySPDMTAAllocationData
+from src.compytroller.exceptions import HttpError, InvalidRequest
 
 
 def test_county_spd_mta_allocations_parsing(dummy_client):

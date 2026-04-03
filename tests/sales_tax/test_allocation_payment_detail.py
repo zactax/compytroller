@@ -1,9 +1,9 @@
 import pytest
 import httpx
 from datetime import date
-from src.data.resources.sales_tax.allocation_payment_detail import LocalAllocationPaymentDetail
-from src.data.responses.sales_tax import LocalAllocationPaymentDetailsData
-from src.data.exceptions import HttpError, InvalidRequest
+from src.compytroller.resources.sales_tax.allocation_payment_detail import LocalAllocationPaymentDetail
+from src.compytroller.responses.sales_tax import LocalAllocationPaymentDetailsData
+from src.compytroller.exceptions import HttpError, InvalidRequest
 
 
 def test_allocation_payment_detail_parsing(dummy_client):
