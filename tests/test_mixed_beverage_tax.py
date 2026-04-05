@@ -1,6 +1,6 @@
 import pytest
 from datetime import date
-from src.compytroller.responses.mixed_beverage_tax import (
+from compytroller.responses.mixed_beverage_tax import (
     MixedBeverageGrossReceiptsData,
     MixedBeverageHistoryData,
 )

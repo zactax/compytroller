@@ -1,8 +1,8 @@
 import pytest
 import httpx
-from src.compytroller.resources.sales_tax.marketplace_provider_allocations import MarketplaceProviderAllocations
-from src.compytroller.responses.sales_tax import MarketplaceProviderAllocationData
-from src.compytroller.exceptions import HttpError, InvalidRequest
+from compytroller.resources.sales_tax.marketplace_provider_allocations import MarketplaceProviderAllocations
+from compytroller.responses.sales_tax import MarketplaceProviderAllocationData
+from compytroller.exceptions import HttpError, InvalidRequest
 
 
 def test_marketplace_provider_allocations_parsing(dummy_client):

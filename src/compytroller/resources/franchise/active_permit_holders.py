@@ -2,9 +2,9 @@ from typing import List
 
 import httpx
 
-from src.compytroller.exceptions import HttpError, InvalidRequest
-from src.compytroller.responses.franchise_tax import FranchiseTaxPermitHolderData
-from src.compytroller.fields import FranchiseTaxPermitHolderField, RightToTransactCode
+from compytroller.exceptions import HttpError, InvalidRequest
+from compytroller.responses.franchise_tax import FranchiseTaxPermitHolderData
+from compytroller.fields import FranchiseTaxPermitHolderField, RightToTransactCode
 
 class ActiveFranchiseTaxPermitHolders:
     """

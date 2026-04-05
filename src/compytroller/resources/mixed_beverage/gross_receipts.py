@@ -5,10 +5,10 @@ from typing import List, Optional, Union
 import httpx
 import pandas as pd
 
-from src.compytroller.exceptions import HttpError, InvalidRequest
-from src.compytroller.responses.mixed_beverage_tax import MixedBeverageGrossReceiptsData
-from src.compytroller.utils import parse_date
-from src.compytroller.fields import MixedBeverageGrossReceiptsField
+from compytroller.exceptions import HttpError, InvalidRequest
+from compytroller.responses.mixed_beverage_tax import MixedBeverageGrossReceiptsData
+from compytroller.utils import parse_date
+from compytroller.fields import MixedBeverageGrossReceiptsField
 
 class MixedBeverageGrossReceipts:
     """

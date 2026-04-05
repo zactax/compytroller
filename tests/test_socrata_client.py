@@ -1,7 +1,7 @@
 import pytest
 import httpx
 from unittest.mock import patch
-from src.compytroller.socrata import SocrataClient
+from compytroller.socrata import SocrataClient
 
 class FakeResponse:
     def __init__(self, json_data=None, status_code=200, raise_error=None):

@@ -1,8 +1,8 @@
 import pytest
 import httpx
-from src.compytroller.resources.sales_tax.allocation_history import SalesTaxAllocationHistory
-from src.compytroller.responses.sales_tax import AllocationHistoryData
-from src.compytroller.exceptions import HttpError, InvalidRequest
+from compytroller.resources.sales_tax.allocation_history import SalesTaxAllocationHistory
+from compytroller.responses.sales_tax import AllocationHistoryData
+from compytroller.exceptions import HttpError, InvalidRequest
 
 
 HTML_FIXTURE = """

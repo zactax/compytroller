@@ -1,8 +1,8 @@
 import pytest
 import httpx
-from src.compytroller.resources.sales_tax.city_county_comparison_summary import CityCountyComparisonSummary
-from src.compytroller.responses.sales_tax import ComparisonSummaryData
-from src.compytroller.exceptions import HttpError, InvalidRequest
+from compytroller.resources.sales_tax.city_county_comparison_summary import CityCountyComparisonSummary
+from compytroller.responses.sales_tax import ComparisonSummaryData
+from compytroller.exceptions import HttpError, InvalidRequest
 
 ## FIX
 def test_comparison_summary_parsing(dummy_client):
