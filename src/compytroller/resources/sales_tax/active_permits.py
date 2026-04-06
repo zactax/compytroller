@@ -2,9 +2,9 @@ from typing import List
 
 import httpx
 
-from src.compytroller.exceptions import HttpError, InvalidRequest
-from src.compytroller.responses.sales_tax import ActivePermitData
-from src.compytroller.fields import ActivePermitField
+from compytroller.exceptions import HttpError, InvalidRequest
+from compytroller.responses.sales_tax import ActivePermitData
+from compytroller.fields import ActivePermitField
 
 
 class ActivePermits:

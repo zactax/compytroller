@@ -2,9 +2,9 @@ from typing import List
 
 import httpx
 
-from src.compytroller.exceptions import HttpError, InvalidRequest
-from src.compytroller.responses.sales_tax import MarketplaceProviderAllocationData
-from src.compytroller.fields import AuthorityType, MarketplaceProviderAllocationField
+from compytroller.exceptions import HttpError, InvalidRequest
+from compytroller.responses.sales_tax import MarketplaceProviderAllocationData
+from compytroller.fields import AuthorityType, MarketplaceProviderAllocationField
 
 
 class MarketplaceProviderAllocations:

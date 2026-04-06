@@ -3,7 +3,7 @@ from datetime import date
 import pandas as pd
 import pytest
 
-from src.compytroller.utils import parse_date, parse_float, parse_int
+from compytroller.utils import parse_date, parse_float, parse_int
 
 
 #  parse_date 

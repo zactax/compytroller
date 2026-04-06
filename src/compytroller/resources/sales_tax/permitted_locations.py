@@ -2,9 +2,9 @@ from typing import List
 
 import httpx
 
-from src.compytroller.exceptions import HttpError, InvalidRequest
-from src.compytroller.responses.sales_tax import PermittedLocationData
-from src.compytroller.fields import PermittedLocationField
+from compytroller.exceptions import HttpError, InvalidRequest
+from compytroller.responses.sales_tax import PermittedLocationData
+from compytroller.fields import PermittedLocationField
 
 class PermittedLocations:
     """

@@ -1,6 +1,6 @@
 import httpx
 import pytest
-from src.compytroller.exceptions import TexasComptrollerError, HttpError, InvalidRequest
+from compytroller.exceptions import TexasComptrollerError, HttpError, InvalidRequest
 
 
 def test_texas_comptroller_error_is_base_class():

@@ -5,9 +5,9 @@ from typing import List, Optional, Union
 import httpx
 import pandas as pd
 
-from src.compytroller.exceptions import HttpError, InvalidRequest
-from src.compytroller.responses.sales_tax import SingleLocalTaxRateData
-from src.compytroller.utils import parse_date
+from compytroller.exceptions import HttpError, InvalidRequest
+from compytroller.responses.sales_tax import SingleLocalTaxRateData
+from compytroller.utils import parse_date
 
 class SingleLocalTaxRates:
     """

@@ -5,6 +5,24 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.2.0] - 2026-04-05
+
+### Changed
+- **BREAKING:** Renamed package from `data` to `compytroller` — all imports change from `from data import ...` to `from compytroller import ...`
+- Fixed packaging bug where `src.` prefix in internal imports made the published wheel non-functional
+- Minimum Python version bumped from 3.8 to 3.10
+
+### Added
+- Type-safe field enums for all dataset resources (`ActivePermitField`, `SalesTaxRateField`, `FranchiseTaxPermitHolderField`, `MixedBeverageGrossReceiptsField`, etc.)
+- Categorical enums for filter values (`AuthorityType`, `RightToTransactCode`, `SalesTaxRateType`)
+- Union type hints (`str | FieldEnum`) on `sort_by()` and categorical filter methods for IDE discoverability
+- CONTRIBUTING.md with import path conventions
+- Field enums documentation in README, API reference, and examples
+
+### Fixed
+- Fixed 17 incorrect method names in `example_usage.ipynb`
+- Fixed circular import caused by mixed `data.` vs `src.data.` import paths
+
 ## [0.1.0] - 2026-04-03
 
 Initial public release.
@@ -70,10 +88,6 @@ This is the first public release of Compytroller, a comprehensive Python library
 
 For detailed API documentation, see the [API reference](docs/API.md).
 
-<<<<<<< Updated upstream
-[0.1.0]: https://github.com/TeamZac/compytroller/releases/tag/v0.1.0
-=======
 [Unreleased]: https://github.com/zactax/compytroller/compare/v0.1.0...HEAD
 [0.1.0]: https://github.com/zactax/compytroller/releases/tag/v0.1.0
 [0.0.1]: https://github.com/zactax/compytroller/releases/tag/v0.0.1
->>>>>>> Stashed changes

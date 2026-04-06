@@ -2,9 +2,9 @@ from typing import List
 
 import httpx
 
-from src.compytroller.exceptions import HttpError, InvalidRequest
-from src.compytroller.responses.sales_tax import CountySPDMTAAllocationData
-from src.compytroller.fields import AuthorityType, CountySPDMTAAllocationField
+from compytroller.exceptions import HttpError, InvalidRequest
+from compytroller.responses.sales_tax import CountySPDMTAAllocationData
+from compytroller.fields import AuthorityType, CountySPDMTAAllocationField
 
 
 class CountySPDMTAAllocations:

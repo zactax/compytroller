@@ -2,9 +2,9 @@ from typing import List
 
 import httpx
 
-from src.compytroller.exceptions import HttpError, InvalidRequest
-from src.compytroller.responses.sales_tax import SalesTaxRateData
-from src.compytroller.fields import SalesTaxRateField, SalesTaxRateType
+from compytroller.exceptions import HttpError, InvalidRequest
+from compytroller.responses.sales_tax import SalesTaxRateData
+from compytroller.fields import SalesTaxRateField, SalesTaxRateType
 
 
 class SalesTaxRates:

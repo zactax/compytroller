@@ -4,8 +4,8 @@ from typing import List
 import httpx
 from selectolax.parser import HTMLParser
 
-from src.compytroller.exceptions import HttpError, InvalidRequest
-from src.compytroller.responses.mixed_beverage_tax import MixedBeverageHistoryData
+from compytroller.exceptions import HttpError, InvalidRequest
+from compytroller.responses.mixed_beverage_tax import MixedBeverageHistoryData
 
 
 class MixedBeverageHistory:

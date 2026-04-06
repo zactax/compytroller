@@ -1,8 +1,8 @@
 import pytest
 import httpx
-from src.compytroller.resources.sales_tax.marketplace_provider import MarketplaceProvider
-from src.compytroller.responses.sales_tax import MarketplaceProviderData
-from src.compytroller.exceptions import HttpError, InvalidRequest
+from compytroller.resources.sales_tax.marketplace_provider import MarketplaceProvider
+from compytroller.responses.sales_tax import MarketplaceProviderData
+from compytroller.exceptions import HttpError, InvalidRequest
 
 
 CSV_SAMPLE = """Taxpayer Number,Taxpayer Name,Begin Date,End Date

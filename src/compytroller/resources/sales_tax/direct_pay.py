@@ -2,9 +2,9 @@ from typing import List
 
 import httpx
 
-from src.compytroller.exceptions import HttpError, InvalidRequest
-from src.compytroller.responses.sales_tax import DirectPayTaxpayerData
-from src.compytroller.fields import DirectPayTaxpayerField
+from compytroller.exceptions import HttpError, InvalidRequest
+from compytroller.responses.sales_tax import DirectPayTaxpayerData
+from compytroller.fields import DirectPayTaxpayerField
 
 class DirectPayTaxpayers:
     """

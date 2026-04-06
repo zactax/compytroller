@@ -4,17 +4,17 @@ Thank you for your interest in contributing to Compytroller! This document cover
 
 ## Import Path Convention
 
-**Always use `src.compytroller` imports**, not bare `compytroller` imports.
+**Always use `compytroller` imports**, not `src.compytroller` imports.
 
 ```python
 # Correct
-from src.compytroller.resources.sales_tax.active_permits import ActivePermits
-
-# Wrong — causes circular imports
 from compytroller.resources.sales_tax.active_permits import ActivePermits
+
+# Wrong — won't work in the published package
+from src.compytroller.resources.sales_tax.active_permits import ActivePermits
 ```
 
-The project's `pyproject.toml` maps the `compytroller` package to `src/compytroller/` via `package-dir = {"" = "src"}`. This means `compytroller.foo` and `src.compytroller.foo` resolve to the same physical module, but Python treats them as separate modules. Mixing both styles causes circular imports and `isinstance` failures because classes loaded via different paths have different identities.
+The project uses a `src` layout (`src/compytroller/`) with `package-dir = {"" = "src"}` in `pyproject.toml`. During development, pytest is configured with `pythonpath = ["src"]` so that `from compytroller.` resolves correctly. Never use the `src.` prefix — it won't exist in the installed package.
 
 This applies to all source code in `src/` and `tests/`.
 

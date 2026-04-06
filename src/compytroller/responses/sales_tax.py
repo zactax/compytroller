@@ -4,7 +4,7 @@ from typing import Any, Dict, List, Optional
 
 import pandas as pd
 
-from src.compytroller.utils import parse_date, parse_float, parse_int
+from compytroller.utils import parse_date, parse_float, parse_int
 
 @dataclass
 class ComparisonSummaryData:

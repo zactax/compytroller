@@ -2,9 +2,9 @@ from typing import List
 
 import httpx
 
-from src.compytroller.exceptions import HttpError, InvalidRequest
-from src.compytroller.responses.sales_tax import LocalAllocationPaymentDetailsData
-from src.compytroller.fields import AllocationPaymentDetailField
+from compytroller.exceptions import HttpError, InvalidRequest
+from compytroller.responses.sales_tax import LocalAllocationPaymentDetailsData
+from compytroller.fields import AllocationPaymentDetailField
 
 
 class LocalAllocationPaymentDetail:

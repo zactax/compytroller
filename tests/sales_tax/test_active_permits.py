@@ -1,8 +1,8 @@
 import pytest
 import httpx
-from src.compytroller.resources.sales_tax.active_permits import ActivePermits
-from src.compytroller.responses.sales_tax import ActivePermitData
-from src.compytroller.exceptions import HttpError, InvalidRequest
+from compytroller.resources.sales_tax.active_permits import ActivePermits
+from compytroller.responses.sales_tax import ActivePermitData
+from compytroller.exceptions import HttpError, InvalidRequest
 
 
 def test_active_permits_parsing(dummy_client):

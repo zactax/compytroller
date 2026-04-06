@@ -1,7 +1,7 @@
 from dataclasses import dataclass
 from typing import Optional, Dict, Any
 from datetime import date
-from src.compytroller.utils import parse_date, parse_float, parse_int
+from compytroller.utils import parse_date, parse_float, parse_int
 
 @dataclass
 class MixedBeverageGrossReceiptsData:

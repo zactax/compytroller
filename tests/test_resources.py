@@ -1,21 +1,21 @@
 import pytest
 
-from src.compytroller.resources.resources import (
+from compytroller.resources.resources import (
     SalesTaxResource,
     MixedBeverageResource,
     FranchiseResource,
 )
-from src.compytroller.resources.sales_tax.allocation_payment_detail import LocalAllocationPaymentDetail
-from src.compytroller.resources.sales_tax.city_county_comparison_summary import CityCountyComparisonSummary
-from src.compytroller.resources.sales_tax.marketplace_provider_allocations import MarketplaceProviderAllocations
-from src.compytroller.resources.sales_tax.single_local_allocations import SingleLocalAllocations
-from src.compytroller.resources.sales_tax.permitted_locations import PermittedLocations
-from src.compytroller.resources.sales_tax.active_permits import ActivePermits
-from src.compytroller.resources.sales_tax.rates import SalesTaxRates
-from src.compytroller.resources.sales_tax.direct_pay import DirectPayTaxpayers
-from src.compytroller.resources.mixed_beverage.gross_receipts import MixedBeverageGrossReceipts
-from src.compytroller.resources.mixed_beverage.history import MixedBeverageHistory
-from src.compytroller.resources.franchise.active_permit_holders import ActiveFranchiseTaxPermitHolders
+from compytroller.resources.sales_tax.allocation_payment_detail import LocalAllocationPaymentDetail
+from compytroller.resources.sales_tax.city_county_comparison_summary import CityCountyComparisonSummary
+from compytroller.resources.sales_tax.marketplace_provider_allocations import MarketplaceProviderAllocations
+from compytroller.resources.sales_tax.single_local_allocations import SingleLocalAllocations
+from compytroller.resources.sales_tax.permitted_locations import PermittedLocations
+from compytroller.resources.sales_tax.active_permits import ActivePermits
+from compytroller.resources.sales_tax.rates import SalesTaxRates
+from compytroller.resources.sales_tax.direct_pay import DirectPayTaxpayers
+from compytroller.resources.mixed_beverage.gross_receipts import MixedBeverageGrossReceipts
+from compytroller.resources.mixed_beverage.history import MixedBeverageHistory
+from compytroller.resources.franchise.active_permit_holders import ActiveFranchiseTaxPermitHolders
 
 
 class DummyClient:
@@ -25,7 +25,7 @@ class DummyClient:
 
 
 def test_sales_tax_resource_factories():
-    from src.compytroller.resources.sales_tax.county_spd_mta_allocations import CountySPDMTAAllocations
+    from compytroller.resources.sales_tax.county_spd_mta_allocations import CountySPDMTAAllocations
 
     st = SalesTaxResource(DummyClient())
 
@@ -103,10 +103,10 @@ def test_sales_tax_resource_no_client_raises_error():
 
 def test_sales_tax_resource_methods_not_requiring_client():
     """Test methods that don't require a client work without one."""
-    from src.compytroller.resources.sales_tax.allocation_history import SalesTaxAllocationHistory
-    from src.compytroller.resources.sales_tax.marketplace_provider import MarketplaceProvider
-    from src.compytroller.resources.sales_tax.quarterly_sales_history import QuarterlySalesHistory
-    from src.compytroller.resources.sales_tax.single_local_tax_rates import SingleLocalTaxRates
+    from compytroller.resources.sales_tax.allocation_history import SalesTaxAllocationHistory
+    from compytroller.resources.sales_tax.marketplace_provider import MarketplaceProvider
+    from compytroller.resources.sales_tax.quarterly_sales_history import QuarterlySalesHistory
+    from compytroller.resources.sales_tax.single_local_tax_rates import SingleLocalTaxRates
 
     st = SalesTaxResource(None)
 
