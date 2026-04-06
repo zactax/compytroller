@@ -65,7 +65,7 @@ export SOCRATA_APP_TOKEN="your-token-here"
 ## Project Structure
 
 ```
-compytroller-project/
+compytroller/
 ├── src/data/                      # Main source code
 │   ├── __init__.py                # Package exports
 │   ├── client.py                  # ComptrollerClient

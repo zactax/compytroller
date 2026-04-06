@@ -88,5 +88,6 @@ This is the first public release of Compytroller, a comprehensive Python library
 
 For detailed API documentation, see the [API reference](docs/API.md).
 
-[0.2.0]: https://github.com/TeamZac/compytroller-project/releases/tag/v0.2.0
-[0.1.0]: https://github.com/TeamZac/compytroller-project/releases/tag/v0.1.0
+[Unreleased]: https://github.com/zactax/compytroller/compare/v0.1.0...HEAD
+[0.1.0]: https://github.com/zactax/compytroller/releases/tag/v0.1.0
+[0.0.1]: https://github.com/zactax/compytroller/releases/tag/v0.0.1

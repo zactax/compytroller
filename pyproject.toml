@@ -59,11 +59,11 @@ docs = [
 ]
 
 [project.urls]
-Homepage = "https://github.com/TeamZac/compytroller-project"
-Documentation = "https://github.com/TeamZac/compytroller-project/blob/main/README.md"
-Repository = "https://github.com/TeamZac/compytroller-project"
-"Bug Tracker" = "https://github.com/TeamZac/compytroller-project/issues"
-Changelog = "https://github.com/TeamZac/compytroller-project/blob/main/CHANGELOG.md"
+Homepage = "https://github.com/zactax/compytroller"
+Documentation = "https://github.com/zactax/compytroller/blob/main/README.md"
+Repository = "https://github.com/zactax/compytroller"
+"Bug Tracker" = "https://github.com/zactax/compytroller/issues"
+Changelog = "https://github.com/zactax/compytroller/blob/main/CHANGELOG.md"
 
 [tool.setuptools]
 package-dir = {"" = "src"}
